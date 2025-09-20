@@ -71,6 +71,11 @@ namespace Data_Oracle.Context
                 .HasOptional(u => u.UserInfo)
                 .WithRequired(u => u.User);
 
+            // tiếp !!! 
+
+
+
+
         }
 
     }
