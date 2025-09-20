@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36414.22 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "e_learning", "e_learning\e_learning.csproj", "{770E0D9F-E48C-48E4-8018-A241401B4A8A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data_Oracle", "Data_Oracle\Data_Oracle.csproj", "{FFF653E9-1F35-4A30-BF38-110A1DE72906}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{770E0D9F-E48C-48E4-8018-A241401B4A8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{770E0D9F-E48C-48E4-8018-A241401B4A8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{770E0D9F-E48C-48E4-8018-A241401B4A8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{770E0D9F-E48C-48E4-8018-A241401B4A8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFF653E9-1F35-4A30-BF38-110A1DE72906}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFF653E9-1F35-4A30-BF38-110A1DE72906}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFF653E9-1F35-4A30-BF38-110A1DE72906}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFF653E9-1F35-4A30-BF38-110A1DE72906}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B9151563-BD00-4456-8941-F41A6562DC85}
+	EndGlobalSection
+EndGlobal
