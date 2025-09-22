@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Data_Oracle.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,12 @@ using System.Threading.Tasks;
 
 namespace Services.Interfaces
 {
-    internal class IAccountService
+    public interface IAccountService
     {
+
+        User Login(string eamil, string password);
+
+        void Register(string email, string password, string userName);
+
     }
 }

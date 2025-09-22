@@ -66,6 +66,11 @@ namespace e_learning.App_Start
 
             // Service
             kernel.Bind<IAccountService>().To<AccountService>();
+
+            kernel.Bind<IPasswordHasher>().To<PBKDF2PasswordHasher>();
+
+            kernel.Bind<IRoleRepository>().To<RoleRepository>();
+
         }
 
 

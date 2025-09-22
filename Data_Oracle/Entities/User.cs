@@ -15,6 +15,7 @@ namespace Data_Oracle.Entities
     {
         [Key]
         [Column("USER_ID")]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public decimal UserID { get; set; }
 
         [Required]
@@ -35,6 +36,15 @@ namespace Data_Oracle.Entities
 
         public virtual UserInfo UserInfo { get; set; }
 
+        public User(string userName, string email, string hashPassword)
+        {
+            UserName = userName;
+            Email = email;
+            HashPassword = hashPassword;
+        }
 
+        public User()
+        {
+        }
     }
 }

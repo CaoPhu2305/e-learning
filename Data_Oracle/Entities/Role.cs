@@ -11,6 +11,9 @@ namespace Data_Oracle.Entities
     [Table("ROLE")]
     public class Role
     {
+        public Role()
+        {
+        }
 
         [Key]
         [Column("ROLE_ID")]

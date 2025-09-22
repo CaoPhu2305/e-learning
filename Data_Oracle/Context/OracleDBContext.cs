@@ -1,17 +1,22 @@
-﻿using System;
+﻿using Data_Oracle.Entities;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Data.Entity;
-using Data_Oracle.Entities;
 
 namespace Data_Oracle.Context
 {
     public class OracleDBContext : DbContext
     {
 
-        public OracleDBContext(): base("name=OracleDbContext") { }
+        public OracleDBContext(): base("name=OracleDbContext") 
+        {
+            this.Database.CommandTimeout = 12000;
+            Database.SetInitializer<OracleDBContext>(null);
+        }
 
         public DbSet<Role> Roles { get; set; }
         public DbSet<User>  Users { get; set; }
@@ -73,7 +78,9 @@ namespace Data_Oracle.Context
 
             // tiếp !!! 
 
-
+            modelBuilder.Entity<User>()
+           .Property(u => u.UserID)
+           .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
 
 
         }

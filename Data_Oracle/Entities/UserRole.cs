@@ -27,7 +27,14 @@ namespace Data_Oracle.Entities
      
         public virtual Role Role { get; set; }
 
-       
+        public UserRole(decimal userID, decimal roleID)
+        {
+            UserID = userID;
+            RoleID = roleID;
+        }
 
+        public UserRole()
+        {
+        }
     }
 }

@@ -7,16 +7,12 @@ using System.Threading.Tasks;
 
 namespace Data_Oracle.Interfaces
 {
-    public interface IUserRepository
+    public interface IRoleRepository
     {
 
-        User GetUserByEmail(string email);
+        Role GetRoleByName(string name);
 
-        void AddUser(User user);
-
-        void AddUserRole(UserRole userRole);
-
-
+        Role GetRoleByID(int id);
 
     }
 }
