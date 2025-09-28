@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Admin Panel</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <!-- Toolbar riêng cho Admin -->
+    @*@Html.Partial("_Toolbar_Admin")*@
+
+    <div class="d-flex">
+        <!-- Sidebar riêng cho Admin -->
+        <div>
+            @*@Html.Partial("_Sidebar_Admin")*@
+        </div>
+
+        <div class="container body-content">
+            @RenderBody()
+            <hr />
+            @Html.Partial("_Footer")
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>
+

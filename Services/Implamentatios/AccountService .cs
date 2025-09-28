@@ -13,17 +13,20 @@ namespace Services.Implamentatios
     public class AccountService : IAccountService
     {
 
-        public readonly IUserRepository _userRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _passwordHasher;
         private readonly IRoleRepository _roleRepository;
+        private readonly IAccountRepository _accountRepository;
 
         public AccountService(IUserRepository userRepository
             , IPasswordHasher passwordHasher
-            , IRoleRepository roleRepository)
+            , IRoleRepository roleRepository
+            , IAccountRepository accountRepository)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
             _roleRepository = roleRepository;
+            _accountRepository = accountRepository;
         }
 
         public User Login(string eamil, string password)
@@ -46,7 +49,7 @@ namespace Services.Implamentatios
 
             User newUser = new User(userName, email, hashPasword);
 
-            Role defaultRole = _roleRepository.GetRoleByID(1);
+            Role defaultRole = _roleRepository.GetRoleByID(3);
           
             try
             {
@@ -57,6 +60,9 @@ namespace Services.Implamentatios
                 UserRole userRole = new UserRole(tmp.UserID, defaultRole.RoleID);  
 
                 _userRepository.AddUserRole(userRole);
+
+                _accountRepository.CreateAccount(userName, password);
+
             }
             catch (Exception ex)
             {

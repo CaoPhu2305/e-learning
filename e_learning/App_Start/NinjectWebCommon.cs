@@ -64,12 +64,23 @@ namespace e_learning.App_Start
             // Repository
             kernel.Bind<IUserRepository>().To<UserRepository>();
 
+            kernel.Bind<IRoleRepository>().To<RoleRepository>();
+
+            kernel.Bind<IRbacRepository>().To<RbacRepository>();
+
+            kernel.Bind<IAccountRepository>().To<AccountRepositoty>();
+
             // Service
-            kernel.Bind<IAccountService>().To<AccountService>();
+            kernel.Bind<IAccountService>().To<AccountService>().Named("App");
+
+            kernel.Bind<IAccountService>().To<AccountOracleService>().Named("Oracle");
 
             kernel.Bind<IPasswordHasher>().To<PBKDF2PasswordHasher>();
 
-            kernel.Bind<IRoleRepository>().To<RoleRepository>();
+            kernel.Bind<IAuthorizationService>().To<AuthorizationService>();
+
+            kernel.Bind<IUserService>().To<UserService>();
+
 
         }
 

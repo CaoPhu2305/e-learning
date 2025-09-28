@@ -1,8 +1,10 @@
 ﻿using e_learning.Models;
+using Ninject;
 using Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
@@ -14,10 +16,13 @@ namespace e_learning.Controllers
 
 
         private readonly IAccountService accountService;
+        private readonly IUserService userService;
 
-        public AccountController(IAccountService accountService)
+        public AccountController([Named("Oracle")] IAccountService accountService
+            , IUserService userService)
         {
             this.accountService = accountService;
+            this.userService = userService;
         }
 
         [HttpGet]
@@ -36,9 +41,28 @@ namespace e_learning.Controllers
                 if (user != null)
                 {
                     FormsAuthentication.SetAuthCookie(user.Email, false);
-                    return RedirectToAction("Index", "Home");
+
+                    var role = userService.GetUserRole(user.UserID);
+
+                    if(role != null)
+                    {
+                        switch (role.RoleID)
+                        {
+                            case 1:
+                                return RedirectToAction("AdminHomePage", "Admin");
+                            case 2:
+                                return RedirectToAction("LectureHomePage", "Lecture");
+                            case 3:
+                                return RedirectToAction("StudentHomePage", "Student");
+                            default:
+                                return RedirectToAction("Index", "Home");
+                        }
+                    }     
+                }else
+                {
+                    ModelState.AddModelError("", "Invalid email or password");
                 }
-                ModelState.AddModelError("", "Invalid email or password");
+                   
             }
             return View(model);
         }

@@ -5,16 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data_Oracle.Interfaces
+namespace Services.Interfaces
 {
-    public interface IUserRepository
+    public interface IUserService
     {
-
-        User GetUserByEmail(string email);
-
-        void AddUser(User user);
-
-        void AddUserRole(UserRole userRole);
 
         Role GetUserRole(decimal userID);
 

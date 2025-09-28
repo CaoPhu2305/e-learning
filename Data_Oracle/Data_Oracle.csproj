@@ -100,6 +100,7 @@
     <Compile Include="Entities\User.cs" />
     <Compile Include="Entities\UserInfo.cs" />
     <Compile Include="Entities\UserRole.cs" />
+    <Compile Include="Interfaces\IRbacRepository.cs" />
     <Compile Include="Interfaces\IRoleRepository.cs" />
     <Compile Include="Interfaces\IUserRepository.cs" />
     <Compile Include="Migrations\202509200504571_InitialCreate.cs" />
@@ -108,6 +109,7 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\RbacRepository.cs" />
     <Compile Include="Repositories\RoleRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
   </ItemGroup>

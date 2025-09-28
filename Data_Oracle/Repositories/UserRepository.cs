@@ -40,7 +40,12 @@ namespace Data_Oracle.Repositories
             return _context.Users.FirstOrDefault(x => x.Email == email);
         }
 
+        public Role GetUserRole(decimal userID)
+        {
+            var userRole = _context.UserRole.FirstOrDefault( x => x.UserID == userID);
 
+            return _context.Roles.FirstOrDefault(x => x.RoleID == userRole.RoleID);
 
+        }
     }
 }

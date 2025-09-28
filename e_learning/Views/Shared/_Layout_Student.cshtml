@@ -1,0 +1,23 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title - Student</title>
+    @Styles.Render("~/Content/css")
+</head>
+<body>
+    @*@Html.Partial("_Toolbar_Student")*@
+
+    <div class="d-flex">
+        @*@Html.Partial("_Sidebar_Student")*@
+
+        <div class="container body-content">
+            @RenderBody()
+            @Html.Partial("_Footer")
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+</body>
+</html>
+
