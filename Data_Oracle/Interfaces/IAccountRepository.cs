@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Oracle.ManagedDataAccess.Client;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,11 @@ namespace Data_Oracle.Interfaces
     {
         bool CreateAccount(string userName, string password);
 
-        bool AccountExísts(string userName);
+        bool AccountExísts(string userName, string password);
+
+        OracleConnection GetOracleConnection(string userName, string password);
+
+        OracleConnection GetUserConnection();
 
 
     }

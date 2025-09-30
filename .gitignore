@@ -42,3 +42,7 @@ project.assets.json
 # The base Web.config is committed, but the transform files might contain sensitive data.
 Web.Debug.config
 Web.Release.config
+
+# Secret configuration files
+e_learning/connectionStrings.config
+

@@ -103,6 +103,7 @@
     <Compile Include="Interfaces\IRbacRepository.cs" />
     <Compile Include="Interfaces\IRoleRepository.cs" />
     <Compile Include="Interfaces\IUserRepository.cs" />
+    <Compile Include="Interfaces\IAccountRepository.cs" />
     <Compile Include="Migrations\202509200504571_InitialCreate.cs" />
     <Compile Include="Migrations\202509200504571_InitialCreate.Designer.cs">
       <DependentUpon>202509200504571_InitialCreate.cs</DependentUpon>
@@ -112,6 +113,7 @@
     <Compile Include="Repositories\RbacRepository.cs" />
     <Compile Include="Repositories\RoleRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
+    <Compile Include="Repositories\AccountRepositoty.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

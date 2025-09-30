@@ -1,6 +1,7 @@
 ﻿using Data_Oracle.Entities;
 using Data_Oracle.Interfaces;
 using Data_Oracle.Repositories;
+using Oracle.ManagedDataAccess.Client;
 using Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Configuration;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Services.Implamentatios
 {
@@ -33,70 +36,62 @@ namespace Services.Implamentatios
         public User Login(string eamil, string password)
         {
 
-            string userName = _userRepository.GetUserByEmail(eamil).UserName;
+            User user = _userRepository.GetUserByEmail(eamil);
 
-            if (userName == null) // có thể là chuổi rỗng
+            if (user == null) // có thể là chuổi rỗng
                 return null;
 
-            var connString = $"User Id={userName};Password={password};Data Source=FREEPDB1;";
+            if (!_passwordHasher.VerifyPassword(password, user.HashPassword)) return null;
 
-            try
-            {
-                using (var conn = new Oracle.ManagedDataAccess.Client.OracleConnection(connString))
-                {
-                    conn.Open();
-                    conn.Close();
-                }
+            if (!_accountRepository.AccountExísts(user.UserName, password)) return null;
 
-                message = "Đăng nhập thành công (Oracle)";
-                return true;
-            }
-            catch
-            {
-                message = "Sai username hoặc password (Oracle)";
-                return false;
-            }
+            OracleConnectionManager.Instance.SetConnect(user.UserName, password);
 
+            return user;
 
-            return null;
         }
 
         public void Register(string email, string password, string userName)
         {
            
-            if(_userRepository.GetUserByEmail(email) != null || _accountRepository.AccountExísts(userName)){
+            if(_userRepository.GetUserByEmail(email) != null){
                 Console.WriteLine("User is Exists");
                 return;
             }
 
             try
             {
-
-                if(!_accountRepository.CreateAccount(userName, password))
-                {
-                    Console.WriteLine("Đăng Ký Thất Bại");
-                    return;
-                }
-
                 string hashPassword = _passwordHasher.HashPassword(password);
 
-                User newUser = new User(userName, email, hashPassword);
+                bool result = _accountRepository.CreateAccount(userName, password);
 
-                _userRepository.AddUser(newUser);
+                if (result) {
 
-                decimal userID = _userRepository.GetUserByEmail(email).UserID;
+                    User newUser = new User(userName, email, hashPassword);
 
-                UserRole newUserRole = new UserRole(userID, 3);
+                    _userRepository.AddUser(newUser);
 
-                _userRepository.AddUserRole(newUserRole);
+                    decimal userID = _userRepository.GetUserByEmail(email).UserID;
 
+                    UserRole newUserRole = new UserRole(userID, 3);
 
+                    _userRepository.AddUserRole(newUserRole);
 
+                }
+
+                return;
+               
             } catch (Exception ex) {
                 Console.WriteLine(ex.Message);
             }
+        }
 
+        public OracleConnection GetOracleConnection(string userName, string password)
+        {
+
+            return _accountRepository.GetOracleConnection(userName, password);
 
         }
+
     }
 }

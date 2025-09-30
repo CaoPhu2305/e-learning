@@ -44,6 +44,7 @@
     <Reference Include="System.Buffers, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.6.1\lib\net462\System.Buffers.dll</HintPath>
     </Reference>
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Diagnostics.DiagnosticSource, Version=6.0.0.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Diagnostics.DiagnosticSource.6.0.2\lib\net461\System.Diagnostics.DiagnosticSource.dll</HintPath>
@@ -86,6 +87,7 @@
     <Compile Include="Implamentatios\AccountService .cs" />
     <Compile Include="Implamentatios\AuthorizationService.cs" />
     <Compile Include="Implamentatios\IPasswordHasher.cs" />
+    <Compile Include="Implamentatios\OracleConnectionManager.cs" />
     <Compile Include="Implamentatios\UserService.cs" />
     <Compile Include="Interfaces\IAccountService.cs" />
     <Compile Include="Interfaces\IAuthorizationService.cs" />
