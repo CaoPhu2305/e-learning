@@ -21,20 +21,38 @@ namespace Data_Oracle.Entities
         [Required]
         [Column("USER_NAME")]
         [MaxLength(50)]
-        public String UserName { get; set; }
+        public string UserName { get; set; }
 
         [Required]
         [Column("EMAIL")]
         [MaxLength (80)]
-        public String Email { get; set; }
+        public string Email { get; set; }
 
         [Required]
         [MaxLength(100)]
-        [Column("HASHPASSWORD")]
-        public String HashPassword { get; set; }
+        [Column("HASH_PASS_WORD")]
+        public string HashPassword { get; set; }
         public virtual ICollection<UserRole> UserRole { get; set; }
 
         public virtual UserInfo UserInfo { get; set; }
+
+        public virtual ICollection<Order> Orders { get; set; }
+
+        public virtual ICollection<LecturerCourse> LecturerCourses { get; set; }
+
+        public virtual ICollection<Enrollments> Enrollments { get; set; }
+
+        public virtual ICollection<UserAnswers> UserAnswers { get; set; }
+
+        public virtual ICollection<Submission> Submissions { get; set; }
+
+        public virtual ICollection<Grade> Grades { get; set; }
+
+        public virtual ICollection<Attendance> Attendances { get; set; }
+
+        public virtual ICollection<QuizAttempt> QuizAttempts { get; set; }
+
+        // còn 2 bảng nữa
 
         public User(string userName, string email, string hashPassword)
         {

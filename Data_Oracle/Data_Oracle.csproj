@@ -93,20 +93,45 @@
   <ItemGroup>
     <Compile Include="Class1.cs" />
     <Compile Include="Context\OracleDBContext.cs" />
+    <Compile Include="Entities\AnswerOptions.cs" />
+    <Compile Include="Entities\Assignment.cs" />
+    <Compile Include="Entities\Attendance.cs" />
+    <Compile Include="Entities\Chapter.cs" />
+    <Compile Include="Entities\Course.cs" />
+    <Compile Include="Entities\CourseType.cs" />
+    <Compile Include="Entities\CoursePromotion.cs" />
+    <Compile Include="Entities\CourseVideo.cs" />
+    <Compile Include="Entities\CourseStatus.cs" />
+    <Compile Include="Entities\Enrollments.cs" />
+    <Compile Include="Entities\EnrollmentStatus.cs" />
+    <Compile Include="Entities\Grade.cs" />
+    <Compile Include="Entities\InteractiveClass.cs" />
+    <Compile Include="Entities\Lession.cs" />
+    <Compile Include="Entities\Order.cs" />
+    <Compile Include="Entities\OrderDetail.cs" />
+    <Compile Include="Entities\OrderStatus.cs" />
     <Compile Include="Entities\Permission.cs" />
+    <Compile Include="Entities\Promotion.cs" />
+    <Compile Include="Entities\Questions.cs" />
+    <Compile Include="Entities\QuizAttempt.cs" />
+    <Compile Include="Entities\Quizzes.cs" />
     <Compile Include="Entities\Resources.cs" />
     <Compile Include="Entities\Role.cs" />
     <Compile Include="Entities\RolePermissionResources.cs" />
+    <Compile Include="Entities\Session.cs" />
+    <Compile Include="Entities\Submission.cs" />
     <Compile Include="Entities\User.cs" />
+    <Compile Include="Entities\LecturerCourse.cs" />
+    <Compile Include="Entities\UserAnswers.cs" />
     <Compile Include="Entities\UserInfo.cs" />
     <Compile Include="Entities\UserRole.cs" />
     <Compile Include="Interfaces\IRbacRepository.cs" />
     <Compile Include="Interfaces\IRoleRepository.cs" />
     <Compile Include="Interfaces\IUserRepository.cs" />
     <Compile Include="Interfaces\IAccountRepository.cs" />
-    <Compile Include="Migrations\202509200504571_InitialCreate.cs" />
-    <Compile Include="Migrations\202509200504571_InitialCreate.Designer.cs">
-      <DependentUpon>202509200504571_InitialCreate.cs</DependentUpon>
+    <Compile Include="Migrations\202510200928308_InitialCreate.cs" />
+    <Compile Include="Migrations\202510200928308_InitialCreate.Designer.cs">
+      <DependentUpon>202510200928308_InitialCreate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -125,10 +150,9 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202509200504571_InitialCreate.resx">
-      <DependentUpon>202509200504571_InitialCreate.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202510200928308_InitialCreate.resx">
+      <DependentUpon>202510200928308_InitialCreate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

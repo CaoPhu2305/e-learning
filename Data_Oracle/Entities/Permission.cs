@@ -15,6 +15,7 @@ namespace Data_Oracle.Entities
 
         [Key]
         [Column("PERMISSION_ID")]
+       
         public decimal PermissionID { get; set; }
 
 
