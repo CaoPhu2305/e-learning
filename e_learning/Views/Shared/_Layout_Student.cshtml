@@ -1,23 +1,112 @@
-﻿<!DOCTYPE html>
-<html>
+﻿<!doctype html>
+<html class="no-js" lang="zxx">
 <head>
-    <title>@ViewBag.Title - Student</title>
-    @Styles.Render("~/Content/css")
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Courses | Education</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="manifest" href="site.webmanifest">
+
+    <!-- CSS here -->
+    <link href="~/Content/Assets/template02/css/bootstrap.min.css" rel="stylesheet" />
+
+    @*<link href="~/Content/Assets/template01/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/Assets/template01/css/style.css" rel="stylesheet" />*@
+
+    <link href="~/Content/Assets/template02/css/owl.carousel.min.css" rel="stylesheet" />
+    <link href="~/Content/Assets/template02/css/slicknav.css" rel="stylesheet" />
+    <link href="~/Content/Assets/template02/css/flaticon.css" rel="stylesheet" />
+    <link href="~/Content/Assets/template02/css/progressbar_barfiller.css" rel="stylesheet" />
+    <link href="~/Content/Assets/template02/css/gijgo.css" rel="stylesheet" />
+    <link href="~/Content/Assets/template02/css/animate.min.css" rel="stylesheet" />
+    <link href="~/Content/Assets/template02/css/animated-headline.css" rel="stylesheet" />
+    <link href="~/Content/Assets/template02/css/magnific-popup.css" rel="stylesheet" />
+    <link href="~/Content/Assets/template02/css/fontawesome-all.min.css" rel="stylesheet" />
+    <link href="~/Content/Assets/template02/css/themify-icons.css" rel="stylesheet" />
+    <link href="~/Content/Assets/template02/css/slick.css" rel="stylesheet" />
+    <link href="~/Content/Assets/template02/css/nice-select.css" rel="stylesheet" />
+    <link href="~/Content/Assets/template02/css/style.css" rel="stylesheet" />
+
 </head>
+
 <body>
-    @*@Html.Partial("_Toolbar_Student")*@
-
-    <div class="d-flex">
-        @*@Html.Partial("_Sidebar_Student")*@
-
-        <div class="container body-content">
-            @RenderBody()
-            @Html.Partial("_Footer")
+    <!-- ? Preloader Start -->
+    <div id="preloader-active">
+        <div class="preloader d-flex align-items-center justify-content-center">
+            <div class="preloader-inner position-relative">
+                <div class="preloader-circle"></div>
+                <div class="preloader-img pere-text">
+                    <img src="~/Content/Assets/template02/img/logo/loder.png" alt="">
+                </div>
+            </div>
         </div>
     </div>
+    <!-- Preloader Start -->
+    <!-- Header Start -->
+   
+    @Html.Partial("_Header")
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
+    <!-- Header End -->
+    <main>
+        @RenderBody()
+    </main>
+
+    @Html.Partial("_Footer")
+
+    <!-- Scroll Up -->
+    <div id="back-top">
+        <a title="Go to Top" href="#"> <i class="fas fa-level-up-alt"></i></a>
+    </div>
+
+    <!-- JS here -->
+    <script src="~/Content/Assets/template02/js/vendor/modernizr-3.5.0.min.js"></script>
+
+    <!-- Jquery, Popper, Bootstrap -->
+    <script src="~/Content/Assets/template02/js/vendor/jquery-1.12.4.min.js"></script>
+    <script src="~/Content/Assets/template02/js/popper.min.js"></script>
+    <script src="~/Content/Assets/template02/js/bootstrap.min.js"></script>
+
+    <!-- Jquery Mobile Menu -->
+    <script src="~/Content/Assets/template02/js/jquery.slicknav.min.js"></script>
+
+    <!-- Jquery Slick , Owl-Carousel Plugins -->
+    <script src="~/Content/Assets/template02/js/owl.carousel.min.js"></script>
+    <script src="~/Content/Assets/template02/js/slick.min.js"></script>
+    <!-- One Page, Animated-HeadLin -->
+
+    <script src="~/Content/Assets/template02/js/wow.min.js"></script>
+    <script src="~/Content/Assets/template02/js/animated.headline.js"></script>
+    <script src="~/Content/Assets/template02/js/jquery.magnific-popup.js"></script>
+
+
+    <!-- Date Picker -->
+    <script src="~/Content/Assets/template02/js/gijgo.min.js"></script>
+
+    <!-- Nice-select, sticky -->
+
+    <script src="~/Content/Assets/template02/js/jquery.nice-select.min.js"></script>
+    <script src="~/Content/Assets/template02/js/jquery.sticky.js"></script>
+    <!-- Progress -->
+    <script src="~/Content/Assets/template02/js/jquery.barfiller.js"></script>
+
+    <!-- counter , waypoint,Hover Direction -->
+
+    <script src="~/Content/Assets/template02/js/jquery.counterup.min.js"></script>
+    <script src="~/Content/Assets/template02/js/waypoints.min.js"></script>
+    <script src="~/Content/Assets/template02/js/jquery.countdown.min.js"></script>
+    <script src="~/Content/Assets/template02/js/hover-direction-snake.min.js"></script>
+
+    <!-- contact js -->
+    <script src="~/Content/Assets/template02/js/contact.js"></script>
+    <script src="~/Content/Assets/template02/js/jquery.form.js"></script>
+    <script src="~/Content/Assets/template02/js/jquery.validate.min.js"></script>
+    <script src="~/Content/Assets/template02/js/mail-script.js"></script>
+    <script src="~/Content/Assets/template02/js/jquery.ajaxchimp.min.js"></script>
+
+    <!-- Jquery Plugins, main Jquery -->
+    <script src="~/Content/Assets/template02/js/plugins.js"></script>
+    <script src="~/Content/Assets/template02/js/main.js"></script>
+
 </body>
 </html>
-

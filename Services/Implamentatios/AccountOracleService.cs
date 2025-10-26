@@ -38,7 +38,7 @@ namespace Services.Implamentatios
 
             User user = _userRepository.GetUserByEmail(eamil);
 
-            if (user == null) // có thể là chuổi rỗng
+            if (user == null) 
                 return null;
 
             if (!_passwordHasher.VerifyPassword(password, user.HashPassword)) return null;
@@ -74,6 +74,8 @@ namespace Services.Implamentatios
                     decimal userID = _userRepository.GetUserByEmail(email).UserID;
 
                     UserRole newUserRole = new UserRole(userID, 3);
+
+                    var tmp = newUserRole;
 
                     _userRepository.AddUserRole(newUserRole);
 

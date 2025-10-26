@@ -42,7 +42,11 @@ namespace Data_Oracle.Repositories
 
         public Role GetUserRole(decimal userID)
         {
+
+            var tmp = userID;
+
             var userRole = _context.UserRole.FirstOrDefault( x => x.UserID == userID);
+
 
             return _context.Roles.FirstOrDefault(x => x.RoleID == userRole.RoleID);
 
