@@ -198,6 +198,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\Assets\images\ct.png" />
+    <Content Include="Content\Assets\images\icon1.png" />
+    <Content Include="Content\Assets\images\icon2.png" />
+    <Content Include="Content\Assets\images\icon3.png" />
+    <Content Include="Content\Assets\images\icon4.png" />
     <Content Include="Content\Assets\images\w1.jpeg" />
     <Content Include="Content\Assets\images\w2.jpg" />
     <Content Include="Content\Assets\template01\css\bootstrap.min.css" />
