@@ -1,0 +1,277 @@
+﻿/* ====== TOÀN BỘ SECTION ====== */
+.course-detail-section {
+    background: #f9fafb;
+    padding: 60px 0;
+}
+
+    .course-detail-section .container {
+        max-width: 1250px;
+    }
+
+/* ====== COURSE CONTENT CONTAINER ====== */
+.coursera-container {
+    width: 100%;
+    margin: 0 auto;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    background-color: #fff;
+    overflow: hidden;
+}
+
+/* ====== COURSE ITEM ====== */
+.course-item {
+    border-bottom: 1px solid #e0e0e0;
+    background-color: #fafafa;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .course-item:hover {
+        background-color: #fff;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+    }
+
+.course-summary {
+    padding: 22px 32px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.course-thumbnail {
+    width: 60px;
+    height: 60px;
+    background-color: #007bff;
+    border-radius: 6px;
+    flex-shrink: 0;
+    margin-right: 16px;
+}
+
+.course-info {
+    flex-grow: 1;
+}
+
+.course-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #000;
+    text-decoration: none;
+}
+
+    .course-title:hover {
+        color: #007bff;
+        text-decoration: underline;
+    }
+
+    .course-title,
+    .course-title:visited {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #000; /* Luôn là màu đen */
+        text-decoration: none;
+        transition: color 0.2s ease; /* Thêm hiệu ứng chuyển màu mượt mà */
+    }
+
+
+        .course-title:hover,
+        .course-title:active,
+        .course-title:focus {
+            color: #007bff; /* Đổi sang màu xanh */
+            text-decoration: underline;
+        }
+
+.course-meta {
+    color: #555;
+    font-size: 0.9rem;
+    margin-top: 4px;
+}
+
+/* ====== COURSE DETAILS LINK ====== */
+.course-details-link {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: 600;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: opacity 0.2s ease;
+    opacity: 1 !important; /* luôn hiện */
+    visibility: visible !important;
+}
+
+    .course-details-link:hover {
+        color: #0056d2;
+    }
+
+    .course-details-link .bi-chevron-down {
+        transition: transform 0.3s ease;
+    }
+
+    /* Không để biến mất khi collapse (giữ luôn hiển thị) */
+    .course-details-link.collapsed {
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+
+
+/* ====== COURSE CONTENT EXPANDED ====== */
+.course-content-expanded {
+    padding: 0 32px 24px 64px;
+    background-color: #fff;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.content-heading {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.what-you-learn-list {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 24px;
+}
+
+    .what-you-learn-list li {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 8px;
+        color: #333;
+    }
+
+    .what-you-learn-list .bi-check {
+        margin-right: 12px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #007bff;
+    }
+
+/* ====== SKILLS ====== */
+.skills-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.skill-tag {
+    background-color: #f0f4ff;
+    color: #0056d2;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* ====== CERTIFICATE BOX ====== */
+.certificate-box {
+    background-color: #f7f9fa;
+    padding: 28px;
+    display: flex;
+    align-items: center;
+    border-top: 1px solid #e0e0e0;
+}
+
+.certificate-icon {
+    color: #007bff;
+    font-size: 2.5rem;
+    margin-right: 20px;
+}
+
+.certificate-info h5 {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 4px;
+}
+
+.certificate-info p {
+    color: #444;
+    margin-bottom: 0;
+    font-size: 0.95rem;
+}
+
+/* ====== SIDEBAR ====== */
+.course-sidebar {
+    background-color: #fff;
+    border: 1px solid #e0e0e0; /* Đường viền mỏng, sạch sẽ */
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05); /* Bóng đổ nhẹ */
+    /* Lớp 'p-4' trong HTML sẽ xử lý phần đệm (padding) */
+}
+
+.course-features li {
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 5px;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+    .course-features li:hover {
+        background-color: #f8f9fa;
+        transform: translateX(4px);
+    }
+
+.course-features i {
+    font-size: 1.1rem;
+}
+
+/* Khi mở -> xoay mũi tên */
+.course-details-link:not(.collapsed) .bi-chevron-down {
+    transform: rotate(-180deg);
+}
+
+
+
+/* ====== COURSE DETAILS LINK (FIXED HOVER) ====== */
+/* Chúng ta dùng quy tắc cụ thể hơn (dài hơn) để 
+  đảm bảo nó ghi đè lên CSS gốc của template.
+*/
+.coursera-container .course-item .course-summary .course-details-link {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: 600;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    /* === PHẦN SỬA LỖI QUAN TRỌNG === */
+    opacity: 1 !important;
+    visibility: visible !important;
+    transition: none; /* Bỏ hiệu ứng mờ đi */
+}
+
+/* Chúng ta cũng giữ lại các quy tắc này để đảm bảo 
+  nó hoạt động đúng khi bị thu gọn
+*/
+.course-details-link.collapsed {
+        opacity: 1 !important;
+        visibility: visible !important;
+}
+
+.course-details-link:hover {
+        color: #0056d2;
+}
+
+.course-details-link .bi-chevron-down {
+        transition: transform 0.3s ease;
+}
+
+.course-details-link:not(.collapsed) .bi-chevron-down {
+        transform: rotate(-180deg);
+}

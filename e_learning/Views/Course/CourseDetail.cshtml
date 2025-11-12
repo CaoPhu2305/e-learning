@@ -1,0 +1,221 @@
+﻿@{
+    ViewBag.Title = "CourseDetail";
+    Layout = "~/Views/Shared/_Layout_Student.cshtml";
+}
+
+@section Styles{
+    <link href="~/Content/Assets/template03/css/flaticon.css" rel="stylesheet" />
+    <link href="~/Content/Assets/template03/css/style.css" rel="stylesheet" />
+    <link href="~/Content/Assets/template03/css/slicknav.min.css" rel="stylesheet" />
+    <link href="~/Content/Assets/template03/css/owl.carousel.min.css" rel="stylesheet" />
+    <link href="~/Content/Assets/template03/css/magnific-popup.css" rel="stylesheet" />
+    <link href="~/Content/Assets/template03/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/Assets/template03/css/barfiller.css" rel="stylesheet" />
+
+    <link href="~/Content/Assets/template03/css/css1.css" rel="stylesheet" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+
+}
+
+@section Scripts{
+    @* jQuery PHẢI được tải đầu tiên *@
+    <script src="~/Content/Assets/template03/js/jquery-3.3.1.min.js"></script>
+
+    @* Các script khác tải sau *@
+    <script src="~/Content/Assets/template03/js/bootstrap.min.js"></script>
+    <script src="~/Content/Assets/template03/js/jquery.barfiller.js"></script>
+    <script src="~/Content/Assets/template03/js/jquery.magnific-popup.min.js"></script>
+    <script src="~/Content/Assets/template03/js/jquery.slicknav.js"></script>
+    <script src="~/Content/Assets/template03/js/masonry.pkgd.min.js"></script>
+    @*<script src="~/Content/Assets/template03/js/main3.js"></script>*@
+    <script src="~/Content/Assets/template03/js/owl.carousel.min.js"></script>
+}
+
+<section class="spad">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-lg-8">
+                <div class="class-details-text">
+
+                    <div class="cd-pic mb-4">
+                        <img src="~/Content/Assets/template03/img/classes/class-details/class-detailsl.jpg" alt="Course Image" class="img-fluid rounded-3">
+                    </div>
+
+                    <div class="cd-single-item mb-4">
+                        <h3 class="mb-3">Khóa học Body Building Toàn Diện</h3>
+                        <p style="color:black">
+                            Chào mừng bạn đến với khóa học Body Building toàn diện! Chương trình này được thiết kế đặc biệt để cung cấp cho bạn kiến thức sâu rộng và các kỹ năng thực tiễn, từ nguyên tắc dinh dưỡng cơ bản đến các kỹ thuật tập luyện nâng cao.
+                        </p>
+                        <p style="color:black">
+                            Dù bạn là người mới bắt đầu hay đã có kinh nghiệm, khóa học sẽ giúp bạn tối ưu hóa quá trình tăng cơ, giảm mỡ và đạt được vóc dáng mong muốn một cách khoa học và bền vững. Chúng tôi tập trung vào việc xây dựng một nền tảng vững chắc để bạn có thể tự tin theo đuổi mục tiêu thể hình của mình.
+                        </p>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="cd-course-highlights">
+                        <h4 class="mb-3">Bạn sẽ học được gì?</h4>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><i class="fa fa-check-circle" style="color: #007bff; margin-right: 8px;"></i>Xây dựng kế hoạch dinh dưỡng cá nhân hóa.</li>
+                            <li class="list-group-item"><i class="fa fa-check-circle" style="color: #007bff; margin-right: 8px;"></i>Nắm vững kỹ thuật cho các bài tập phức hợp (Compound Lifts).</li>
+                            <li class="list-group-item"><i class="fa fa-check-circle" style="color: #007bff; margin-right: 8px;"></i>Chiến lược phục hồi và tăng cơ hiệu quả.</li>
+                            <li class="list-group-item"><i class="fa fa-check-circle" style="color: #007bff; margin-right: 8px;"></i>Tối ưu hóa hormone tự nhiên để phát triển cơ bắp.</li>
+                            <li class="list-group-item"><i class="fa fa-check-circle" style="color: #007bff; margin-right: 8px;"></i>Phòng tránh các chấn thương thường gặp trong tập luyện.</li>
+                        </ul>
+                    </div>                
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+
+                <div class="course-sidebar mb-4 p-4">
+                    <h3 class="fw-bold mb-1">500.000 VNĐ</h3>
+                    <p class="text-muted mb-3">Ưu đãi trọn đời</p>
+                    <a href="@Url.Action("CourseLearn", "Course")" class="btn btn-primary btn-lg w-100 mb-4 shadow-sm">
+                        Đăng ký ngay
+                    </a>
+
+                    <hr class="my-4">
+
+                    <h5 class="fw-bold mb-3">Về khóa học</h5>
+                    <ul class="list-unstyled mb-4 course-features">
+                        <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                            <span><i class="bi bi-mortarboard me-2 text-info"></i>Trình độ</span>
+                            <span class="fw-bold">Beginner</span>
+                        </li>
+                        <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                            <span><i class="bi bi-clock me-2 text-warning"></i>Thời lượng</span>
+                            <span class="fw-bold">6 Weeks</span>
+                        </li>
+                        <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                            <span><i class="bi bi-star-fill me-2 text-danger"></i>Đánh giá</span>
+                            <span class="fw-bold">4.8 / 5</span>
+                        </li>
+                        <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                            <span><i class="bi bi-people me-2 text-success"></i>Học viên</span>
+                            <span class="fw-bold">350+</span>
+                        </li>
+                        <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                            <span><i class="bi bi-play-circle me-2 text-primary"></i>Bài học</span>
+                            <span class="fw-bold">24</span>
+                        </li>
+                        <li class="d-flex justify-content-between align-items-center py-2">
+                            <span><i class="bi bi-award me-2 text-warning"></i>Chứng chỉ</span>
+                            <span class="fw-bold">Yes</span>
+                        </li>
+                    </ul>
+
+                    <hr class="my-4">
+
+                    <h5 class="fw-bold mb-3">Giảng viên</h5>
+                    <div class="d-flex align-items-center">
+                        <img src="~/Content/Assets/template03/img/classes/class-details/trainer-profile.jpg" alt="Athart Rachel"
+                             class="img-fluid rounded-circle me-3"
+                             style="width: 70px; height: 70px; object-fit: cover;">
+                        <div>
+                            <h6 class="fw-bold mb-0">Athart Rachel</h6>
+                            <span class="text-muted">Giảng viên chính</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="row-12">
+            <div class="col-12">
+                <div class="syllabus-section mt-5">
+                    <h4 class="mb-3">Nội dung khóa học (Syllabus)</h4>
+
+                    <div class="coursera-container">
+
+                        <div class="course-item">
+                            <div class="course-summary">
+                                <div class="d-flex align-items-start">
+                                    @*<div class="course-thumbnail"></div>*@
+                                    <div class="course-info">
+                                        <a href="#" class="course-title">Supervised Machine Learning: Regression and Classification</a>
+                                        <p class="course-meta">Course 1 • 33 hours</p>
+                                    </div>
+                                </div>
+                                <a href="#content-course-1"
+                                   data-bs-toggle="collapse"
+                                   class="course-details-link collapsed">
+                                    Course details <i class="bi bi-chevron-down"></i>
+                                </a>
+                            </div>
+                            <div class="course-content-expanded collapse" id="content-course-1">
+                                <h6 class="content-heading">What you'll learn</h6>
+                                <ul class="what-you-learn-list">
+                                    <li><i class="bi bi-check"></i> Build machine learning models in Python...</li>
+                                    <li><i class="bi bi-check"></i> Build & train supervised machine learning models...</li>
+                                </ul>
+                                <h6 class="content-heading">Skills you'll gain</h6>
+                                <div class="skills-container">
+                                    <span class="skill-tag">Regression Analysis</span>
+                                    <span class="skill-tag">Supervised Learning</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="course-item">
+                            <div class="course-summary">
+                                <div class="d-flex align-items-start">
+                                    @*<div class="course-thumbnail"></div>*@
+                                    <div class="course-info">
+                                        <a href="#" class="course-title">Advanced Learning Algorithms</a>
+                                        <p class="course-meta">Course 2 • 34 hours</p>
+                                    </div>
+                                </div>
+                                <a href="#content-course-2"
+                                   data-bs-toggle="collapse"
+                                   class="course-details-link collapsed">
+                                    Course details <i class="bi bi-chevron-down"></i>
+                                </a>
+                            </div>
+                            <div class="course-content-expanded collapse" id="content-course-2">
+                                <h6 class="content-heading">What you'll learn</h6>
+                                <p>Nội dung chi tiết cho Khóa 2...</p>
+                                <h6 class="content-heading">Skills you'll gain</h6>
+                                <span class="skill-tag">Neural Networks</span>
+                            </div>
+                        </div>
+
+                        <div class="course-item">
+                            <div class="course-summary">
+                                <div class="d-flex align-items-start">
+                                    @*<div class="course-thumbnail"></div>*@
+                                    <div class="course-info">
+                                        <a href="#" class="course-title">Unsupervised Learning, Recommenders, Reinforcement Learning</a>
+                                        <p class="course-meta">Course 3 • 27 hours</p>
+                                    </div>
+                                </div>
+                                <a href="#content-course-3"
+                                   data-bs-toggle="collapse"
+                                   class="course-details-link collapsed">
+                                    Course details <i class="bi bi-chevron-down"></i>
+                                </a>
+                            </div>
+                            <div class="course-content-expanded collapse" id="content-course-3">
+                                <h6 class="content-heading">What you'll learn</h6>
+                                <p>Nội dung chi tiết cho Khóa 3...</p>
+                                <h6 class="content-heading">Skills you'll gain</h6>
+                                <span class="skill-tag">Clustering</span>
+                            </div>
+                        </div>
+
+                        <div class="certificate-box">
+                            <i class="bi bi-patch-check-fill certificate-icon"></i>
+                            <div class="certificate-info">
+                                <h5>Earn a career certificate</h5>
+                                <p>Add this credential to your LinkedIn profile, resume, or CV. Share it on social media and in your performance review.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

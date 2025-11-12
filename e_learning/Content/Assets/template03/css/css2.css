@@ -1,0 +1,318 @@
+﻿
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f7f9fa;
+    color: #333;
+}
+
+.course-container {
+    display: flex;
+    min-height: 100vh;
+    position: relative;
+}
+
+/* ===== THANH BÊN (SIDEBAR) ===== */
+.sidebar {
+    width: 320px;
+    background-color: #ffffff;
+    border-right: 1px solid #e0e0e0;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+}
+
+.course-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 20px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+/* Tiêu đề Module (Week 1, Week 2...) */
+.module-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    cursor: pointer;
+    border-bottom: 1px solid #e0e0e0;
+    transition: background-color 0.2s;
+}
+
+    .module-header:hover {
+        background-color: #f0f0f0;
+    }
+
+.module-name {
+    font-weight: bold;
+}
+
+    .module-name i {
+        margin-right: 10px;
+        width: 15px; /* Giữ icon thẳng hàng */
+    }
+
+/* Icon (khóa hoặc check) */
+.module-status {
+    color: #888;
+}
+
+.module.locked .module-status {
+    color: #d9534f; /* Màu đỏ cho icon khóa */
+}
+
+/* Danh sách bài học (ẩn ban đầu) */
+.lesson-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 0; /* Ẩn đi */
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+    /* Hiển thị danh sách khi module active */
+    .lesson-list.active {
+        max-height: 500px; /* Hiển thị ra (giá trị đủ lớn) */
+        transition: max-height 0.5s ease-in;
+    }
+
+/* Mục bài học (lesson) */
+.lesson-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px 15px 40px; /* Thụt lề vào trong */
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+    .lesson-item:hover {
+        background-color: #e6f7ff;
+    }
+
+    .lesson-item.active {
+        background-color: #e6f7ff;
+        font-weight: bold;
+        color: #0056b3;
+    }
+
+    .lesson-item i {
+        margin-right: 10px;
+        color: #888;
+    }
+
+    .lesson-item.active i {
+        color: #0056b3;
+    }
+
+    .lesson-item .duration {
+        margin-left: auto; /* Đẩy thời lượng sang phải */
+        font-size: 0.8rem;
+        color: #777;
+    }
+
+/* Xử lý module bị khóa */
+.module.locked .module-header {
+    color: #aaa; /* Làm mờ chữ */
+    cursor: not-allowed;
+}
+
+    .module.locked .module-header:hover {
+        background-color: #ffffff; /* Không đổi màu khi hover */
+    }
+
+
+/* ===== KHU VỰC NỘI DUNG CHÍNH ===== */
+.content-area {
+    flex: 1; /* Chiếm phần còn lại */
+    padding: 30px;
+    background-color: #ffffff;
+}
+
+#lesson-title {
+    font-size: 1.8rem;
+    margin-top: 0;
+}
+
+/* Responsive video */
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%; /* Tỷ lệ 16:9 */
+    height: 0;
+    overflow: hidden;
+    max-width: 100%;
+    background: #000;
+    margin-bottom: 20px;
+    /* (THÊM) Giới hạn chiều cao tối đa của video */
+    /* Video sẽ không cao quá 75% chiều cao màn hình */
+    max-height: 75vh;
+    /* vh = viewport height. Bạn có thể đổi 75 thành 80 hoặc 70 nếu muốn */
+}
+
+    .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+/* Nút điều hướng */
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid #e0e0e0;
+    padding-top: 20px;
+}
+
+    .navigation-buttons button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 1rem;
+        cursor: pointer;
+    }
+
+.btn-save {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.btn-next {
+    background-color: #007bff;
+    color: white;
+}
+
+/* ===== (MỚI) LOGIC ĐÓNG/MỞ SIDEBAR ===== */
+
+/* Nút "X" trong tiêu đề */
+.course-title {
+    /* Mấy dòng này để icon "X" nằm bên phải */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#close-sidebar {
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 5px; /* Cho dễ nhấn */
+    color: #888;
+}
+
+    #close-sidebar:hover {
+        color: #333;
+    }
+
+/* Nút "3 gạch" (hamburger) */
+#open-sidebar {
+    font-size: 1.5rem;
+    color: #555;
+    cursor: pointer;
+    display: none; /* Ẩn mặc định */
+    /* Định vị ở góc trên bên trái */
+    position: absolute;
+    top: 30px;
+    left: 20px;
+    z-index: 100; /* Nổi lên trên mọi thứ */
+}
+
+    #open-sidebar:hover {
+        color: #000;
+    }
+
+
+/* ĐỊNH NGHĨA LỚP ĐỂ ẨN SIDEBAR */
+
+/* Khi container chính có lớp .sidebar-hidden... */
+/* ===== (MỚI) LOGIC ĐÓNG/MỞ SIDEBAR (CÓ HIỆU ỨNG) ===== */
+
+/* Nút "X" trong tiêu đề */
+.course-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#close-sidebar {
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 5px;
+    color: #888;
+}
+
+    #close-sidebar:hover {
+        color: #333;
+    }
+
+/* Nút "3 gạch" (hamburger) */
+#open-sidebar {
+    font-size: 1.5rem;
+    color: #555;
+    cursor: pointer;
+    /* margin-bottom: 15px; */ /* XÓA DÒNG NÀY */
+    margin-right: 15px; /* THÊM DÒNG NÀY */
+    display: none;
+}
+
+    #open-sidebar:hover {
+        color: #000;
+    }
+
+
+/* Thêm hiệu ứng transition cho sidebar */
+.sidebar {
+    /* ... các thuộc tính cũ của bạn ... */
+    width: 320px;
+    min-width: 320px; /* Thêm min-width để đảm bảo */
+    max-width: 320px; /* Thêm max-width */
+    overflow-x: hidden; /* Ẩn nội dung khi co lại */
+    /* Đây là chìa khóa của hiệu ứng mượt */
+    transition: max-width 0.3s ease-in-out, min-width 0.3s ease-in-out, padding 0.3s ease-in-out;
+}
+
+/* Khu vực nội dung chính cũng nên có transition */
+.content-area {
+    /* ... các thuộc tính cũ của bạn ... */
+    flex: 1;
+    padding: 30px;
+    transition: all 0.3s ease-in-out; /* Giúp nó mượt khi thay đổi size */
+}
+
+
+/* ĐỊNH NGHĨA LỚP ĐỂ ẨN SIDEBAR */
+
+/* Khi container có lớp .sidebar-hidden... */
+.course-container.sidebar-hidden .sidebar {
+    max-width: 0;
+    min-width: 0;
+    /* Ẩn padding và border để nó biến mất hoàn toàn */
+    padding-left: 0;
+    padding-right: 0;
+    border-right: none;
+}
+
+/* Khi sidebar bị ẩn... */
+.course-container.sidebar-hidden #open-sidebar {
+    display: block; /* ...thì hiện nút 3 gạch lên */
+}
+/* Lưu ý: Chúng ta không cần làm gì với .content-area,
+vì khi .sidebar (là flex item) bị ẩn, .content-area 
+(là flex: 1) sẽ tự động chiếm 100% độ rộng còn lại.
+*/
+
+.main-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    /* Dùng max-width của wrapper */
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.content-wrapper {
+    max-width: 1200px; /* Giới hạn độ rộng tối đa */
+    margin: 0 auto; /* Tự động căn giữa */
+}

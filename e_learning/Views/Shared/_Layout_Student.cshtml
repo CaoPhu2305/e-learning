@@ -29,6 +29,8 @@
 
     <!-- Template Stylesheet -->
     <link href="~/Content/Assets/template01/css/style.css" rel="stylesheet" />
+    @RenderSection("Styles", required: false)
+    @RenderSection("StylesLearn", required: false)
 </head>
 
 <body>
@@ -55,7 +57,7 @@
                 <a href="#" class="nav-item nav-link">Courses</a>
                 <a href="contact.html" class="nav-item nav-link">Logout</a>
             </div>
-            
+
         </div>
     </nav>
     <!-- Navbar End -->
@@ -76,6 +78,9 @@
     <script src="~/Content/Assets/template01/lib/owlcarousel/owl.carousel.min.js"></script>
     <!-- Template Javascript -->
     <script src="~/Content/Assets/template01/js/main.js"></script>
+
+    @RenderSection("Scripts", required: false)
+    @RenderSection("ScriptsLearn", required: false)
 </body>
 
 </html>

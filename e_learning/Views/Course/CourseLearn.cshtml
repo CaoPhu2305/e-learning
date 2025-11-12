@@ -1,0 +1,97 @@
+﻿
+@{
+    ViewBag.Title = "CourseLearn";
+    Layout = "~/Views/Shared/_Layout_Student.cshtml";
+}
+
+@section StylesLearn{
+    <link href="~/Content/Assets/template03/css/css2.css" rel="stylesheet" />
+}
+
+
+@section ScriptsLearn{
+    <script src="~/Content/Assets/template03/js/js1.js"></script>
+}
+
+<div class="course-container">
+    <aside class="sidebar">
+        <div class="course-title">
+            <span>Khóa học Tiếng Anh Giao Tiếp</span>
+            <i class="fas fa-times" id="close-sidebar"></i>
+        </div>
+
+
+
+        <div class="module">
+
+            <div class="module-header" data-module="1">
+                <span class="module-name">
+                    <i class="fas fa-chevron-down"></i>
+                    Week 1: Giới thiệu
+                </span>
+                <i class="fas fa-check-circle module-status"></i>
+            </div>
+            <ul class="lesson-list active" id="module-1">
+                <li class="lesson-item active"">
+                    <i class="fas fa-play-circle"></i>
+                    <span>Chào mừng tới khóa học</span>
+                    <span class="duration">2 phút</span>
+                </li>
+                <li class="lesson-item" ">
+                    <i class="fas fa-play-circle"></i>
+                    <span>Làm quen với giáo viên</span>
+                    <span class="duration">4 phút</span>
+                </li>
+                <li class="lesson-item" ">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Bài khảo sát đầu vào</span>
+                    <span class="duration">5 phút</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="module locked">
+            <div class="module-header" data-module="2">
+                <span class="module-name">
+                    <i class="fas fa-chevron-right"></i>
+                    Week 2: Ngữ pháp cơ bản
+                </span>
+                <i class="fas fa-lock module-status"></i>
+            </div>
+            <ul class="lesson-list" id="module-2">
+            </ul>
+        </div>
+
+        <div class="module locked">
+            <div class="module-header" data-module="3">
+                <span class="module-name">
+                    <i class="fas fa-chevron-right"></i>
+                    Week 3: Luyện nghe
+                </span>
+                <i class="fas fa-lock module-status"></i>
+            </div>
+            <ul class="lesson-list" id="module-3">
+            </ul>
+        </div>
+
+    </aside>
+
+    <main class="content-area">
+     
+        <div class="content-wrapper" >
+
+            <div class="video-container">
+                <iframe id="video-player"
+                        src="https://www.youtube.com/live/t0x3fXzlios?si=M-tT6avV_9k3MPPI"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                </iframe>
+            </div>
+
+        </div>
+    </main>
+
+    <i class="fas fa-bars" id="open-sidebar"></i>
+</div>
+
