@@ -86,11 +86,13 @@
     <Compile Include="Implamentatios\AccountOracleService.cs" />
     <Compile Include="Implamentatios\AccountService .cs" />
     <Compile Include="Implamentatios\AuthorizationService.cs" />
+    <Compile Include="Implamentatios\CourseService.cs" />
     <Compile Include="Implamentatios\IPasswordHasher.cs" />
     <Compile Include="Implamentatios\OracleConnectionManager.cs" />
     <Compile Include="Implamentatios\UserService.cs" />
     <Compile Include="Interfaces\IAccountService.cs" />
     <Compile Include="Interfaces\IAuthorizationService.cs" />
+    <Compile Include="Interfaces\ICourseService.cs" />
     <Compile Include="Interfaces\IUserService.cs" />
     <Compile Include="Interfaces\PBKDF2PasswordHasher .cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

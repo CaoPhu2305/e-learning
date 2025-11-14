@@ -1,0 +1,151 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tạo Bài Thi Mới</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <link href="~/Content/Assets/template03/css/css4.css" rel="stylesheet" />
+    <script src="~/Content/Assets/template03/js/js3.js"></script>
+</head>
+<body>
+
+    <div class="creator-container">
+        <header class="creator-header">
+            <h1>Tạo bài thi mới</h1>
+        </header>
+
+        <form id="quiz-form" method="post" action="/Quiz/Create">
+
+            <fieldset class="quiz-metadata">
+                <legend style="font-weight: bold; font-size: 1.2rem; padding: 0 10px;">Thông tin chung</legend>
+                <div class="form-group">
+                    <label for="QuizTitle">Tên bài thi</label>
+                    <input type="text" id="QuizTitle" name="QuizTitle" placeholder="Ví dụ: Bài thi giữa kỳ Tiếng Anh 1">
+                </div>
+
+                <div class="form-group">
+                    <label for="QuizCode">Mã học phần</label>
+                    <input type="date" id="QuizCode" name="QuizCode" placeholder="Ví dụ: ENG101">
+                </div>
+
+                <div class="form-group">
+                    <label for="TimeLimit">Thời gian làm bài (phút)</label>
+                    <input type="number" id="TimeLimit" name="TimeLimit" value="60" min="1">
+                </div>
+
+                <div class="form-group">
+                    <label for="TotalAttempts">Số lần làm bài tối đa</label>
+                    <input type="number" id="TotalAttempts" name="TotalAttempts" value="1" min="1">
+                </div>
+            </fieldset>
+
+            <div id="question-list-container">
+
+                <div class="question-editor-block" data-index="0">
+                    <div class="question-header">
+                        <h3 class="question-title">Câu 1</h3>
+                        <button type="button" class="btn btn-delete btn-delete-question">Xóa</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Questions[0].PassageText">Đoạn văn (Tùy chọn)</label>
+                        <textarea id="Questions[0].PassageText" name="Questions[0].PassageText" placeholder="Nhập đoạn văn đọc hiểu..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Questions[0].QuestionText">Nội dung câu hỏi</label>
+                        <textarea id="Questions[0].QuestionText" name="Questions[0].QuestionText" placeholder="Nhập nội dung câu hỏi..." required></textarea>
+                    </div>
+
+                    <label style="font-weight: bold; margin-top: 10px; display: block;">Các lựa chọn trả lời (Chọn 1 đáp án đúng)</label>
+                    <div class="answer-options-editor">
+
+                        <div class="answer-input-group">
+                            <input type="radio" id="Questions[0].CorrectAnswer" name="Questions[0].CorrectAnswerIndex" value="0" required>
+                            <input type="text" id="Questions[0].Options[0].AnswerText" name="Questions[0].Options[0].AnswerText" placeholder="Đáp án A" required>
+                        </div>
+
+                        <div class="answer-input-group">
+                            <input type="radio" id="Questions[0].CorrectAnswer" name="Questions[0].CorrectAnswerIndex" value="1">
+                            <input type="text" id="Questions[0].Options[1].AnswerText" name="Questions[0].Options[1].AnswerText" placeholder="Đáp án B" required>
+                        </div>
+
+                        <div class="answer-input-group">
+                            <input type="radio" id="Questions[0].CorrectAnswer" name="Questions[0].CorrectAnswerIndex" value="2">
+                            <input type="text" id="Questions[0].Options[2].AnswerText" name="Questions[0].Options[2].AnswerText" placeholder="Đáp án C" required>
+                        </div>
+
+                        <div class="answer-input-group">
+                            <input type="radio" id="Questions[0].CorrectAnswer" name="Questions[0].CorrectAnswerIndex" value="3">
+                            <input type="text" id="Questions[0].Options[3].AnswerText" name="Questions[0].Options[3].AnswerText" placeholder="Đáp án D" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-actions">
+                <button type="button" class="btn btn-secondary" id="add-question-btn">
+                    + Thêm câu hỏi
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    Lưu bài thi
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+    <template id="question-template">
+        <div class="question-editor-block" data-index="__INDEX__">
+            <div class="question-header">
+                <h3 class="question-title">Câu __NUMBER__</h3>
+                <button type="button" class="btn btn-delete btn-delete-question">Xóa</button>
+            </div>
+
+            <div class="form-group">
+                <label for="Questions[__INDEX__].PassageText">Đoạn văn (Tùy chọn)</label>
+                <textarea id="Questions[__INDEX__].PassageText" name="Questions[__INDEX__].PassageText" placeholder="Nhập đoạn văn đọc hiểu..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="Questions[__INDEX__].QuestionText">Nội dung câu hỏi</label>
+                <textarea id="Questions[__INDEX__].QuestionText" name="Questions[__INDEX__].QuestionText" placeholder="Nhập nội dung câu hỏi..." required></textarea>
+            </div>
+
+            <label style="font-weight: bold; margin-top: 10px; display: block;">Các lựa chọn trả lời (Chọn 1 đáp án đúng)</label>
+            <div class="answer-options-editor">
+
+                <div class="answer-input-group">
+                    <input type="radio" id="Questions[__INDEX__].CorrectAnswer" name="Questions[__INDEX__].CorrectAnswerIndex" value="0" required>
+                    <input type="text" id="Questions[__INDEX__].Options[0].AnswerText" name="Questions[__INDEX__].Options[0].AnswerText" placeholder="Đáp án A" required>
+                </div>
+
+                <div class="answer-input-group">
+                    <input type="radio" id="Questions[__INDEX__].CorrectAnswer" name="Questions[__INDEX__].CorrectAnswerIndex" value="1">
+                    <input type="text" id="Questions[__INDEX__].Options[1].AnswerText" name="Questions[__INDEX__].Options[1].AnswerText" placeholder="Đáp án B" required>
+                </div>
+
+                <div class="answer-input-group">
+                    <input type="radio" id="Questions[__INDEX__].CorrectAnswer" name="Questions[__INDEX__].CorrectAnswerIndex" value="2">
+                    <input type="text" id="Questions[__INDEX__].Options[2].AnswerText" name="Questions[__INDEX__].Options[2].AnswerText" placeholder="Đáp án C" required>
+                </div>
+
+                <div class="answer-input-group">
+                    <input type="radio" id="Questions[__INDEX__].CorrectAnswer" name="Questions[__INDEX__].CorrectAnswerIndex" value="3">
+                    <input type="text" id="Questions[__INDEX__].Options[3].AnswerText" name="Questions[__INDEX__].Options[3].AnswerText" placeholder="Đáp án D" required>
+                </div>
+            </div>
+        </div>
+    </template>
+
+
+
+</body>
+</html>

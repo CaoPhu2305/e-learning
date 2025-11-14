@@ -188,12 +188,16 @@
     <Compile Include="Controllers\CourseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LectureController.cs" />
+    <Compile Include="Controllers\QuizzController.cs" />
     <Compile Include="Controllers\StudentController.cs" />
     <Compile Include="Filters\AuthorizeRoleAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AnswerViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
+    <Compile Include="Models\QuestionViewModel.cs" />
+    <Compile Include="Models\QuizViewModel.cs" />
     <Compile Include="Models\RegisterViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -399,6 +403,8 @@
     <Content Include="Content\Assets\template03\css\bootstrap.min.css" />
     <Content Include="Content\Assets\template03\css\css1.css" />
     <Content Include="Content\Assets\template03\css\css2.css" />
+    <Content Include="Content\Assets\template03\css\css3.css" />
+    <Content Include="Content\Assets\template03\css\css4.css" />
     <Content Include="Content\Assets\template03\css\flaticon.css" />
     <Content Include="Content\Assets\template03\css\font-awesome.min.css" />
     <Content Include="Content\Assets\template03\css\magnific-popup.css" />
@@ -466,6 +472,8 @@
     <Content Include="Content\Assets\template03\js\jquery.magnific-popup.min.js" />
     <Content Include="Content\Assets\template03\js\jquery.slicknav.js" />
     <Content Include="Content\Assets\template03\js\js1.js" />
+    <Content Include="Content\Assets\template03\js\js2.js" />
+    <Content Include="Content\Assets\template03\js\js3.js" />
     <Content Include="Content\Assets\template03\js\main3.js" />
     <Content Include="Content\Assets\template03\js\masonry.pkgd.min.js" />
     <Content Include="Content\Assets\template03\js\owl.carousel.min.js" />
@@ -691,6 +699,8 @@
     <Content Include="Views\Course\CourseLearn.cshtml" />
     <Content Include="Views\Course\LoadQuizPartial.cshtml" />
     <Content Include="Views\Course\LoadVideoPartial.cshtml" />
+    <Content Include="Views\Quizz\Index.cshtml" />
+    <Content Include="Views\Quizz\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

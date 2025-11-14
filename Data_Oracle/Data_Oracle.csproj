@@ -125,6 +125,7 @@
     <Compile Include="Entities\UserAnswers.cs" />
     <Compile Include="Entities\UserInfo.cs" />
     <Compile Include="Entities\UserRole.cs" />
+    <Compile Include="Interfaces\ICourseRepository.cs" />
     <Compile Include="Interfaces\IRbacRepository.cs" />
     <Compile Include="Interfaces\IRoleRepository.cs" />
     <Compile Include="Interfaces\IUserRepository.cs" />
@@ -135,6 +136,7 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\CourseRepository.cs" />
     <Compile Include="Repositories\RbacRepository.cs" />
     <Compile Include="Repositories\RoleRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />

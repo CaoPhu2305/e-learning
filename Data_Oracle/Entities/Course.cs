@@ -37,6 +37,10 @@ namespace Data_Oracle.Entities
         [Column("DESCRIPTION")]
         public string Description { get; set; }
 
+        //[Required]
+        //[Column("IMAGE_NAME")]
+        //public string Image { get; set; }
+
 
 
         // nếu chia ra video và kèm 1 1 hay lớp nhiều người thêm type vào 

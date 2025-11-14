@@ -1,0 +1,185 @@
+﻿
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f7f6;
+    margin: 0;
+    padding: 24px;
+}
+
+.creator-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+.creator-header {
+    padding: 20px 24px;
+    background-color: #0056b3; /* Màu xanh admin */
+    color: white;
+}
+
+    .creator-header h1 {
+        margin: 0;
+        font-size: 1.8rem;
+    }
+
+/* Form chính chứa mọi thứ */
+#quiz-form {
+    padding: 24px;
+}
+
+/* --- Thông tin chung của bài thi --- */
+.quiz-metadata {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    margin-bottom: 24px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+    .form-group label {
+        font-weight: bold;
+        margin-bottom: 8px;
+        color: #333;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 1rem;
+        box-sizing: border-box; /* Quan trọng để padding không làm vỡ layout */
+    }
+
+    .form-group textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+/* --- Vùng chứa danh sách câu hỏi --- */
+#question-list-container {
+    margin-top: 20px;
+}
+
+/* --- Khung của 1 câu hỏi --- */
+.question-editor-block {
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.question-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 16px;
+}
+
+    .question-header h3 {
+        margin: 0;
+        font-size: 1.3rem;
+        color: #0056b3;
+    }
+
+/* --- Vùng editor các câu trả lời --- */
+.answer-options-editor {
+    margin-top: 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2 cột */
+    gap: 16px;
+}
+
+.answer-input-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+    .answer-input-group input[type="radio"] {
+        flex-shrink: 0;
+        width: 18px;
+        height: 18px;
+    }
+
+    .answer-input-group input[type="text"] {
+        flex-grow: 1;
+    }
+
+/* --- Các nút bấm --- */
+.btn {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s, box-shadow 0.2s;
+}
+
+.btn-delete {
+    background-color: #dc3545;
+    color: white;
+    font-size: 0.9rem;
+    padding: 6px 12px;
+}
+
+    .btn-delete:hover {
+        background-color: #c82333;
+    }
+
+.quiz-actions {
+    margin-top: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #e0e0e0;
+    padding-top: 24px;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+    font-size: 1.1rem;
+    padding: 12px 24px;
+}
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .quiz-metadata, .answer-options-editor {
+        grid-template-columns: 1fr;
+    }
+}
+
+

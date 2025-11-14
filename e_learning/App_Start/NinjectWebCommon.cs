@@ -70,6 +70,8 @@ namespace e_learning.App_Start
 
             kernel.Bind<IAccountRepository>().To<AccountRepositoty>();
 
+            kernel.Bind<ICourseRepository>().To<CourseRepository>();
+
             // Service
             kernel.Bind<IAccountService>().To<AccountService>().Named("App");
 
@@ -80,6 +82,8 @@ namespace e_learning.App_Start
             kernel.Bind<IAuthorizationService>().To<AuthorizationService>();
 
             kernel.Bind<IUserService>().To<UserService>();
+
+            kernel.Bind<ICourseService>().To<CourseService>();
 
 
         }

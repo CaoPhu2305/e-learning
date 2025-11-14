@@ -1,4 +1,6 @@
-﻿using e_learning.Filters;
+﻿using Data_Oracle.Entities;
+using e_learning.Filters;
+using Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,8 +14,25 @@ namespace e_learning.Controllers
         // GET: Student
         //[AuthorizeRole("Course", "View")]      
         
+        private ICourseService _courseService;
+
+        public StudentController(ICourseService courseService)
+        {
+            _courseService = courseService;
+        }
+
         public ActionResult StudentHomePage()
         {
+
+            List<Course> courses = _courseService.GetAll(); 
+
+            if(courses != null)
+            {
+                return View(courses);
+            }
+
+            ViewBag.Error = "List Course Is Null";
+
             return View();
         }
 
