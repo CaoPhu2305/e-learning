@@ -27,5 +27,10 @@ namespace Data_Oracle.Repositories
         {
             return _dbContext.Roles.FirstOrDefault(x => x.RoleName == Name);
         }
+
+        public List<Role> GetAllRole()
+        {
+            return _dbContext.Roles.ToList();
+        }
     }
 }

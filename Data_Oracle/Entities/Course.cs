@@ -73,6 +73,7 @@ namespace Data_Oracle.Entities
 
         public Course()
         {
+
         }
     }
 }

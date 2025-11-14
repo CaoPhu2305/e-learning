@@ -14,17 +14,26 @@ namespace Services.Implamentatios
     {
 
         private readonly ICourseRepository _courseRepository;
+        private readonly RoleRepository _roleRepository;
 
-        public CourseService(ICourseRepository courseRepository)
+        public CourseService(ICourseRepository courseRepository, RoleRepository roleRepository)
         {
             _courseRepository = courseRepository;
+            _roleRepository = roleRepository;
         }
 
-        public List<Course> GetAll()
+        public List<Course> GetCourses()
         {
 
             return _courseRepository.GetAllCourse();
 
         }
+
+        public List<CourseType> GetCoursesType()
+        {
+            return _courseRepository.GetAllCourseType();
+        }
+
+    
     }
 }

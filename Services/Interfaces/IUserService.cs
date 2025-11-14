@@ -12,5 +12,7 @@ namespace Services.Interfaces
 
         Role GetUserRole(decimal userID);
 
+
+
     }
 }

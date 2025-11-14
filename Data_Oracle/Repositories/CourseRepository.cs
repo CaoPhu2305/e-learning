@@ -39,5 +39,10 @@ namespace Data_Oracle.Repositories
             return null;
           
         }
+
+        public List<CourseType> GetAllCourseType()
+        {
+           return _dbContext.CourseTypes.ToList();
+        }
     }
 }

@@ -12,5 +12,7 @@ namespace Data_Oracle.Interfaces
 
         List<Course> GetAllCourse();
 
+        List<CourseType> GetAllCourseType();
+
     }
 }

@@ -10,8 +10,9 @@ namespace Services.Interfaces
     public  interface ICourseService
     {
 
-        List<Course> GetAll();
+        List<Course> GetCourses();
 
-
+        List<CourseType> GetCoursesType();
+     
     }
 }

@@ -14,7 +14,8 @@ namespace e_learning.Controllers
         // GET: Student
         //[AuthorizeRole("Course", "View")]      
         
-        private ICourseService _courseService;
+        private readonly ICourseService _courseService;
+   
 
         public StudentController(ICourseService courseService)
         {
@@ -24,7 +25,9 @@ namespace e_learning.Controllers
         public ActionResult StudentHomePage()
         {
 
-            List<Course> courses = _courseService.GetAll(); 
+            List<Course> courses = _courseService.GetCourses();
+
+         
 
             if(courses != null)
             {
