@@ -195,6 +195,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AnswerViewModel.cs" />
+    <Compile Include="Models\ChapterViewModel.cs" />
+    <Compile Include="Models\CourseVideo.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\QuestionViewModel.cs" />
     <Compile Include="Models\QuizViewModel.cs" />
@@ -202,6 +204,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Assets\images\courses\tienganhdoanhnghiep.png" />
+    <Content Include="Content\Assets\images\courses\tienganhgiaotieo.jpg" />
+    <Content Include="Content\Assets\images\courses\tienganhielts.jpg" />
     <Content Include="Content\Assets\images\ct.png" />
     <Content Include="Content\Assets\images\icon1.png" />
     <Content Include="Content\Assets\images\icon2.png" />
@@ -477,6 +482,9 @@
     <Content Include="Content\Assets\template03\js\main3.js" />
     <Content Include="Content\Assets\template03\js\masonry.pkgd.min.js" />
     <Content Include="Content\Assets\template03\js\owl.carousel.min.js" />
+    <Content Include="Content\Assets\videos\course\tienganhgiaotiepw1v1.mp4" />
+    <Content Include="Content\Assets\videos\course\tienganhgiaotiepw1v2.mp4" />
+    <Content Include="Content\Assets\videos\course\tienganhgiaotiepw2v1.mp4" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-grid.rtl.css" />

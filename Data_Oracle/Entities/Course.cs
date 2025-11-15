@@ -37,14 +37,20 @@ namespace Data_Oracle.Entities
         [Column("DESCRIPTION")]
         public string Description { get; set; }
 
-        //[Required]
-        //[Column("IMAGE_NAME")]
-        //public string Image { get; set; }
+        [Required]
+        [Column("IMAGE_NAME")]
+        [MaxLength(30)]
+        public string Image { get; set; }
+
+        [Required]
+        [Column("CERTIFICATE")]
+        [MaxLength(5)]
+        public string Certificate { get; set; }
 
 
 
         // nếu chia ra video và kèm 1 1 hay lớp nhiều người thêm type vào 
-          
+
         public virtual CourseStatus CourseStatus { get; set; }
 
         public virtual CourseType CourseType { get; set; }
@@ -61,6 +67,16 @@ namespace Data_Oracle.Entities
         public virtual ICollection<CoursePromotion> CoursePromotions { get; set; }
 
         public virtual ICollection<Enrollments> Enrollments { get; set; }
+
+        public Course(decimal courseTypeID, decimal courseStatusID, string courseName, double price, string description, string image)
+        {
+            CourseTypeID = courseTypeID;
+            CourseStatusID = courseStatusID;
+            CourseName = courseName;
+            Price = price;
+            Description = description;
+            Image = image;
+        }
 
         public Course(decimal courseTypeID, decimal courseStatusID, string courseName, double price, string description)
         {

@@ -28,14 +28,24 @@ namespace Data_Oracle.Entities
         public decimal ChapterID { get; set; }
 
         [Column("VIDEO_DATA")]
-        public byte[] VideoData { get; set; }
+        [MaxLength(100)]
+        public string VideoData { get; set; }
+
+        [Column("LESSION_DECRIPTION")]
+        [MaxLength(50)]
+        public string LessionDecription { get; set; }
+
+        [Column("LESSION_COMPLATED")]
+        [MaxLength(50)]
+        public string LessionComplate { get; set; }
+
 
         //[ForeignKey(nameof(Chapter))]
         public virtual Chapter Chapter { get; set; }
 
         public virtual ICollection<Quizzes> Quizzes { get; set; }
 
-        public Lession(string lessionName, decimal chapterID, byte[] videoData)
+        public Lession(string lessionName, decimal chapterID, string videoData)
         {
             LessionName = lessionName;
             ChapterID = chapterID;

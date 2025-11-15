@@ -72,6 +72,10 @@ namespace e_learning.App_Start
 
             kernel.Bind<ICourseRepository>().To<CourseRepository>();
 
+            kernel.Bind<ILessionRepository>().To<LessionRepository>();
+
+            kernel.Bind<IChapterRepository>().To<ChapterRepository>();
+
             // Service
             kernel.Bind<IAccountService>().To<AccountService>().Named("App");
 

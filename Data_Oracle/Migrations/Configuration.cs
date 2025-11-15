@@ -5,11 +5,14 @@
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<Data_Oracle.Context.OracleDBContext>
+    public sealed class Configuration : DbMigrationsConfiguration<Data_Oracle.Context.OracleDBContext>
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
+
+            // Cho phép tự động thêm/xóa/đổi cột nếu cần
+            AutomaticMigrationDataLossAllowed = true;
         }
 
         protected override void Seed(Data_Oracle.Context.OracleDBContext context)

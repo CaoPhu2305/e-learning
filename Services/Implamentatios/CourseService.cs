@@ -14,12 +14,27 @@ namespace Services.Implamentatios
     {
 
         private readonly ICourseRepository _courseRepository;
-        private readonly RoleRepository _roleRepository;
+        private readonly ILessionRepository _lessionRepository;
+        private readonly IChapterRepository _chapterRepository;
 
-        public CourseService(ICourseRepository courseRepository, RoleRepository roleRepository)
+        public CourseService(ICourseRepository courseRepository, 
+            IChapterRepository chapterRepository,
+            ILessionRepository lessionRepository)
         {
             _courseRepository = courseRepository;
-            _roleRepository = roleRepository;
+            _chapterRepository = chapterRepository;
+            _lessionRepository = lessionRepository;
+           
+        }
+
+        public List<Chapter> GetChapterByCouresID(int CourseId)
+        {
+            return _chapterRepository.GetALLChapterByCourseId(CourseId);
+        }
+
+        public Course GetCourseByID(int id)
+        {
+            return _courseRepository.GetCourseByID(id);
         }
 
         public List<Course> GetCourses()
@@ -34,6 +49,14 @@ namespace Services.Implamentatios
             return _courseRepository.GetAllCourseType();
         }
 
-    
+        public CourseVideo GetCourseVideoByID(int id)
+        {
+            return _courseRepository.GetCourseVideoById(id);
+        }
+
+        public List<Lession> GetLessionByChapterId(int ChapterId)
+        {
+            return _lessionRepository.GetAllLessionByChapterId(ChapterId);
+        }
     }
 }

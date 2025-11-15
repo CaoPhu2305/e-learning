@@ -16,6 +16,7 @@ namespace Data_Oracle.Context
         {
             this.Database.CommandTimeout = 300;
             Database.SetInitializer<OracleDBContext>(null);
+            Database.Log = s => System.Diagnostics.Debug.WriteLine(s);
         }
 
         public DbSet<Role> Roles { get; set; }

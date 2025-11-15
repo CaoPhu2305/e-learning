@@ -14,5 +14,8 @@ namespace Data_Oracle.Interfaces
 
         List<CourseType> GetAllCourseType();
 
+       Course GetCourseByID(int id);
+
+        CourseVideo GetCourseVideoById(int id);
     }
 }

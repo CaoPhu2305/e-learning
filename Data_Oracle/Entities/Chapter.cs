@@ -30,6 +30,11 @@ namespace Data_Oracle.Entities
         [Column("CHAPTER_INDEX")]
         public int ChapterIndex { get; set; }
 
+        [Required]
+        [Column("CHAPTER_COMPLATED")]
+        [MaxLength(50)]
+        public string ChapterComplated { get; set; }
+
         public virtual CourseVideo CourseVideo { get; set; }
 
         public virtual ICollection<Lession> Lessions { get; set; }

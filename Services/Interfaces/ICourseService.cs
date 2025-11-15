@@ -13,6 +13,14 @@ namespace Services.Interfaces
         List<Course> GetCourses();
 
         List<CourseType> GetCoursesType();
+
+        Course GetCourseByID(int id);
+
+        CourseVideo GetCourseVideoByID(int id);
+
+        List<Chapter> GetChapterByCouresID(int CourseId);
+
+        List<Lession> GetLessionByChapterId(int ChapterId);
      
     }
 }

@@ -21,6 +21,26 @@ namespace Data_Oracle.Entities
         [MaxLength(50)]
         public string CourcesVideoName { get ; set; }
 
+        [Required]
+        [Column("COURSE_VIDEO_LEVEL")]
+        [MaxLength(20)]
+        public string CourcesVideoLevel { get; set; }
+
+        [Required]
+        [Column("COURSE_VIDEO_DURATION")]
+        [MaxLength(20)]
+        public string CourcesVideoDuration { get; set; }
+
+        [Required]
+        [Column("COURSE_VIDEO_NUMBER_OF_STUDENT")]
+        
+        public decimal NumberOfStudent { get; set; }
+
+        [Required]
+        [Column("COURSE_VIDEO_NUMBER_OF_LESSION")]
+        
+        public decimal NumberOfLession { get; set; }
+
         public virtual Course Course { get; set; }
 
         public virtual ICollection<Chapter> Chapters { get; set; }

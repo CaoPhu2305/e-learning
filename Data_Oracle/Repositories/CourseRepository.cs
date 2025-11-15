@@ -44,5 +44,15 @@ namespace Data_Oracle.Repositories
         {
            return _dbContext.CourseTypes.ToList();
         }
+
+        public Course GetCourseByID(int id)
+        {
+            return _dbContext.Courses.FirstOrDefault(x => x.CourseID == id);
+        }
+
+        public CourseVideo GetCourseVideoById(int id)
+        {
+            return _dbContext.CoursesVideos.FirstOrDefault(x => x.CourseVideoID == id);
+        }
     }
 }
