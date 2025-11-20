@@ -62,6 +62,16 @@ body {
     color: #d9534f; /* Màu đỏ cho icon khóa */
 }
 
+.module-block-body {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    cursor: pointer;
+    border-bottom: 1px solid #e0e0e0;
+    transition: background-color 0.2s;
+}
+
 /* Danh sách bài học (ẩn ban đầu) */
 .lesson-list {
     list-style: none;
@@ -315,4 +325,43 @@ vì khi .sidebar (là flex item) bị ẩn, .content-area
 .content-wrapper {
     max-width: 1200px; /* Giới hạn độ rộng tối đa */
     margin: 0 auto; /* Tự động căn giữa */
+}
+
+#open-sidebar {
+    position: fixed; /* Hoặc absolute tùy vào layout của bạn */
+    top: 15px;
+    left: 15px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 1000;
+    /* Ẩn ban đầu (vì sidebar đang mở) */
+    display: none;
+}
+
+/* Thêm hiệu ứng chuyển động mượt mà cho sidebar và content */
+.sidebar, .content-area {
+    transition: all 0.3s ease-in-out;
+}
+
+/* * Trạng thái Đóng (Khi có class .sidebar-closed) 
+ */
+
+/* 1. Ẩn sidebar bằng cách đẩy nó ra bên trái màn hình */
+.course-container.sidebar-closed .sidebar {
+    transform: translateX(-100%);
+}
+
+/* 2. (Tùy chọn) Cho vùng content-area chiếm toàn bộ chiều rộng */
+/* Giả sử ban đầu content-area có margin-left để né sidebar */
+/*.content-area {
+    margin-left: 300px;*/ /* !! Giả sử đây là chiều rộng của sidebar */
+/*}*/
+
+.course-container.sidebar-closed .content-area {
+    margin-left: 0; /* Cho content chiếm đủ khi sidebar đóng */
+}
+
+/* 3. Hiển thị nút mở (bars) khi sidebar đang ĐÓNG */
+.course-container.sidebar-closed #open-sidebar {
+    display: block;
 }

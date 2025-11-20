@@ -43,7 +43,7 @@ namespace Data_Oracle.Entities
         //[ForeignKey(nameof(Chapter))]
         public virtual Chapter Chapter { get; set; }
 
-        public virtual ICollection<Quizzes> Quizzes { get; set; }
+        
 
         public Lession(string lessionName, decimal chapterID, string videoData)
         {

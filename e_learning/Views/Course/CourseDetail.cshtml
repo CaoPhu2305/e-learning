@@ -74,7 +74,7 @@
                 <div class="course-sidebar mb-4 p-4">
                     <h3 class="fw-bold mb-1"> @String.Format("{0:#,##0} VND", Model.Price)</h3>
                     <p class="text-muted mb-3">Ưu đãi trọn đời</p>
-                    <a href="@Url.Action("CourseLearn", "Course")" class="btn btn-primary btn-lg w-100 mb-4 shadow-sm">
+                    <a href="@Url.Action("CourseLearn", "Course" , new {courseID = Model.CourseID})" class="btn btn-primary btn-lg w-100 mb-4 shadow-sm">
                         Đăng ký ngay
                     </a>
 
@@ -154,6 +154,7 @@
                                     @foreach (var y in x.Lessions)
                                     {
                                         <ul class="what-you-learn-list">
+
                                             <li><i class="bi bi-check"></i>@y.LessionDecription</li>
 
                                         </ul>

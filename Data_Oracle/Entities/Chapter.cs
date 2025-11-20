@@ -39,6 +39,8 @@ namespace Data_Oracle.Entities
 
         public virtual ICollection<Lession> Lessions { get; set; }
 
+        public virtual ICollection<Quizzes> Quizzes { get; set; }
+
         public Chapter(decimal courcesVideoID, string chapterName, int chapterIndex)
         {
             CourcesVideoID = courcesVideoID;

@@ -76,6 +76,12 @@ namespace e_learning.App_Start
 
             kernel.Bind<IChapterRepository>().To<ChapterRepository>();
 
+            kernel.Bind<IQuizzRepository>().To<QuizzRepository>();
+
+            kernel.Bind<IQuessionRepository>().To<QuessionRepository>();
+
+
+
             // Service
             kernel.Bind<IAccountService>().To<AccountService>().Named("App");
 
@@ -88,6 +94,8 @@ namespace e_learning.App_Start
             kernel.Bind<IUserService>().To<UserService>();
 
             kernel.Bind<ICourseService>().To<CourseService>();
+
+            kernel.Bind<IQuizzService>().To<QuizzService>();
 
 
         }

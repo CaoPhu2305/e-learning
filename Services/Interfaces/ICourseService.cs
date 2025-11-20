@@ -21,6 +21,10 @@ namespace Services.Interfaces
         List<Chapter> GetChapterByCouresID(int CourseId);
 
         List<Lession> GetLessionByChapterId(int ChapterId);
+
+        Lession GetLessionByLessionID(int LessionID);
+
+        Quizzes getQuizzByChapterID(int ChapterID);
      
     }
 }

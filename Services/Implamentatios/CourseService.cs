@@ -16,15 +16,17 @@ namespace Services.Implamentatios
         private readonly ICourseRepository _courseRepository;
         private readonly ILessionRepository _lessionRepository;
         private readonly IChapterRepository _chapterRepository;
+        private readonly IQuizzRepository _quizzRepository;
 
         public CourseService(ICourseRepository courseRepository, 
             IChapterRepository chapterRepository,
-            ILessionRepository lessionRepository)
+            ILessionRepository lessionRepository,
+            IQuizzRepository quizzRepository)
         {
             _courseRepository = courseRepository;
             _chapterRepository = chapterRepository;
             _lessionRepository = lessionRepository;
-           
+            this._quizzRepository = quizzRepository;
         }
 
         public List<Chapter> GetChapterByCouresID(int CourseId)
@@ -57,6 +59,19 @@ namespace Services.Implamentatios
         public List<Lession> GetLessionByChapterId(int ChapterId)
         {
             return _lessionRepository.GetAllLessionByChapterId(ChapterId);
+        }
+
+        public Lession GetLessionByLessionID(int LessionID)
+        {
+            return _lessionRepository.GetLessionByLessionID(LessionID);
+        }
+
+        public Quizzes getQuizzByChapterID(int ChapterID)
+        {
+            var x =  _quizzRepository.GetQuizzesByChapterID(ChapterID);
+
+            return x;
+
         }
     }
 }

@@ -1,0 +1,23 @@
+﻿@{ 
+    var courseID = ViewBag.courseID;
+}
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link href="~/Content/Assets/template03/css/css2.css" rel="stylesheet" />
+    <script src="~/Content/Assets/template03/js/js1.js"></script>
+</head>
+<body>
+
+    <div class="course-container">
+        <h1>@courseID</h1>
+        @Html.Action("LoadVideoPartial", "Course", new {CourseId = courseID})
+
+        @RenderBody()
+    </div>
+</body>
+</html>

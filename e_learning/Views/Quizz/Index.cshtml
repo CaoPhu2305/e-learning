@@ -1,145 +1,278 @@
-﻿
+﻿@model e_learning.Models.QuizViewModel
+
 @{
     Layout = null;
+    int totalQuestions = Model.Questions1 != null ? Model.Questions1.Count : 0;
 }
-
-
 
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giao diện Thi Trắc nghiệm</title>
+    <title>@Model.QuizzesName</title>
     <link href="~/Content/Assets/template03/css/css3.css" rel="stylesheet" />
+
+    <style>
+        /* --- HIỆU ỨNG CHUYỂN CẢNH MƯỢT MÀ --- */
+        .question-block {
+            display: none; /* Mặc định ẩn hết */
+        }
+
+            /* Khi câu hỏi được kích hoạt (active) */
+            .question-block.active {
+                display: block;
+                animation: fadeIn 0.5s ease-in-out; /* Hiệu ứng mờ dần trong 0.5s */
+            }
+
+        /* Định nghĩa hiệu ứng Fade In */
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+     
+        .palette-item {
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+            .palette-item:hover {
+                transform: scale(1.1);
+            }
+
+            .palette-item.current {
+                background-color: #007bff; /* Màu xanh dương cho câu đang chọn */
+                color: #fff;
+                border-color: #007bff;
+            }
+
+            .palette-item.answered {
+                background-color: #28a745; /* Màu xanh lá cho câu đã làm */
+                color: #fff;
+                border-color: #28a745;
+            }
+    </style>
 </head>
 <body>
 
     <div class="quiz-container">
         <header class="quiz-header">
-            [Mã môn học] - Tên bài thi/môn học - [Mã đề thi]
+            @Model.QuizzesName
         </header>
 
-        <main class="quiz-body">
+        <form id="quizForm" action="@Url.Action("SubmitQuiz", "Quizz")" method="post">
+            <input type="hidden" name="QuizID" value="@Model.QuizzesID" />
 
-            <section class="quiz-main">
+            <main class="quiz-body">
+                <section class="quiz-main">
 
-                <div class="question-header-info">
-                    <h2>Câu hỏi 3</h2>
-                    <div class="flag-question">
-                        <input type="checkbox" id="flag">
-                        <label for="flag">Đánh dấu câu hỏi này</label>
-                    </div>
-                </div>
+                    @if (Model.Questions1 != null && Model.Questions1.Count > 0)
+                    {
+                        for (int i = 0; i < totalQuestions; i++)
+                        {
+                            var q = Model.Questions1[i];
+                            var index = i + 1;
+                            // Chỉ câu đầu tiên có class 'active' để hiện ra
+                            var activeClass = (i == 0) ? "active" : "";
 
-                <div class="question-passage-container">
-                    <h3>Read the following passage and answer the question.</h3>
-                    <div class="question-passage">
-                        <p>This is where your long English reading passage will go. It is designed to handle a large amount of text. If the content exceeds the maximum height (set to 350px in this CSS), a vertical scrollbar will automatically appear. This ensures that the layout remains clean and does not push the answer options too far down the page.</p>
-                        <p>You can add multiple paragraphs, lists, or any other HTML content inside this container.</p>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
-                    </div>
-                </div>
+                            <div class="question-block @activeClass" id="q-block-@index">
 
-                <div class="answer-options">
-                    <h3>Question 3: Based on the passage, what can be inferred about...</h3>
-                    <ul class="answer-list">
-                        <li>
-                            <label>
-                                <input type="radio" name="answer_q3" value="a">
-                                <span>(A) This is option A.</span>
-                            </label>
-                        </li>
-                        <li>
-                            <label>
-                                <input type="radio" name="answer_q3" value="b">
-                                <span>(B) This is option B.</span>
-                            </label>
-                        </li>
-                        <li>
-                            <label>
-                                <input type="radio" name="answer_q3" value="c">
-                                <span>(C) This is option C, which might be a slightly longer answer to test wrapping.</span>
-                            </label>
-                        </li>
-                        <li>
-                            <label>
-                                <input type="radio" name="answer_q3" value="d">
-                                <span>(D) This is option D.</span>
-                            </label>
-                        </li>
-                    </ul>
-                </div>
+                                <div class="question-header-info">
+                                    <h2>Câu hỏi @index</h2>
+                                    <div class="flag-question">
+                                        <input type="checkbox" id="flag-@q.QuestionsID">
+                                        <label for="flag-@q.QuestionsID">Đánh dấu câu hỏi này</label>
+                                    </div>
+                                </div>
 
-            </section>
+                                <div class="question-passage-container">
+                                    <div class="question-passage">
+                                        @Html.Raw(q.QuestionsContent)
+                                    </div>
+                                </div>
 
-            <aside class="quiz-sidebar">
+                                <div class="answer-options">
+                                    <h3>Chọn đáp án đúng:</h3>
+                                    <ul class="answer-list">
+                                        @if (q.Options != null)
+                                        {
+                                            foreach (var opt in q.Options)
+                                            {
+                                                <li>
+                                                    <label>
+                                                        <input type="radio"
+                                                               name="UserAnswers[@q.QuestionsID]"
+                                                               value="@opt.AnswerOptionsID"
+                                                               onclick="markAsAnswered(@index)">
+                                                        <span>@opt.AnswerOptionsName</span>
+                                                    </label>
+                                                </li>
+                                            }
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div style="padding:20px;">Chưa có dữ liệu câu hỏi.</div>
+                    }
 
-                <div class="sidebar-widget">
-                    <div class="widget-header">
-                        Thời gian còn lại
-                    </div>
-                    <div class="widget-content">
-                        <div class="timer-display" id="timer">
-                            01:14:37
+                </section>
+
+                <aside class="quiz-sidebar">
+
+                    <div class="sidebar-widget">
+                        <div class="widget-header">
+                            Thời gian còn lại
+                        </div>
+                        <div class="widget-content">
+                            <div class="timer-display" id="timer">
+                                --:--
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="sidebar-widget">
-                    <div class="widget-header">
-                        Bảng câu hỏi
-                    </div>
-                    <div class="widget-content">
-                        <div class="palette-grid">
-                            <div class="palette-item">1</div>
-                            <div class="palette-item answered">2</div>
-                            <div class="palette-item current">3</div>
-                            <div class="palette-item">4</div>
-                            <div class="palette-item">5</div>
-                            <div class="palette-item">6</div>
-                            <div class="palette-item">7</div>
-                            <div class="palette-item answered">8</div>
-                            <div class="palette-item">9</div>
-                            <div class="palette-item">10</div>
-                            <div class="palette-item">11</div>
-                            <div class="palette-item">12</div>
-                            <div class="palette-item">13</div>
-                            <div class="palette-item">14</div>
-                            <div class="palette-item">15</div>
-                            <div class="palette-item">16</div>
-                            <div class="palette-item">17</div>
-                            <div class="palette-item">18</div>
-                            <div class="palette-item">19</div>
-                            <div class="palette-item">20</div>
-                            <div class="palette-item">21</div>
-                            <div class="palette-item">22</div>
-                            <div class="palette-item">23</div>
-                            <div class="palette-item">24</div>
-                            <div class="palette-item">25</div>
-                            <div class="palette-item">26</div>
-                            <div class="palette-item">27</div>
-                            <div class="palette-item">28</div>
-                            <div class="palette-item">29</div>
-                            <div class="palette-item">30</div>
+                    <div class="sidebar-widget">
+                        <div class="widget-header">
+                            Bảng câu hỏi
+                        </div>
+                        <div class="widget-content">
+                            <div class="palette-grid">
+                                @for (int i = 1; i <= totalQuestions; i++)
+                                {
+                                    var activeClass = (i == 1) ? "current" : "";
+                                    <div class="palette-item @activeClass"
+                                         id="palette-@i"
+                                         onclick="goToQuestion(@i)">
+                                        @i
+                                    </div>
+                                }
+                            </div>
                         </div>
                     </div>
-                </div>
 
-            </aside>
+                    <div style="padding: 15px;">
+                        <button type="button" class="btn btn-success w-100" onclick="submitForm()">NỘP BÀI</button>
+                    </div>
 
-        </main>
+                </aside>
 
-        <footer class="quiz-navigation">
-            <button class="btn btn-secondary" id="prev-btn">
-                &lt;&lt; Trang trước
-            </button>
-            <button class="btn btn-primary" id="next-btn">
-                Trang tiếp &gt;&gt;
-            </button>
-        </footer>
+            </main>
+
+            <footer class="quiz-navigation">
+                <button type="button" class="btn btn-secondary" id="prev-btn" onclick="moveQuestion(-1)">
+                    &lt;&lt; Trang trước
+                </button>
+                <button type="button" class="btn btn-primary" id="next-btn" onclick="moveQuestion(1)">
+                    Trang tiếp &gt;&gt;
+                </button>
+            </footer>
+        </form>
     </div>
 
+    <script>
+        // Các biến toàn cục
+        var totalQ = @totalQuestions;
+        var currentQ = 1;
+        var timeLimit = @(Model.TimeLimit > 0 ? Model.TimeLimit : 45); // Phút
+        var totalSeconds = timeLimit * 60;
+
+        // --- 1. XỬ LÝ TIMER ---
+        function startTimer() {
+            var display = document.getElementById('timer');
+            var timer = setInterval(function () {
+                var minutes = Math.floor(totalSeconds / 60);
+                var seconds = totalSeconds % 60;
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = minutes + ":" + seconds;
+
+                if (--totalSeconds < 0) {
+                    clearInterval(timer);
+                    alert("Hết giờ làm bài!");
+                    document.getElementById("quizForm").submit();
+                }
+            }, 1000);
+        }
+
+        // --- 2. XỬ LÝ CHUYỂN CÂU HỎI (MƯỢT MÀ) ---
+        function showQuestion(index) {
+            // Ẩn câu hiện tại (Bỏ class active)
+            document.getElementById('q-block-' + currentQ).classList.remove('active');
+            document.getElementById('palette-' + currentQ).classList.remove('current');
+
+            // Cập nhật index mới
+            currentQ = index;
+
+            // Hiện câu mới (Thêm class active -> kích hoạt animation fadeIn)
+            document.getElementById('q-block-' + currentQ).classList.add('active');
+            document.getElementById('palette-' + currentQ).classList.add('current');
+
+            updateNavButtons();
+        }
+
+        function moveQuestion(direction) {
+            var nextIndex = currentQ + direction;
+            if (nextIndex >= 1 && nextIndex <= totalQ) {
+                showQuestion(nextIndex);
+            }
+        }
+
+        function goToQuestion(index) {
+            showQuestion(index);
+        }
+
+        // --- 3. CẬP NHẬT TRẠNG THÁI NÚT BẤM ---
+        function updateNavButtons() {
+            var btnPrev = document.getElementById('prev-btn');
+            var btnNext = document.getElementById('next-btn');
+
+            // Ẩn nút Previous nếu ở câu 1
+            if (currentQ === 1) {
+                btnPrev.style.visibility = 'hidden';
+            } else {
+                btnPrev.style.visibility = 'visible';
+            }
+
+            // Đổi nút Next thành Finish nếu ở câu cuối (tuỳ chọn)
+            if (currentQ === totalQ) {
+                btnNext.innerHTML = "Về cuối >>";
+                // Hoặc bạn có thể ẩn nút Next đi nếu muốn
+            } else {
+                btnNext.innerHTML = "Trang tiếp >>";
+            }
+        }
+
+        // --- 4. ĐÁNH DẤU ĐÃ LÀM ---
+        function markAsAnswered(index) {
+            // Thêm class 'answered' vào ô số bên bảng palette
+            document.getElementById('palette-' + index).classList.add('answered');
+        }
+
+        function submitForm() {
+            if(confirm("Bạn có chắc chắn muốn nộp bài?")) {
+                document.getElementById("quizForm").submit();
+            }
+        }
+
+        // --- KHỞI CHẠY ---
+        window.onload = function () {
+            startTimer();
+            updateNavButtons();
+        };
+
+    </script>
 </body>
 </html>

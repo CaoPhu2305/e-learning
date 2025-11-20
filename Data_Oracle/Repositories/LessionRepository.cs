@@ -24,5 +24,10 @@ namespace Data_Oracle.Repositories
         {
            return _dbContext.Lessions.Where(x => x.ChapterID == chappterID).ToList();
         }
+
+        public Lession GetLessionByLessionID(int chapterID)
+        {
+            return _dbContext.Lessions.FirstOrDefault(x => x.LessionID == chapterID);
+        }
     }
 }

@@ -1,0 +1,82 @@
+﻿@{ 
+    var CourseVideo = ViewBag.CourseVideo as e_learning.Models.CourseVideo;
+}
+
+@model Data_Oracle.Entities.Course
+
+<aside class="sidebar">
+
+    <div class="course-title">
+        <span>@Model.CourseName</span>
+        <i class="fas fa-times" id="close-sidebar"></i>
+    </div>
+
+
+    @foreach (var x in CourseVideo.Chapters)
+    {
+
+        if (x.ChapterIndex == 1)
+        {
+
+            <div class="module">
+                <div class="module-header" data-module="@x.ChapterIndex">
+                    <span class="module-name">
+                        <i class="fas fa-chevron-down"></i>
+                        @x.ChapterName
+                    </span>
+                    <i class="fas fa-check module-status"></i>
+                </div>
+
+                <ul class="lesson-list active" id="@x.ChapterID">
+
+
+                    @foreach (var y in x.Lessions)
+                    {
+
+
+                        TimeSpan duration = e_learning.Util.VideoUtil.GetVideoDuration("~/Content/Assets/videos/course/" + y.VideoData);
+
+
+                        <li class="lesson-item active">
+                            <a href="@Url.Action("LoadVideoPartial" , "Course" , new {videoUrl = "~/Content/Assets/videos/course/" + y.VideoData})">
+                                <i class="fas fa-play-circle"></i>
+                                <span>@y.LessionName</span>
+                                <span class="duration">@string.Format("{0}:{1:D2}", duration.Minutes, duration.Seconds)</span>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+
+        }
+        else
+        {
+            <div class="module locked">
+                <div class="module-header" data-module="@x.ChapterIndex">
+                    <span class="module-name">
+                        <i class="fas fa-chevron-right"></i>
+                        @x.ChapterName
+                    </span>
+                    <i class="fas fa-lock module-status ml-2" style="color:red"></i>
+                </div>
+
+                <ul class="lesson-list " id="@x.ChapterID">
+
+                    @foreach (var y in x.Lessions)
+                    {
+
+                        TimeSpan duration = e_learning.Util.VideoUtil.GetVideoDuration("~/Content/Assets/videos/course/" + y.VideoData);
+
+
+                        <li class="lesson-item active">
+                            <i class="fas fa-play-circle"></i>
+                            <span>@y.LessionName</span>
+                            <span class="duration">@string.Format("{0}:{1:D2}", duration.Minutes, duration.Seconds)</span>
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+    }
+
+</aside>

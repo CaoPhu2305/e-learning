@@ -7,12 +7,10 @@ using System.Threading.Tasks;
 
 namespace Data_Oracle.Interfaces
 {
-    public interface ILessionRepository
+    public interface IQuessionRepository
     {
 
-        List<Lession> GetAllLessionByChapterId(int chappterID);
-
-        Lession GetLessionByLessionID(int chapterID);
+        List<AnswerOptions> GetAnswerOptions(int QuessionID);
 
     }
 }

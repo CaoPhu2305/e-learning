@@ -32,27 +32,43 @@ namespace Data_Oracle.Entities
         public float Pass_Score_Percent { get; set; }
 
         [Required]
-        [Column("LESSION_ID")]
-        [ForeignKey(nameof(Lession))]
-        public decimal LessionID { get; set; }
+        [Column("CHAPTER_ID")]
+        [ForeignKey(nameof(Chapter))]
+        public decimal ChapterID { get; set; }
+       
+        [Required]
+        [Column("DUE_DATE")]
+        public DateTime DueDate { get; set; }
+
+        [Required]
+        [Column("NUMBER_QUESTIONS")]
+        public decimal NUMBER_QUESTIONS { get; set; }
+
+        [Required]
+        [Column("TIME_LIMIT")]
+        public decimal TimeLimit { get; set; }
+
+
 
         //[ForeignKey(nameof(Lession))]
-        public virtual Lession Lession { get; set; }
+        public virtual Chapter Chapter { get; set; }
 
         public virtual ICollection<Questions> Questions { get; set; }
 
         public virtual ICollection<QuizAttempt> QuizAttempts { get; set; }
 
-        public Quizzes(string quizzesName, string quizzes_Type, float pass_Score_Percent, decimal lessionID)
+        public Quizzes(string quizzesName, string quizzes_Type, float pass_Score_Percent, decimal chapterID)
         {
             QuizzesName = quizzesName;
             Quizzes_Type = quizzes_Type;
             Pass_Score_Percent = pass_Score_Percent;
-            LessionID = lessionID;
+            ChapterID = chapterID;
         }
 
         public Quizzes()
         {
+
+
         }
     }
 }

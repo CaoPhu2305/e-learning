@@ -302,9 +302,9 @@ namespace Data_Oracle.Context
                 .HasKey(q => q.QuizzesID);
 
             modelBuilder.Entity<Quizzes>()
-                .HasRequired(q => q.Lession)
-                .WithMany(l => l.Quizzes)
-                .HasForeignKey(q => q.LessionID);
+                .HasRequired(q => q.Chapter)
+                .WithMany(c => c.Quizzes)
+                .HasForeignKey(q => q.ChapterID);
 
             // Questions 
 
