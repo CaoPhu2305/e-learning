@@ -16,5 +16,17 @@ namespace Services.Interfaces
 
         Quizzes GetQuizzes(int ChapterID);
 
+        Dictionary<int , int> GetCorrectAnswersDictionary(int QuizzID);
+
+        void CreateAttempt(QuizAttempt quizAttempt);
+
+        void CreateUserAnswer(UserAnswers userAnswers);
+
+        QuizAttempt GetQuizAttempt(int QuizAttempt);
+
+        Dictionary<int, int> GetUserAnswersByAttemptId(int AtemptID);
+
+        QuizAttempt GetLatestAttempt(int UserID, int QuizzID);
+
     }
 }

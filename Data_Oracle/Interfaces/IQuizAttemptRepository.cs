@@ -7,14 +7,15 @@ using System.Threading.Tasks;
 
 namespace Data_Oracle.Interfaces
 {
-    public interface IQuizzRepository
+    public interface IQuizAttemptRepository
     {
 
-        Quizzes GetQuizzesByChapterID(int ChapterID);
+        void CreateAttempt(QuizAttempt quizAttempt);
 
-        List<Questions> GetQuestionsByQuizzID(int QuizzesID);
 
-       
+        QuizAttempt GetAttempt(int id);
+
+        QuizAttempt GetLatestAttempt(int userId, int quizId);
 
     }
 }

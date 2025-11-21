@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 
 namespace Data_Oracle.Interfaces
 {
-    public interface IQuessionRepository
+    public interface IUserAnswersRepository
     {
 
-        List<AnswerOptions> GetAnswerOptions(int QuessionID);
+        void CreateUserAnswer(UserAnswers userAnswers);
 
-        Dictionary<int, int> GetCorrectAnswersDictionary(int QuizzID);
-       
+        Dictionary<int, int> GetUserAnswersByAttemptId(int AttemptId);
+
+        
 
     }
 }

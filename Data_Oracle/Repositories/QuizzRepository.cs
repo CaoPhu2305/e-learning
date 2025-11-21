@@ -19,6 +19,8 @@ namespace Data_Oracle.Repositories
             this._dbContext = oracleDBContext;
         }
 
+    
+
         public List<Questions> GetQuestionsByQuizzID(int QuizzesID)
         {
             return _dbContext.Questions.Where(x => x.QuizzesID == QuizzesID).ToList();

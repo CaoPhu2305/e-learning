@@ -128,9 +128,11 @@
     <Compile Include="Interfaces\IChapterRepository.cs" />
     <Compile Include="Interfaces\ICourseRepository.cs" />
     <Compile Include="Interfaces\IQuessionRepository.cs" />
+    <Compile Include="Interfaces\IQuizAttemptRepository.cs" />
     <Compile Include="Interfaces\IQuizzRepository.cs" />
     <Compile Include="Interfaces\IRbacRepository.cs" />
     <Compile Include="Interfaces\IRoleRepository.cs" />
+    <Compile Include="Interfaces\IUserAnswersRepository.cs" />
     <Compile Include="Interfaces\IUserRepository.cs" />
     <Compile Include="Interfaces\IAccountRepository.cs" />
     <Compile Include="Interfaces\ILessionRepository.cs" />
@@ -144,9 +146,11 @@
     <Compile Include="Repositories\CourseRepository.cs" />
     <Compile Include="Repositories\LessionRepository.cs" />
     <Compile Include="Repositories\QuessionRepository.cs" />
+    <Compile Include="Repositories\QuizAttemptRepository.cs" />
     <Compile Include="Repositories\QuizzRepository.cs" />
     <Compile Include="Repositories\RbacRepository.cs" />
     <Compile Include="Repositories\RoleRepository.cs" />
+    <Compile Include="Repositories\UserAnswersRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
     <Compile Include="Repositories\AccountRepositoty.cs" />
   </ItemGroup>

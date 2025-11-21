@@ -1,6 +1,25 @@
 ﻿@{
- 
-     var Quizzes = ViewBag.Quizzes as Data_Oracle.Entities.Quizzes;
+
+   
+
+    // Lấy dữ liệu từ ViewBag
+    var Quizzes = ViewBag.Quizzes as Data_Oracle.Entities.Quizzes;
+    var Attempt = ViewBag.LatestAttempt as Data_Oracle.Entities.QuizAttempt;
+
+    // Tính toán trạng thái hiển thị
+    bool hasAttempt = Attempt != null;
+    string scoreDisplay = hasAttempt ? Attempt.Score.ToString() + "%" : "--";
+    string statusText = hasAttempt ? "Submitted on " + Attempt.AttemptDate.ToString("MMM dd, yyyy") : "You haven't submitted this yet.";
+
+    // Màu sắc điểm số (Xanh nếu đậu, Đỏ nếu rớt, Xám nếu chưa thi)
+    string gradeColor = "#ccc"; // Mặc định xám
+    if (hasAttempt)
+    {
+        // Kiểm tra IsPass (Lưu ý: kiểu dữ liệu string "1"/"0" hay bool trong Model của bạn)
+        bool isPass = Attempt.isPass == true;
+        gradeColor = isPass ? "#28a745" : "#dc3545";
+    }
+
 }
 
 <style>
@@ -182,7 +201,7 @@
                 <div class="col-md-3 col-sm-12" style="margin-bottom:24px">
                     <div class="btn-start-container">
                         <a href="@Url.Action("Index", "Quizz", new {ChapterID = @Quizzes.ChapterID})" class="btn btn-start">
-                            Start Quiz <i class="fas fa-chevron-right ml-2"></i>
+                            @(hasAttempt ? "Retake Quiz" : "Start Quiz") <i class="fas fa-chevron-right ml-2"></i>
                         </a>
                     </div>
                 </div>
@@ -190,9 +209,30 @@
         </div>
 
         <div class="card your-grade">
-            <h2 class="card-title" style="border: none; margin-bottom: 10px;">Your grade</h2>
-            <p class="grade-status">You haven't submitted this yet.</p>
-            <span class="grade-placeholder" style="font-size: 1.5rem; font-weight: bold; color: #ccc;">--</span>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h2 class="card-title" style="border: none; margin: 0;">Your grade</h2>
+
+                @if (hasAttempt)
+                {
+                    <a href="@Url.Action("ReviewQuiz", "Quizz", new { attemptId = Attempt.QuizAttemptID })"
+                       class="btn btn-sm btn-outline-primary">
+                        Review
+                    </a>
+                }
+            </div>
+
+            <p class="grade-status">@statusText</p>
+
+            <span class="grade-placeholder" style="font-size: 2.5rem; font-weight: bold; color: @gradeColor;">
+                @scoreDisplay
+            </span>
+
+            @if (hasAttempt)
+            {
+                <span style="font-weight: 600; color: @gradeColor; margin-left: 10px;">
+                    @(gradeColor == "#28a745" ? "PASSED" : "FAILED")
+                </span>
+            }
         </div>
     </div>
 </div>

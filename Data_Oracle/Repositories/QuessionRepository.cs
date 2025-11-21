@@ -27,5 +27,26 @@ namespace Data_Oracle.Repositories
 
             return tmp;
         }
+
+        public Dictionary<int, int> GetCorrectAnswersDictionary(int QuizzID)
+        {
+
+            using (var db = new OracleDBContext())
+            {
+                // LINQ chuẩn cho Entity Framework với bool
+                var query = from a in db.AnswerOptions
+                            join q in db.Questions on a.QuestionsID equals q.QuestionsID
+                            where q.QuizzesID == QuizzID
+                            // SỬA TẠI ĐÂY: So sánh bool trực tiếp
+                            && a.IsCorrect == true
+                            select new { q.QuestionsID, a.AnswerOptionsID };
+
+                // Chuyển sang Dictionary
+                // GroupBy để an toàn (đề phòng 1 câu có 2 đáp án đúng do lỗi nhập liệu)
+                return query.ToList()
+                            .GroupBy(x => x.QuestionsID)
+                            .ToDictionary(g => (int)g.Key, g => (int)g.First().AnswerOptionsID);
+            }
+        }
     }
 }

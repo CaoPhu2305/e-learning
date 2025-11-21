@@ -14,6 +14,9 @@ namespace e_learning.Models
 
         public List<AnswerOptions> Options { get; set; }
 
+        public int? UserSelectedAnswerID { get; set; } // ID đáp án user đã chọn
+        public int CorrectAnswerID { get; set; }       // ID đáp án đúng của câu này
+
         public QuestionViewModel(List<AnswerOptions> options)
         {
             this.Options = options;

@@ -14,7 +14,7 @@ namespace Data_Oracle.Entities
     {
         [Key]
         [Column("USER_ANSWERS_ID")]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public decimal UserAnswersID { get; set; }
 
         [Column("ANSWER_OPTIONS_ID")]
@@ -40,6 +40,14 @@ namespace Data_Oracle.Entities
             AnswerOptionsID = answerOptionsID;
             QuestionsID = questionsID;
             QuizAttemptID = quizAttemptID;
+        }
+
+        public UserAnswers(decimal quizAttemptID, decimal questionsID, decimal answerOptionsID, decimal userID)
+        {
+            AnswerOptionsID = answerOptionsID;
+            QuestionsID = questionsID;
+            QuizAttemptID = quizAttemptID;
+            UserAnswersID = userID;
         }
 
         public UserAnswers()

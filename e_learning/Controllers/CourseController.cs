@@ -1,6 +1,7 @@
 ﻿using Data_Oracle.Entities;
 using e_learning.Models;
 using e_learning.Util;
+using Services.Implamentatios;
 using Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -15,18 +16,19 @@ namespace e_learning.Controllers
         // GET: Course
 
         private ICourseService _courseService;
+        private IQuizzService _quizzService;
 
-        public CourseController(ICourseService courseService)
+        public CourseController(ICourseService courseService,
+            IQuizzService quizzService)
         {
             _courseService = courseService;
+            _quizzService = quizzService;
         }
 
         public ActionResult CourseDetail(int courseID)
         {
 
             Course course = _courseService.GetCourseByID(courseID);
-
-            
 
             if (course.CourseType.CourcesTypeID == 1)
             {
@@ -130,7 +132,9 @@ namespace e_learning.Controllers
             Quizzes quizze = _courseService.getQuizzByChapterID(ChapterID);
 
             ViewBag.Quizzes = quizze;
-
+            int currentUserId = 23; // Thay bằng Session UserID thực tế
+            var latestAttempt = _quizzService.GetLatestAttempt(currentUserId, (int)quizze.QuizzesID);
+            ViewBag.LatestAttempt = latestAttempt;
             return PartialView("_QuizPartial");
         }
 
@@ -155,10 +159,7 @@ namespace e_learning.Controllers
         [HttpGet]
         public ActionResult _Sidebar(int CourseId)
         {
-            
-
             return PartialView();
-        }       
-
+        }      
     }
 }

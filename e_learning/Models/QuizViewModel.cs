@@ -11,6 +11,11 @@ namespace e_learning.Models
 
         public List<QuestionViewModel> Questions1 { get; set; }
 
+        public bool IsReviewMode { get; set; } = false; // Mặc định là false (đang thi)
+        public float FinalScore { get; set; }           // Điểm số cuối cùng
+        public bool IsPassResult { get; set; }
+     
+
         public QuizViewModel() { 
         
             Questions1 = new List<QuestionViewModel>();

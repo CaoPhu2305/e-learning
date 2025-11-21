@@ -80,7 +80,9 @@ namespace e_learning.App_Start
 
             kernel.Bind<IQuessionRepository>().To<QuessionRepository>();
 
+            kernel.Bind<IQuizAttemptRepository>().To<QuizAttemptRepository>();
 
+            kernel.Bind<IUserAnswersRepository>().To<UserAnswersRepository>();
 
             // Service
             kernel.Bind<IAccountService>().To<AccountService>().Named("App");

@@ -46,6 +46,9 @@ namespace e_learning.Controllers
 
                     if(role != null)
                     {
+
+                        Session["UserID"] = user.UserID;
+
                         switch (role.RoleID)
                         {
                             case 1:

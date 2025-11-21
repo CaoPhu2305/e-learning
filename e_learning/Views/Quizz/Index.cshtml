@@ -12,24 +12,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@Model.QuizzesName</title>
     <link href="~/Content/Assets/template03/css/css3.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <style>
-        /* --- HIỆU ỨNG CHUYỂN CẢNH MƯỢT MÀ --- */
-        .question-block {
-            display: none; /* Mặc định ẩn hết */
+        /* --- 1. FIX LAYOUT PHẦN ĐÁP ÁN --- */
+        .answer-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin-top: 15px;
         }
 
-            /* Khi câu hỏi được kích hoạt (active) */
-            .question-block.active {
-                display: block;
-                animation: fadeIn 0.5s ease-in-out; /* Hiệu ứng mờ dần trong 0.5s */
+            .answer-list li {
+                margin-bottom: 10px;
             }
 
-        /* Định nghĩa hiệu ứng Fade In */
+            .answer-list label {
+                display: flex;
+                align-items: center;
+                width: 97%;
+                padding: 12px 15px;
+                background-color: #fff;
+                border: 1px solid #e0e0e0;
+                border-radius: 6px;
+                cursor: pointer;
+                transition: all 0.2s;
+            }
+
+                .answer-list label:hover {
+                    background-color: #f8f9fa;
+                    border-color: #007bff;
+                }
+
+            .answer-list input[type="radio"] {
+                margin-right: 12px;
+                transform: scale(1.2);
+            }
+
+        /* --- 2. CSS CHO CHẾ ĐỘ REVIEW --- */
+        .review-mode label {
+            cursor: default !important;
+        }
+
+        .option-correct label {
+            background-color: #d4edda !important;
+            border-color: #c3e6cb !important;
+            color: #155724;
+            font-weight: 600;
+        }
+
+        .option-wrong label {
+            background-color: #f8d7da !important;
+            border-color: #f5c6cb !important;
+            color: #721c24;
+        }
+
+        .result-icon {
+            margin-left: auto;
+            font-size: 1.2rem;
+        }
+
+        /* --- 3. HIỆU ỨNG CHUYỂN CÂU HỎI --- */
+        .question-block {
+            display: none;
+        }
+
+            .question-block.active {
+                display: block;
+                animation: fadeIn 0.4s ease-in-out;
+            }
+
         @@keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translateY(5px);
             }
 
             to {
@@ -38,34 +93,89 @@
             }
         }
 
-     
+        /* --- 4. PALETTE (BẢNG SỐ) --- */
         .palette-item {
             cursor: pointer;
-            transition: background-color 0.2s, transform 0.1s;
+            transition: 0.2s;
+            border: 1px solid #ddd;
+            font-weight: 500;
         }
 
             .palette-item:hover {
                 transform: scale(1.1);
+                border-color: #999;
             }
 
             .palette-item.current {
-                background-color: #007bff; /* Màu xanh dương cho câu đang chọn */
+                background-color: #007bff !important;
                 color: #fff;
                 border-color: #007bff;
             }
 
             .palette-item.answered {
-                background-color: #28a745; /* Màu xanh lá cho câu đã làm */
+                background-color: #28a745;
                 color: #fff;
                 border-color: #28a745;
             }
+
+            .palette-item.flagged {
+                background-color: #ffc107;
+                color: #000;
+                border-color: #ffc107;
+            }
+
+        /* --- 5. HEADER KẾT QUẢ (MỚI) --- */
+        .header-result-info {
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .status-pass {
+            background-color: #28a745;
+        }
+
+        .status-fail {
+            background-color: #dc3545;
+        }
     </style>
 </head>
 <body>
 
     <div class="quiz-container">
-        <header class="quiz-header">
-            @Model.QuizzesName
+
+        <header class="quiz-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="font-weight: bold; font-size: 1.5rem;">
+                @Model.QuizzesName
+            </div>
+
+            @if (Model.IsReviewMode)
+            {
+                <div class="header-result-info">
+                    <span>Điểm: <b style="font-size: 1.2rem;">@Model.FinalScore/100</b></span>
+
+                    @if (Model.IsPassResult)
+                    {
+                        <span class="status-badge status-pass">ĐẠT</span>
+                    }
+                    else
+                    {
+                        <span class="status-badge status-fail">KHÔNG ĐẠT</span>
+                    }
+
+                    <a href="@Url.Action("StudentHomePage", "Student")" class="btn btn-sm btn-light" style="border: 1px solid #ccc; color: #333;">
+                        <i class="fas fa-sign-out-alt"></i> Thoát
+                    </a>
+                </div>
+            }
         </header>
 
         <form id="quizForm" action="@Url.Action("SubmitQuiz", "Quizz")" method="post">
@@ -80,17 +190,19 @@
                         {
                             var q = Model.Questions1[i];
                             var index = i + 1;
-                            // Chỉ câu đầu tiên có class 'active' để hiện ra
                             var activeClass = (i == 0) ? "active" : "";
 
                             <div class="question-block @activeClass" id="q-block-@index">
-
                                 <div class="question-header-info">
                                     <h2>Câu hỏi @index</h2>
-                                    <div class="flag-question">
-                                        <input type="checkbox" id="flag-@q.QuestionsID">
-                                        <label for="flag-@q.QuestionsID">Đánh dấu câu hỏi này</label>
-                                    </div>
+
+                                    @if (!Model.IsReviewMode)
+                                    {
+                                        <div class="flag-question">
+                                            <input type="checkbox" id="flag-@index" onchange="toggleFlag(@index)">
+                                            <label for="flag-@index">Đánh dấu</label>
+                                        </div>
+                                    }
                                 </div>
 
                                 <div class="question-passage-container">
@@ -99,20 +211,49 @@
                                     </div>
                                 </div>
 
-                                <div class="answer-options">
+                                <div class="answer-options @(Model.IsReviewMode ? "review-mode" : "")">
                                     <h3>Chọn đáp án đúng:</h3>
+
                                     <ul class="answer-list">
                                         @if (q.Options != null)
                                         {
                                             foreach (var opt in q.Options)
                                             {
-                                                <li>
+                                                // LOGIC TÔ MÀU KẾT QUẢ
+                                                string liClass = "";
+                                                string iconHtml = "";
+                                                bool isChecked = false;
+
+                                                if (Model.IsReviewMode)
+                                                {
+                                                    if (opt.AnswerOptionsID == q.CorrectAnswerID)
+                                                    {
+                                                        liClass = "option-correct";
+                                                        iconHtml = "<i class='fas fa-check-circle result-icon text-success'></i>";
+                                                    }
+
+                                                    if (opt.AnswerOptionsID == q.UserSelectedAnswerID)
+                                                    {
+                                                        isChecked = true;
+                                                        if (opt.AnswerOptionsID != q.CorrectAnswerID)
+                                                        {
+                                                            liClass = "option-wrong";
+                                                            iconHtml = "<i class='fas fa-times-circle result-icon text-danger'></i>";
+                                                        }
+                                                    }
+                                                }
+
+                                                <li class="@liClass">
                                                     <label>
                                                         <input type="radio"
                                                                name="UserAnswers[@q.QuestionsID]"
                                                                value="@opt.AnswerOptionsID"
+                                                               @(isChecked ? "checked" : "")
+                                                               @(Model.IsReviewMode ? "disabled" : "")
                                                                onclick="markAsAnswered(@index)">
+
                                                         <span>@opt.AnswerOptionsName</span>
+                                                        @Html.Raw(iconHtml)
                                                     </label>
                                                 </li>
                                             }
@@ -126,26 +267,18 @@
                     {
                         <div style="padding:20px;">Chưa có dữ liệu câu hỏi.</div>
                     }
-
                 </section>
 
                 <aside class="quiz-sidebar">
-
-                    <div class="sidebar-widget">
-                        <div class="widget-header">
-                            Thời gian còn lại
-                        </div>
+                    <div class="sidebar-widget" style="@(Model.IsReviewMode ? "display:none" : "")">
+                        <div class="widget-header">Thời gian còn lại</div>
                         <div class="widget-content">
-                            <div class="timer-display" id="timer">
-                                --:--
-                            </div>
+                            <div class="timer-display" id="timer">--:--</div>
                         </div>
                     </div>
 
                     <div class="sidebar-widget">
-                        <div class="widget-header">
-                            Bảng câu hỏi
-                        </div>
+                        <div class="widget-header">Bảng câu hỏi</div>
                         <div class="widget-content">
                             <div class="palette-grid">
                                 @for (int i = 1; i <= totalQuestions; i++)
@@ -161,44 +294,40 @@
                         </div>
                     </div>
 
-                    <div style="padding: 15px;">
-                        <button type="button" class="btn btn-success w-100" onclick="submitForm()">NỘP BÀI</button>
-                    </div>
-
+                    @if (!Model.IsReviewMode)
+                    {
+                        <div style="padding: 15px;">
+                            <button type="button" class="btn btn-success w-100" onclick="submitForm()">NỘP BÀI</button>
+                        </div>
+                    }
                 </aside>
-
             </main>
 
             <footer class="quiz-navigation">
-                <button type="button" class="btn btn-secondary" id="prev-btn" onclick="moveQuestion(-1)">
-                    &lt;&lt; Trang trước
-                </button>
-                <button type="button" class="btn btn-primary" id="next-btn" onclick="moveQuestion(1)">
-                    Trang tiếp &gt;&gt;
-                </button>
+                <button type="button" class="btn btn-secondary" id="prev-btn" onclick="moveQuestion(-1)">&lt;&lt; Trang trước</button>
+                <button type="button" class="btn btn-primary" id="next-btn" onclick="moveQuestion(1)">Trang tiếp &gt;&gt;</button>
             </footer>
         </form>
     </div>
 
     <script>
-        // Các biến toàn cục
         var totalQ = @totalQuestions;
         var currentQ = 1;
-        var timeLimit = @(Model.TimeLimit > 0 ? Model.TimeLimit : 45); // Phút
+        var timeLimit = @(Model.TimeLimit > 0 ? Model.TimeLimit : 45);
         var totalSeconds = timeLimit * 60;
+        var isReview = @(Model.IsReviewMode.ToString().ToLower());
 
-        // --- 1. XỬ LÝ TIMER ---
+        // 1. TIMER
         function startTimer() {
+            if(isReview) return;
+
             var display = document.getElementById('timer');
             var timer = setInterval(function () {
                 var minutes = Math.floor(totalSeconds / 60);
                 var seconds = totalSeconds % 60;
-
                 minutes = minutes < 10 ? "0" + minutes : minutes;
                 seconds = seconds < 10 ? "0" + seconds : seconds;
-
                 display.textContent = minutes + ":" + seconds;
-
                 if (--totalSeconds < 0) {
                     clearInterval(timer);
                     alert("Hết giờ làm bài!");
@@ -207,72 +336,60 @@
             }, 1000);
         }
 
-        // --- 2. XỬ LÝ CHUYỂN CÂU HỎI (MƯỢT MÀ) ---
+        // 2. NAVIGATION
         function showQuestion(index) {
-            // Ẩn câu hiện tại (Bỏ class active)
             document.getElementById('q-block-' + currentQ).classList.remove('active');
             document.getElementById('palette-' + currentQ).classList.remove('current');
-
-            // Cập nhật index mới
             currentQ = index;
-
-            // Hiện câu mới (Thêm class active -> kích hoạt animation fadeIn)
             document.getElementById('q-block-' + currentQ).classList.add('active');
             document.getElementById('palette-' + currentQ).classList.add('current');
-
             updateNavButtons();
         }
 
         function moveQuestion(direction) {
             var nextIndex = currentQ + direction;
-            if (nextIndex >= 1 && nextIndex <= totalQ) {
-                showQuestion(nextIndex);
-            }
+            if (nextIndex >= 1 && nextIndex <= totalQ) showQuestion(nextIndex);
         }
 
-        function goToQuestion(index) {
-            showQuestion(index);
-        }
+        function goToQuestion(index) { showQuestion(index); }
 
-        // --- 3. CẬP NHẬT TRẠNG THÁI NÚT BẤM ---
         function updateNavButtons() {
             var btnPrev = document.getElementById('prev-btn');
             var btnNext = document.getElementById('next-btn');
+            btnPrev.style.visibility = (currentQ === 1) ? 'hidden' : 'visible';
 
-            // Ẩn nút Previous nếu ở câu 1
-            if (currentQ === 1) {
-                btnPrev.style.visibility = 'hidden';
-            } else {
-                btnPrev.style.visibility = 'visible';
-            }
-
-            // Đổi nút Next thành Finish nếu ở câu cuối (tuỳ chọn)
             if (currentQ === totalQ) {
-                btnNext.innerHTML = "Về cuối >>";
-                // Hoặc bạn có thể ẩn nút Next đi nếu muốn
+                btnNext.innerHTML = isReview ? "Kết thúc" : "Về cuối >>";
             } else {
                 btnNext.innerHTML = "Trang tiếp >>";
             }
         }
 
-        // --- 4. ĐÁNH DẤU ĐÃ LÀM ---
+        // 3. LOGIC TRẢ LỜI
         function markAsAnswered(index) {
-            // Thêm class 'answered' vào ô số bên bảng palette
+            if(isReview) return;
             document.getElementById('palette-' + index).classList.add('answered');
         }
 
+        // 4. LOGIC FLAG
+        function toggleFlag(index) {
+            if(isReview) return;
+            var checkbox = document.getElementById('flag-' + index);
+            var paletteItem = document.getElementById('palette-' + index);
+            if (checkbox.checked) paletteItem.classList.add('flagged');
+            else paletteItem.classList.remove('flagged');
+        }
+
         function submitForm() {
-            if(confirm("Bạn có chắc chắn muốn nộp bài?")) {
+            if (confirm("Bạn có chắc chắn muốn nộp bài?")) {
                 document.getElementById("quizForm").submit();
             }
         }
 
-        // --- KHỞI CHẠY ---
         window.onload = function () {
             startTimer();
             updateNavButtons();
         };
-
     </script>
 </body>
 </html>
