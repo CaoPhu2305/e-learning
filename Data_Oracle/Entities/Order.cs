@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 namespace Data_Oracle.Entities
 {
 
-    [Table("ORDER")]
+    [Table("ORDERS")]
     public class Order
     {
 
         [Key, Column("ORDER_ID")]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public decimal OrderID { get; set; }
 
         [Column("USER_ID")]

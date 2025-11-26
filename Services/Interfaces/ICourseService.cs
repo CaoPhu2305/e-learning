@@ -25,6 +25,8 @@ namespace Services.Interfaces
         Lession GetLessionByLessionID(int LessionID);
 
         Quizzes getQuizzByChapterID(int ChapterID);
+
+        
      
     }
 }

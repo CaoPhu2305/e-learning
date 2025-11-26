@@ -13,6 +13,7 @@ using System.Linq;
 using System.Web;
 using WebActivatorEx;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
+using System.IO;
 
 
 
@@ -84,6 +85,13 @@ namespace e_learning.App_Start
 
             kernel.Bind<IUserAnswersRepository>().To<UserAnswersRepository>();
 
+            kernel.Bind<IOrdersRepository>().To<OrdersRepository>();
+
+            kernel.Bind<IOrderDetailsRepository>().To<OrderDetailsRepository>();
+
+            kernel.Bind<IEnrollmentsRepository>().To<EnrollmentsRepository>();
+
+
             // Service
             kernel.Bind<IAccountService>().To<AccountService>().Named("App");
 
@@ -99,6 +107,11 @@ namespace e_learning.App_Start
 
             kernel.Bind<IQuizzService>().To<QuizzService>();
 
+            kernel.Bind<ICourseRegistrationService>().To<CourseRegistrationService>();
+
+            kernel.Bind<IPaymentWebhookService>().To<ProcessPaymentWebhookService>();
+
+            kernel.Bind<IOderService>().To<OrderService>();
 
         }
 

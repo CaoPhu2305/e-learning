@@ -12,6 +12,11 @@ namespace e_learning.Models
 
         public List<ChapterViewModel> Chapters { get; set; }
 
+
+
+        public string BankCode { get; set; } = "MB"; // Ngân hàng thụ hưởng (Ví dụ MB, VCB)
+        public string BankAccount { get; set; } = "0000000000"; // Số tài khoản
+
         public CourseVideo(List<ChapterViewModel> chapters)
         {
             Chapters = chapters;

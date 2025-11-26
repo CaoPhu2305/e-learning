@@ -131,7 +131,7 @@
                     {
                         ORDER_DETAIL_ID = c.Decimal(nullable: false, precision: 18, scale: 2),
                         ORDER_ID = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        COURSE_ID = c.Decimal(name: "COURSE_ID ", nullable: false, precision: 18, scale: 2),
+                        COURSE_ID = c.Decimal(name: "COURSE_ID", nullable: false, precision: 18, scale: 2),
                         PRICE_AT_PURCHASE = c.Double(nullable: false),
                         PROMOTION_ID = c.Decimal(precision: 18, scale: 2),
                     })

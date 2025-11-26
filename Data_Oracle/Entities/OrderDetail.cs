@@ -13,14 +13,14 @@ namespace Data_Oracle.Entities
     {
 
         [Key, Column("ORDER_DETAIL_ID")]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public decimal OrderDetailID { get; set; }
 
         [Column("ORDER_ID")]
         [ForeignKey(nameof(Order))]
         public decimal OderID { get; set; }
         
-        [Column("COURSE_ID ")]
+        [Column("COURSE_ID")]
         [ForeignKey(nameof(Course))]
         public decimal CourseID { get; set; }
 
@@ -52,5 +52,17 @@ namespace Data_Oracle.Entities
             PriceAtPurchase = priceAtPurchase;
             PromotionID = promotionID;
         }
+
+        public OrderDetail(decimal orderDetaiID, decimal oderID, decimal courseID, double priceAtPurchase, decimal? promotionID)
+        {
+            OderID = oderID;
+            CourseID = courseID;
+            PriceAtPurchase = priceAtPurchase;
+            PromotionID = promotionID;
+            OrderDetailID = orderDetaiID;
+        }
+
+        public OrderDetail() { }
+
     }
 }

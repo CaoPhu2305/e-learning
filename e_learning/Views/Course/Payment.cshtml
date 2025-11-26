@@ -1,0 +1,147 @@
+﻿@{
+    ViewBag.Title = "Thanh toán đơn hàng";
+    Layout = "~/Views/Shared/_Layout_Student.cshtml";
+
+    var Course = ViewBag.Course as Data_Oracle.Entities.Course;
+    var QrUrl = ViewBag.QrUrl as string;
+    var Order = ViewBag.Order as Data_Oracle.Entities.Order;
+    var OrderId = Order.OrderID;
+    var ContentCK = $"HOCPHI {OrderId}";
+}
+
+<style>
+    /* Hiệu ứng nhấp nháy cho chữ "Đang chờ..." */
+    .blink-text {
+        animation: blinker 1.5s linear infinite;
+    }
+
+    @@keyframes blinker {
+        50% {
+            opacity: 0.5;
+        }
+    }
+
+    .cursor-pointer {
+        cursor: pointer;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="card shadow-lg border-0 overflow-hidden">
+                <div class="row g-0">
+
+                    <div class="col-md-6 bg-light p-4 d-flex flex-column justify-content-center">
+                        <h4 class="fw-bold text-primary mb-4">Thông tin thanh toán</h4>
+
+                        <div class="mb-3">
+                            <small class="text-muted text-uppercase">Khóa học</small>
+                            <h5 class="fw-bold">@Course.CourseName</h5>
+                        </div>
+
+                        <div class="mb-3">
+                            <small class="text-muted text-uppercase">Tổng tiền</small>
+                            <h4 class="fw-bold text-danger">@String.Format("{0:#,##0} VND", Course.Price)</h4>
+                        </div>
+
+                        <div class="mb-4">
+                            <small class="text-muted text-uppercase">Nội dung chuyển khoản</small>
+                            <div class="input-group mt-1">
+                                <input type="text" class="form-control fw-bold text-primary text-center" value="@ContentCK" id="txtContent" readonly>
+                                <button class="btn btn-outline-secondary" type="button" onclick="copyContent()">
+                                    <i class="bi bi-clipboard"></i> Copy
+                                </button>
+                            </div>
+                            <small class="text-muted fst-italic d-block mt-1 text-center">* Bắt buộc ghi đúng nội dung này</small>
+                        </div>
+
+                        <div class="alert alert-info border-0 small">
+                            <i class="bi bi-info-circle-fill me-1"></i>
+                            Hệ thống sẽ tự động kích hoạt khóa học sau khi nhận được tiền (khoảng 30s - 1 phút).
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 bg-white p-4 text-center d-flex flex-column align-items-center justify-content-center">
+                        <h5 class="fw-bold mb-3">Quét mã để thanh toán</h5>
+
+                        <div class="qr-frame p-2 border rounded shadow-sm mb-3 position-relative">
+
+
+                            [Image of QR code scanning on mobile phone]
+
+                            <img src="@QrUrl" class="img-fluid" alt="Mã QR VietQR" style="max-width: 100%; height: auto;">
+                        </div>
+
+                        <div id="paymentStatusArea" class="mt-2">
+                            <div id="statusPending">
+                                <div class="spinner-border text-primary mb-2" role="status" style="width: 2rem; height: 2rem;"></div>
+                                <p class="text-primary fw-bold blink-text mb-0">Đang chờ tiền về...</p>
+                                <small class="text-muted">Vui lòng không tắt trình duyệt</small>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <img src="https://vietqr.net/img/logo/vietqr.png" height="25" alt="VietQR Logo">
+                        </div>
+
+                        <button onclick="checkStatus()" class="btn btn-link text-muted btn-sm mt-2 text-decoration-none">
+                            <i class="bi bi-arrow-clockwise"></i> Kiểm tra thủ công
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var orderId = @OrderId;
+        var checkInterval;
+
+        $(document).ready(function() {
+            // Bắt đầu vòng lặp kiểm tra mỗi 3 giây
+            checkInterval = setInterval(checkStatus, 3000);
+        });
+
+        function checkStatus() {
+            $.ajax({
+                url: '@Url.Action("CheckOrderStatus", "Course")',
+                type: 'GET',
+                data: { orderId: orderId },
+                success: function(res) {
+                    if (res.status === 'SUCCESS') {
+                        // 1. Dừng vòng lặp
+                        clearInterval(checkInterval);
+
+                        // 2. Đổi giao diện sang thành công
+                        $('#paymentStatusArea').html(`
+                            <div class="animate__animated animate__bounceIn">
+                                <i class="bi bi-check-circle-fill text-success" style="font-size: 3.5rem;"></i>
+                                <h4 class="text-success fw-bold mt-2">Thanh toán thành công!</h4>
+                                <p class="text-muted">Đang chuyển vào lớp học...</p>
+                            </div>
+                        `);
+
+                        // 3. Chuyển trang sau 1.5 giây
+                        setTimeout(function() {
+                            window.location.href = res.redirectUrl;
+                        }, 1500);
+                    }
+                },
+                error: function(err) {
+                    console.log("Đang chờ kết nối...");
+                }
+            });
+        }
+
+        function copyContent() {
+            var copyText = document.getElementById("txtContent");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); // Cho mobile
+            navigator.clipboard.writeText(copyText.value);
+            alert("Đã copy nội dung: " + copyText.value);
+        }
+    </script>
+}

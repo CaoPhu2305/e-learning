@@ -3,6 +3,7 @@
     ViewBag.Title = "CourseLearn";
     Layout = "~/Views/Shared/_Layout_Student.cshtml";
     var CourseVideo = ViewBag.CourseVideo as e_learning.Models.CourseVideo;
+    bool isTrial = Model.IsTrialAvailable == true; // Oracle lưu bool là 1/0
 }
 
 @model Data_Oracle.Entities.Course
@@ -149,3 +150,27 @@
     <i class="fas fa-bars mr-3" id="open-sidebar"></i>
 </div>
 
+<div class="course-actions">
+
+    <form action="@Url.Action("BuyNow", "Course")" method="post" style="display:inline;">
+        <input type="hidden" name="courseId" value="@Model.CourseID" />
+        <button type="submit" class="btn btn-primary">MUA NGAY (@Model.Price)</button>
+    </form>
+
+    @if (isTrial)
+    {
+        <button type="button" id="btnTryFree" class="btn btn-outline-secondary small-trial-link">
+            Dùng thử miễn phí
+        </button>
+
+        <script>
+            $('#btnTryFree').click(function() {
+                // Gọi AJAX hoặc Submit Form đến Action JoinFreeTrial
+                $.post('@Url.Action("JoinFreeTrial", "Course")', { courseId: @Model.CourseID }, function(res) {
+                    window.location.href = '@Url.Action("CourseLearn", "Course", new { id = Model.CourseID })';
+                });
+            });
+        </script>
+    }
+
+</div>

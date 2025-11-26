@@ -1,8 +1,12 @@
-﻿@{
+﻿
+
+@{
     ViewBag.Title = "CourseDetail";
     Layout = "~/Views/Shared/_Layout_Student.cshtml";
 
     var CourseVideo = ViewBag.CourseVideo as e_learning.Models.CourseVideo;
+
+    bool isTrial = Model.IsTrialAvailable == true; // Oracle lưu bool là 1/0
 }
 
 @model Data_Oracle.Entities.Course
@@ -35,6 +39,37 @@
     <script src="~/Content/Assets/template03/js/masonry.pkgd.min.js"></script>
     @*<script src="~/Content/Assets/template03/js/main3.js"></script>*@
     <script src="~/Content/Assets/template03/js/owl.carousel.min.js"></script>
+
+    <script src="~/Content/Assets/template03/js/jquery-3.3.1.min.js"></script>
+    <script src="~/Content/Assets/template03/js/bootstrap.min.js"></script>
+    <script>
+     $(document).ready(function() {
+         console.log("Document ready!"); // Kiểm tra xem JS có chạy không
+
+         // Sự kiện nút Đăng ký ngay
+         $('.btn-register-trigger').click(function(e) {
+             e.preventDefault();
+             console.log("Button clicked!"); // Debug
+             $('#enrollModal').modal('show');
+         });
+
+         // Xử lý nút Dùng thử
+         $('#btnJoinTrial').click(function() {
+             var btn = $(this);
+             btn.prop('disabled', true).text('Đang xử lý...');
+
+             $.post('@Url.Action("JoinFreeTrial", "Course")', { courseId: @Model.CourseID }, function(res) {
+                 if(res.success) {
+                     window.location.href = res.redirectUrl;
+                 } else {
+                     alert(res.message);
+                     btn.prop('disabled', false).text('Thử lại');
+                 }
+             });
+         });
+     });
+    </script>
+
 }
 
 <section class="spad">
@@ -65,7 +100,7 @@
                                 <li class="list-group-item"><i class="fa fa-check-circle" style="color: #007bff; margin-right: 8px;"></i>@z.ChapterComplated</li>
                             }
                         </ul>
-                    </div>                
+                    </div>
                 </div>
             </div>
 
@@ -74,7 +109,8 @@
                 <div class="course-sidebar mb-4 p-4">
                     <h3 class="fw-bold mb-1"> @String.Format("{0:#,##0} VND", Model.Price)</h3>
                     <p class="text-muted mb-3">Ưu đãi trọn đời</p>
-                    <a href="@Url.Action("CourseLearn", "Course" , new {courseID = Model.CourseID})" class="btn btn-primary btn-lg w-100 mb-4 shadow-sm">
+
+                    <a href="javascript:void(0)" class="btn btn-primary btn-lg w-100 mb-4 shadow-sm btn-register-trigger">
                         Đăng ký ngay
                     </a>
 
@@ -161,7 +197,7 @@
 
                                     }
                                     <h6 class="content-heading">Skills you'll gain</h6>
-                                   
+
                                     <div class="skills-container">
                                         @foreach (var y in x.Lessions)
                                         {
@@ -169,7 +205,7 @@
                                         }
                                     </div>
 
-                                    
+
                                 </div>
                             </div>
                         }
@@ -187,3 +223,47 @@
         </div>
     </div>
 </section>
+
+
+<div id="enrollModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content shadow-lg border-0">
+
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title fw-bold">
+                    <i class="bi bi-cart-check"></i> Xác nhận đăng ký
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body p-4 text-center">
+                <h4 class="mb-3 text-primary fw-bold">@Model.CourseName</h4>
+
+                <div class="price-tag mb-4">
+                    <span class="text-muted text-decoration-line-through me-2">@(Model.Price * 1.2) VND</span>
+                    <span class="display-6 fw-bold text-danger">@String.Format("{0:#,##0} VND", Model.Price)</span>
+                </div>
+
+                <p class="text-muted mb-4">
+                    Bạn sẽ nhận được quyền truy cập trọn đời, chứng chỉ hoàn thành và hỗ trợ từ giảng viên.
+                </p>
+
+                <form action="@Url.Action("BuyNow", "Course", new {courseId = Model.CourseID})" method="post" id="formBuyNow">
+                    <input type="hidden" name="courseId" value="@Model.CourseID" />
+                    <button type="submit" class="btn btn-success btn-lg w-100 py-3 mb-3 fw-bold shadow-sm">
+                        <i class="bi bi-credit-card-2-front"></i> THANH TOÁN NGAY
+                    </button>
+                </form>
+
+                @if (isTrial)
+                {
+                    <div class="separator my-3 text-muted">HOẶC</div>
+                    <button type="button" id="btnJoinTrial" class="btn btn-outline-secondary w-100">
+                        <i class="bi bi-journal-bookmark"></i> Dùng thử miễn phí (Chapter 1)
+                    </button>
+                }
+            </div>
+
+        </div>
+    </div>
+</div>

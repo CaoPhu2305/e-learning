@@ -14,8 +14,6 @@ namespace Data_Oracle.Repositories
     {
         private readonly OracleDBContext _context;
 
-      
-
         public AccountRepositoty(OracleDBContext context)
         {
             _context = context;

@@ -47,6 +47,10 @@ namespace Data_Oracle.Entities
         [MaxLength(5)]
         public string Certificate { get; set; }
 
+        [Required]
+        [Column("IS_TRIAL_AVAILABLE")]
+        public Boolean IsTrialAvailable { get; set; }
+
 
 
         // nếu chia ra video và kèm 1 1 hay lớp nhiều người thêm type vào 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Data_Oracle.Entities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -13,7 +14,7 @@ namespace Data_Oracle.Entities
     {
         [Key]
         [Column("ENROLLMENTS_ID")]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public decimal EnrollmentsID { get; set; }
 
         [Required]

@@ -194,12 +194,14 @@
     <Compile Include="Controllers\CourseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LectureController.cs" />
+    <Compile Include="Controllers\PaymentWebhookController.cs" />
     <Compile Include="Controllers\QuizzController.cs" />
     <Compile Include="Controllers\StudentController.cs" />
     <Compile Include="Filters\AuthorizeRoleAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helper\StatusConst.cs" />
     <Compile Include="Models\AnswerViewModel.cs" />
     <Compile Include="Models\ChapterViewModel.cs" />
     <Compile Include="Models\CourseVideo.cs" />
@@ -207,6 +209,7 @@
     <Compile Include="Models\QuestionViewModel.cs" />
     <Compile Include="Models\QuizViewModel.cs" />
     <Compile Include="Models\RegisterViewModel.cs" />
+    <Compile Include="Models\WebhookDataModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\VideoUtil.cs" />
   </ItemGroup>
@@ -718,9 +721,11 @@
     <Content Include="Views\Course\_Sidebar.cshtml" />
     <Content Include="Views\Shared\_VideoPlayer.cshtml" />
     <Content Include="Views\Shared\_QuizPartial.cshtml" />
+    <Content Include="Views\Course\Payment.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\PaymentWebhook\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
