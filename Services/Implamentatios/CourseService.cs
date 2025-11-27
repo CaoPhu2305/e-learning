@@ -17,16 +17,24 @@ namespace Services.Implamentatios
         private readonly ILessionRepository _lessionRepository;
         private readonly IChapterRepository _chapterRepository;
         private readonly IQuizzRepository _quizzRepository;
+        private readonly IEnrollmentsRepository _enrollmentsRepository;
 
         public CourseService(ICourseRepository courseRepository, 
             IChapterRepository chapterRepository,
             ILessionRepository lessionRepository,
-            IQuizzRepository quizzRepository)
+            IQuizzRepository quizzRepository,
+            IEnrollmentsRepository enrollmentsRepository)
         {
             _courseRepository = courseRepository;
             _chapterRepository = chapterRepository;
             _lessionRepository = lessionRepository;
             this._quizzRepository = quizzRepository;
+            _enrollmentsRepository = enrollmentsRepository;
+        }
+
+        public List<Enrollments> GetEnrollmentsByUserId(int userId)
+        {
+            return _enrollmentsRepository.GetEnrollmentsByUserId(userId);
         }
 
         public List<Chapter> GetChapterByCouresID(int CourseId)
@@ -72,6 +80,16 @@ namespace Services.Implamentatios
 
             return x;
 
+        }
+
+        public Enrollments GetEnrollments(int userID, int courseID)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Course> GetUnpurchasedCourses(int userId)
+        {
+            return _courseRepository.GetCoursesNotEnrolled(userId);
         }
     }
 }

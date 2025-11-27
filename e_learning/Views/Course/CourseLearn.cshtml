@@ -1,176 +1,162 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "CourseLearn";
     Layout = "~/Views/Shared/_Layout_Student.cshtml";
     var CourseVideo = ViewBag.CourseVideo as e_learning.Models.CourseVideo;
-    bool isTrial = Model.IsTrialAvailable == true; // Oracle lưu bool là 1/0
+
+    // Lấy trạng thái từ Controller
+    bool isPurchased = ViewBag.IsPurchased != null && (bool)ViewBag.IsPurchased;
+    bool isTrialAvailable = Model.IsTrialAvailable == true;
 }
 
 @model Data_Oracle.Entities.Course
 
 @section StylesLearn{
     <link href="~/Content/Assets/template03/css/css2.css" rel="stylesheet" />
+    <style>
+        /* CSS cho phần thông báo khóa học */
+        .locked-notification {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
 }
-
 
 @section ScriptsLearn{
     <script src="~/Content/Assets/template03/js/js1.js"></script>
-
     <script type="text/javascript">
         $(document).ready(function () {
-
-            
             $('.lesson-link').on('click', function (e) {
-           
                 e.preventDefault();
-              
                 var url = $(this).attr('href');
-            
                 $('.lesson-item.active').removeClass('active');
-             
                 $(this).closest('.lesson-item').addClass('active');
-
                 $.get(url, function (data) {
-                    
                     $('#video-player-container').html(data);
                 });
             });
         });
-    </script>
 
+        function showBuyModal() {
+            // Scroll mượt xuống phần thông báo mua hàng
+            document.getElementById('buy-section').scrollIntoView({ behavior: 'smooth' });
+            // Hiệu ứng nhấp nháy nhẹ để chú ý
+            $('#buy-section').fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+        }
+    </script>
 }
 
 <div class="course-container">
-    <aside class="sidebar">
 
+    <aside class="sidebar">
         <div class="course-title">
             <span>@Model.CourseName</span>
+            @if (isPurchased)
+            {<span class="badge bg-success" style="font-size: 0.6em">Đã sở hữu</span> }
+            else if (isTrialAvailable)
+            { <span class="badge bg-warning text-dark" style="font-size: 0.6em">Học thử</span>}
             <i class="fas fa-times" id="close-sidebar"></i>
         </div>
 
-
         @foreach (var x in CourseVideo.Chapters)
         {
+            // Logic mở khóa: Đã mua HOẶC (Cho thử VÀ là Chapter 1)
+            bool isUnlocked = isPurchased || (isTrialAvailable && x.ChapterIndex == 1);
 
-            if (x.ChapterIndex == 1)
+            if (isUnlocked)
             {
-
                 <div class="module">
                     <div class="module-header" data-module="@x.ChapterIndex">
-                        <span class="module-name">
-                            <i class="fas fa-chevron-down"></i>
-                            @x.ChapterName
-                        </span>
+                        <span class="module-name"><i class="fas fa-chevron-down"></i> @x.ChapterName</span>
                         <i class="fas fa-check module-status"></i>
                     </div>
-
                     <ul class="lesson-list active" id="@x.ChapterID">
                         @foreach (var y in x.Lessions)
                         {
                             TimeSpan duration = e_learning.Util.VideoUtil.GetVideoDuration("~/Content/Assets/videos/course/" + y.VideoData);
-                            <a class="d-flex justify-content-between lesson-link lesson-item" href="@Url.Action("LoadVideoPartial" , "Course" , new {lessionID = y.LessionID})">
-                            <li class="active">
-
-                                <i class="fas fa-play-circle"></i>
-                                <span>@y.LessionName</span>
-
-                            </li>
+                            <a class="d-flex justify-content-between lesson-link lesson-item"
+                               href="@Url.Action("LoadVideoPartial", "Course", new {lessionID = y.LessionID})">
+                            <li class="active"><i class="fas fa-play-circle"></i> <span>@y.LessionName</span></li>
                             <span class="duration">@string.Format("{0}:{1:D2}", duration.Minutes, duration.Seconds)</span>
                             </a>
-
                         }
                         <a class="d-flex justify-content-between lesson-link lesson-item"
                            href="@Url.Action("LoadQuizPartial", "Course", new { chapterId = x.ChapterID })">
-
-                        <li class="">
-                            <i class="fas fa-question-circle" style="color: #ff9800;"></i> <span>Bài tập trắc nghiệm</span>
-                        </li>
+                        <li class=""><i class="fas fa-question-circle text-warning"></i> <span>Bài tập trắc nghiệm</span></li>
                         <span class="duration">Quiz</span>
                         </a>
                     </ul>
                 </div>
-
             }
             else
             {
                 <div class="module locked">
-                    <div class="module-header" data-module="@x.ChapterIndex">
-                        <span class="module-name">
-                            <i class="fas fa-chevron-right"></i>
-                            @x.ChapterName
-                        </span>
-                        <i class="fas fa-lock module-status ml-2" style="color: #181d38"></i>
+                    <div class="module-header" data-module="@x.ChapterIndex" style="cursor: not-allowed; opacity: 0.7;">
+                        <span class="module-name"><i class="fas fa-chevron-right"></i> @x.ChapterName</span>
+                        <i class="fas fa-lock module-status ml-2 text-dark"></i>
                     </div>
-
-                    <ul class="lesson-list " id="@x.ChapterID">
-
+                    <ul class="lesson-list" id="@x.ChapterID">
                         @foreach (var y in x.Lessions)
                         {
-
                             TimeSpan duration = e_learning.Util.VideoUtil.GetVideoDuration("~/Content/Assets/videos/course/" + y.VideoData);
-
-
-                            <li class="lesson-item active">
-                                <i class="fas fa-play-circle"></i>
-                                <span>@y.LessionName</span>
-                                <span class="duration">@string.Format("{0}:{1:D2}", duration.Minutes, duration.Seconds)</span>
-                            </li>
-                        }
-                    </ul>
+                            <div class="d-flex justify-content-between lesson-item" style="cursor: pointer;" onclick="showBuyModal()">
+                            <li><i class="fas fa-lock text-secondary"></i> <span class="text-muted">@y.LessionName</span></li>
+                            <span class="duration text-muted">@string.Format("{0}:{1:D2}", duration.Minutes, duration.Seconds)</span>
+                    </div>
+                }
+                        </ul>
                 </div>
             }
         }
+        </aside>
 
-    </aside>
+        <main class="content-area">
+            <div class="content-wrapper">
 
-    <main class="content-area">
-        <div class="content-wrapper">
-
-            @* THAY ĐỔI LỚN Ở ĐÂY:
-        1. Xóa @Html.Action("LoadVideoPartial", "Course")
-        2. Thêm một <div> với ID "video-player-container"
-            *@
-
-            <div id="video-player-container">
-
-                @{
-                    var firstLesson = CourseVideo.Chapters.FirstOrDefault()?
-                                                  .Lessions.FirstOrDefault();
-                    if (firstLesson != null)
-                    {
-                        @Html.Action("LoadVideoPartial", "Course", new { lessionID = firstLesson.LessionID });
+                <div id="video-player-container">
+                    @{
+                        if (isPurchased || isTrialAvailable)
+                        {
+                            var firstLesson = CourseVideo.Chapters.FirstOrDefault()?.Lessions.FirstOrDefault();
+                            if (firstLesson != null)
+                            {
+                                @Html.Action("LoadVideoPartial", "Course", new { lessionID = firstLesson.LessionID });
+                            }
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning text-center mt-5 p-5">
+                                <i class="fas fa-lock fa-3x mb-3 text-warning"></i>
+                                <h4>Khóa học này chưa được kích hoạt</h4>
+                                <p>Vui lòng đăng ký để truy cập nội dung bài học.</p>
+                            </div>
+                        }
                     }
+                </div>
+
+                @if (!isPurchased)
+                {
+                    <div id="buy-section" class="locked-notification">
+                        <h5 class="text-dark fw-bold"><i class="fas fa-crown text-warning"></i> Nâng cấp tài khoản</h5>
+                        <p class="text-muted mb-3">
+                            @(isTrialAvailable ? "Bạn đang học bản dùng thử (Chapter 1)." : "Bạn chưa sở hữu khóa học này.")
+                            Mua ngay để mở khóa toàn bộ nội dung và nhận chứng chỉ.
+                        </p>
+
+                        <form action="@Url.Action("BuyNow", "Course")" method="post" style="display:inline;">
+                            <input type="hidden" name="courseId" value="@Model.CourseID" />
+                            <button type="submit" class="btn btn-danger btn-lg shadow-sm px-5">
+                                <i class="fas fa-unlock me-2"></i> MỞ KHÓA NGAY (@String.Format("{0:#,##0} VND", Model.Price))
+                            </button>
+                        </form>
+                    </div>
                 }
+
             </div>
+        </main>
 
+        <i class="fas fa-bars mr-3" id="open-sidebar"></i>
         </div>
-        
-    </main>
-
-    <i class="fas fa-bars mr-3" id="open-sidebar"></i>
-</div>
-
-<div class="course-actions">
-
-    <form action="@Url.Action("BuyNow", "Course")" method="post" style="display:inline;">
-        <input type="hidden" name="courseId" value="@Model.CourseID" />
-        <button type="submit" class="btn btn-primary">MUA NGAY (@Model.Price)</button>
-    </form>
-
-    @if (isTrial)
-    {
-        <button type="button" id="btnTryFree" class="btn btn-outline-secondary small-trial-link">
-            Dùng thử miễn phí
-        </button>
-
-        <script>
-            $('#btnTryFree').click(function() {
-                // Gọi AJAX hoặc Submit Form đến Action JoinFreeTrial
-                $.post('@Url.Action("JoinFreeTrial", "Course")', { courseId: @Model.CourseID }, function(res) {
-                    window.location.href = '@Url.Action("CourseLearn", "Course", new { id = Model.CourseID })';
-                });
-            });
-        </script>
-    }
-
-</div>

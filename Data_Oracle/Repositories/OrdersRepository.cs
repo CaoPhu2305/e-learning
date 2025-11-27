@@ -53,6 +53,8 @@ namespace Data_Oracle.Repositories
                                                .FirstOrDefault(e => e.UserID == order.UserID
                                                                  && e.CourseID == orderDetail.CourseID);
 
+                    var tmp = enrollment;
+
                     if (enrollment != null)
                     {
                         enrollment.EnrollmentStatusID = StatusConst.ENROLL_ACTIVE;

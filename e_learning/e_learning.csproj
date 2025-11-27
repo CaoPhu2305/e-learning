@@ -206,6 +206,7 @@
     <Compile Include="Models\ChapterViewModel.cs" />
     <Compile Include="Models\CourseVideo.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
+    <Compile Include="Models\MyCourseViewModel.cs" />
     <Compile Include="Models\QuestionViewModel.cs" />
     <Compile Include="Models\QuizViewModel.cs" />
     <Compile Include="Models\RegisterViewModel.cs" />
@@ -722,6 +723,7 @@
     <Content Include="Views\Shared\_VideoPlayer.cshtml" />
     <Content Include="Views\Shared\_QuizPartial.cshtml" />
     <Content Include="Views\Course\Payment.cshtml" />
+    <Content Include="Views\Course\MyCourses.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

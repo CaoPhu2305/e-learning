@@ -20,5 +20,9 @@ namespace Data_Oracle.Interfaces
 
         void SaveChange();
 
+        List<Enrollments> GetEnrollmentsByUserId(int userId);
+
+        Enrollments GetEnrollmentByUserAndCourse(decimal userId, decimal courseId);
+
     }
 }

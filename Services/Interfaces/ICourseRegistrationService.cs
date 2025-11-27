@@ -22,5 +22,7 @@ namespace Services.Interfaces
 
         Order GetOrder(int orderID);
 
+
+        Enrollments GetEnrollment(int userId, int courseId);
     }
 }

@@ -25,18 +25,19 @@ namespace e_learning.Controllers
         public ActionResult StudentHomePage()
         {
 
-            List<Course> courses = _courseService.GetCourses();
+            int currentUserId = 23; // ID người dùng hiện tại (lấy từ Session)
 
-         
+            // Gọi hàm mới để lấy danh sách loại trừ
+            List<Course> courses = _courseService.GetUnpurchasedCourses(currentUserId);
 
-            if(courses != null)
+            if (courses != null && courses.Any())
             {
                 return View(courses);
             }
 
-            ViewBag.Error = "List Course Is Null";
-
-            return View();
+            // Nếu mua hết sạch rồi thì báo danh sách rỗng hoặc hiển thị thông báo khác
+            ViewBag.Error = "Bạn đã sở hữu tất cả khóa học hiện có!";
+            return View(new List<Course>());
         }
 
     }

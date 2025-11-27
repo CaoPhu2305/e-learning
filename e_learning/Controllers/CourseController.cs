@@ -21,17 +21,20 @@ namespace e_learning.Controllers
         private IQuizzService _quizzService;
         private ICourseRegistrationService _courseRegistrationService;
         private IOderService _oderService;
+        private IPaymentWebhookService _paymentWebhookService;
 
         public CourseController(ICourseService courseService,
             IQuizzService quizzService,
             ICourseRegistrationService courseRegistrationService,
-            IOderService oderService)
+            IOderService oderService,
+            IPaymentWebhookService paymentWebhookService)
             
         {
             _courseService = courseService;
             _quizzService = quizzService;
             _courseRegistrationService = courseRegistrationService;
             _oderService = oderService;
+            _paymentWebhookService = paymentWebhookService;
         }
 
         public ActionResult CourseDetail(int courseID)
@@ -85,6 +88,17 @@ namespace e_learning.Controllers
 
         public ActionResult CourseLearn(int courseID)
         {
+
+            var enrollment = _courseRegistrationService.GetEnrollment(23, courseID);
+
+            bool isPurchased = false;
+            if (enrollment != null && enrollment.EnrollmentStatusID == e_learning.Helper.StatusConst.ENROLL_ACTIVE)
+            {
+                isPurchased = true;
+            }
+
+            // Truyền biến này sang View
+            ViewBag.IsPurchased = isPurchased;
 
             Course course = _courseService.GetCourseByID(courseID);
 
@@ -248,25 +262,71 @@ namespace e_learning.Controllers
         [HttpGet]
         public ActionResult CheckOrderStatus(int orderId)
         {
-            // Query trực tiếp DB để lấy trạng thái mới nhất (quan trọng: dùng AsNoTracking để tránh cache)
-            // Giả sử _dbContext là biến context trong Controller của bạn
-            var order = _oderService.GetOrderByOrderID(orderId); // Hoặc query trực tiếp: _db.Orders.Find(orderId);
+            // 1. Lấy thông tin Order
+            var order = _oderService.GetOrderByOrderID(orderId);
 
+            // 2. Nếu thấy Order đã thành công
             if (order != null && order.OrderStatusID == StatusConst.ORDER_SUCCESS)
             {
-                // Nếu đã thành công -> Lấy CourseID để chuyển hướng
-                int courseId = (int)order.OrderDetails.First().CourseID;
+                // --- LOGIC TỰ SỬA LỖI (AUTO-FIX) ---
+                var detail = order.OrderDetails.First();
+
+                // Gọi Service kiểm tra và kích hoạt Enrollment ngay lập tức
+                // (Bạn cần thêm hàm này vào Service hoặc gọi Repo tương ứng)
+               
+                // -----------------------------------
 
                 return Json(new
                 {
                     status = "SUCCESS",
-                    redirectUrl = Url.Action("CourseLearn", "Course", new { courseID = courseId })
+                    redirectUrl = Url.Action("CourseLearn", "Course", new { courseID = detail.CourseID })
                 }, JsonRequestBehavior.AllowGet);
             }
 
-            // Nếu chưa thành công (Vẫn Pending)
             return Json(new { status = "PENDING" }, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpPost]
+        public ActionResult SimulatePaymentSuccess(int orderId)
+        {
+            // 1. Lấy thông tin đơn hàng để biết số tiền
+            var order = _oderService.GetOrderByOrderID(orderId); // Hoặc _ordersRepository.GetById(orderId)
+            if (order == null) return Json(new { success = false });
+
+            decimal amount = (decimal)order.OrderDetails.First().PriceAtPurchase;
+            string content = $"HOCPHI {orderId}"; // Giả lập nội dung chuyển khoản chuẩn
+
+            // 2. Gọi lại đúng cái Service xử lý Webhook bạn đã viết
+            // Lưu ý: Controller này phải có _courseRegistrationService được inject vào
+            bool result = _paymentWebhookService.ProcessPaymentWebhook(content, amount);
+
+            return Json(new { success = result });
+        }
+
+
+        public ActionResult MyCourses()
+        {
+            int userId = 23;
+
+            // Lấy List<Enrollments> từ Repository
+            var data = _courseService.GetEnrollmentsByUserId(userId);
+
+            // Map sang ViewModel
+            var viewModel = data.Select(e => new MyCourseViewModel
+            {
+                CourseID = e.Course.CourseID,
+                CourseName = e.Course.CourseName,
+                Image = e.Course.Image,
+                EnrollmentDate = e.EnrollmentsDate,
+                StatusName = e.EnrollmentStatusID == StatusConst.ENROLL_TRIAL ? "Dùng thử" : "Đã sở hữu",
+                IsTrial = e.EnrollmentStatusID == StatusConst.ENROLL_TRIAL
+            }).ToList();
+
+            var tmp = viewModel;
+
+            return View(viewModel);
+        }
+
 
 
     }

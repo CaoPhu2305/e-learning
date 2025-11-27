@@ -26,7 +26,11 @@ namespace Services.Interfaces
 
         Quizzes getQuizzByChapterID(int ChapterID);
 
-        
-     
+        List<Enrollments> GetEnrollmentsByUserId(int userId);
+
+        Enrollments GetEnrollments(int userID,int courseID);
+
+        List<Course> GetUnpurchasedCourses(int userId);
+
     }
 }

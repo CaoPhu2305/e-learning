@@ -17,5 +17,8 @@ namespace Data_Oracle.Interfaces
         Course GetCourseByID(int id);
 
         CourseVideo GetCourseVideoById(int id);
+
+        List<Course> GetCoursesNotEnrolled(int userId);
+
     }
 }

@@ -1,0 +1,176 @@
+﻿@model List<e_learning.Models.MyCourseViewModel>
+
+@{
+    ViewBag.Title = "Khóa học của tôi";
+    Layout = "~/Views/Shared/_Layout_Student.cshtml";
+}
+
+<style>
+    /* Header Section */
+    .my-learning-header {
+        background-color: #f8f9fa;
+        padding: 40px 0;
+        margin-bottom: 40px;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    /* Card Design */
+    .course-card {
+        border: none;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        background: #fff;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        height: 100%; /* Để các card bằng nhau */
+        display: flex;
+        flex-direction: column;
+    }
+
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+    .course-card-img {
+        height: 180px;
+        object-fit: cover;
+        width: 100%;
+    }
+
+    .course-card-body {
+        padding: 20px;
+        flex: 1; /* Đẩy footer xuống đáy */
+        display: flex;
+        flex-direction: column;
+    }
+
+    .course-title {
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+        color: #2c3e50;
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* Giới hạn 2 dòng */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .course-meta {
+        font-size: 0.85rem;
+        color: #7f8c8d;
+        margin-bottom: 15px;
+    }
+
+    /* Progress Bar giả lập */
+    .progress-container {
+        margin-top: auto; /* Đẩy xuống đáy body */
+    }
+
+    .progress {
+        height: 6px;
+        border-radius: 3px;
+        background-color: #e9ecef;
+        margin-bottom: 8px;
+    }
+
+    .progress-bar {
+        background-color: #007bff;
+        border-radius: 3px;
+    }
+
+    /* Button */
+    .btn-start-learning {
+        width: 100%;
+        border-radius: 8px;
+        font-weight: 600;
+        padding: 10px;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+    }
+
+    .badge-trial {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(255, 193, 7, 0.9);
+        color: #000;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: bold;
+    }
+</style>
+
+<div class="my-learning-header">
+    <div class="container">
+        <h2 class="fw-bold"><i class="bi bi-mortarboard-fill text-primary me-2"></i>Khóa học của tôi</h2>
+        <p class="text-muted mb-0">Chào mừng trở lại! Hãy tiếp tục hành trình chinh phục tri thức.</p>
+    </div>
+</div>
+
+<div class="container pb-5">
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row g-4">
+            @foreach (var item in Model)
+            {
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="course-card position-relative">
+
+                        @if (item.IsTrial)
+                        {
+                            <span class="badge-trial">DÙNG THỬ</span>
+                        }
+
+                        <img src="~/Content/Assets/images/courses/@item.Image" class="course-card-img" alt="@item.CourseName">
+
+                        <div class="course-card-body">
+                            <h5 class="course-title" title="@item.CourseName">@item.CourseName</h5>
+
+                            <div class="course-meta">
+                                <i class="bi bi-calendar3"></i> Đăng ký: @item.EnrollmentDate.ToString("dd/MM/yyyy")
+                            </div>
+
+                            <div class="progress-container">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="small text-muted">Tiến độ</span>
+                                    <span class="small fw-bold">0%</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                                </div>
+                            </div>
+
+                          
+
+                            <div class="mt-3">
+                                <a href="@Url.Action("CourseLearn", "Course", new { courseID = (int)item.CourseID })"
+                                   class="btn btn-primary btn-start-learning">
+                                    <i class="bi bi-play-circle-fill"></i> Vào học ngay
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+
+
+            [Image of empty box illustration]
+
+            <img src="https://cdni.iconscout.com/illustration/premium/thumb/empty-cart-2130356-1800917.png"
+                 alt="Empty" style="width: 200px; opacity: 0.7;">
+            <h4 class="mt-4 fw-bold text-muted">Bạn chưa đăng ký khóa học nào</h4>
+            <p class="mb-4">Khám phá hàng trăm khóa học hấp dẫn đang chờ bạn.</p>
+            <a href="@Url.Action("Index", "Home")" class="btn btn-primary px-4 py-2 rounded-pill">
+                Xem danh sách khóa học
+            </a>
+        </div>
+    }
+</div>

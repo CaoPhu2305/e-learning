@@ -66,6 +66,11 @@ namespace Services.Implamentatios
             return _ordersRepository.CreateBuyOrder(userId, courseId);
         }
 
+        public Enrollments GetEnrollment(int userId, int courseId)
+        {
+            return _enrollmentsRepository.GetEnrollmentByUserAndCourse((decimal)userId, (decimal)courseId);
+        }
+
         public Order GetOrder(int orderID)
         {
             return _ordersRepository.GetOrderByID((int)orderID);

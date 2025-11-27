@@ -1,6 +1,7 @@
 ﻿using Data_Oracle.Context;
 using Data_Oracle.Entities;
 using Data_Oracle.Interfaces;
+using e_learning.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,9 +53,43 @@ namespace Data_Oracle.Repositories
 
         }
 
+        public List<Enrollments> GetEnrollmentsByUserId(int userId)
+        {
+
+            try { 
+
+            // Dùng Include để Eager Load bảng Course
+                var tmp =  _dbContext.Enrollments
+                               .Include("Course") // Hoặc .Include(x => x.Course) nếu có using System.Data.Entity;
+                               .Where(e => e.UserID == userId
+                                        && (e.EnrollmentStatusID == StatusConst.ENROLL_ACTIVE
+                                         || e.EnrollmentStatusID == StatusConst.ENROLL_TRIAL))
+                               .OrderByDescending(e => e.EnrollmentsDate)
+                               .ToList();
+
+
+                return tmp;
+            }
+            catch (Exception ex)
+            {
+                var x = ex.Message;
+            }
+
+            return null;
+
+        }
+
         public void SaveChange()
         {
             _dbContext.SaveChanges();
+        }
+
+        public Enrollments GetEnrollmentByUserAndCourse(decimal userId, decimal courseId)
+        {
+            return _dbContext.Enrollments
+                             .Where(e => e.UserID == userId && e.CourseID == courseId)
+                             .OrderByDescending(e => e.EnrollmentsDate)
+                             .FirstOrDefault();
         }
     }
 }

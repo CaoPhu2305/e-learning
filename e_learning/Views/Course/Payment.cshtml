@@ -88,6 +88,12 @@
                         <button onclick="checkStatus()" class="btn btn-link text-muted btn-sm mt-2 text-decoration-none">
                             <i class="bi bi-arrow-clockwise"></i> Kiểm tra thủ công
                         </button>
+                        <div class="mt-4 pt-3 border-top w-100">
+                            <p class="text-muted small mb-1">--- Dành cho Developer ---</p>
+                            <button onclick="simulateSuccess()" class="btn btn-warning btn-sm fw-bold">
+                                <i class="bi bi-lightning-fill"></i> Kích hoạt ngay (Không cần CK)
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -95,15 +101,32 @@
     </div>
 </div>
 
+
+
 @section Scripts {
     <script>
         var orderId = @OrderId;
         var checkInterval;
 
         $(document).ready(function() {
-            // Bắt đầu vòng lặp kiểm tra mỗi 3 giây
+            // Vẫn giữ vòng lặp kiểm tra này, vì sau khi bấm nút Giả lập,
+            // vòng lặp này sẽ phát hiện ra DB đã thay đổi và tự chuyển trang.
             checkInterval = setInterval(checkStatus, 3000);
         });
+
+        // Hàm gọi API giả lập
+        function simulateSuccess() {
+            if(!confirm("Bạn muốn giả lập thanh toán thành công cho đơn này?")) return;
+
+            $.post('@Url.Action("SimulatePaymentSuccess", "Course")', { orderId: orderId }, function(res) {
+                if(res.success) {
+                    alert("Đã kích hoạt thành công! Đợi 1 xíu trang web sẽ tự chuyển.");
+                    // Không cần làm gì nữa, hàm checkStatus ở trên sẽ tự lo phần chuyển trang
+                } else {
+                    alert("Lỗi kích hoạt.");
+                }
+            });
+        }
 
         function checkStatus() {
             $.ajax({
@@ -112,10 +135,8 @@
                 data: { orderId: orderId },
                 success: function(res) {
                     if (res.status === 'SUCCESS') {
-                        // 1. Dừng vòng lặp
                         clearInterval(checkInterval);
 
-                        // 2. Đổi giao diện sang thành công
                         $('#paymentStatusArea').html(`
                             <div class="animate__animated animate__bounceIn">
                                 <i class="bi bi-check-circle-fill text-success" style="font-size: 3.5rem;"></i>
@@ -124,24 +145,13 @@
                             </div>
                         `);
 
-                        // 3. Chuyển trang sau 1.5 giây
                         setTimeout(function() {
                             window.location.href = res.redirectUrl;
                         }, 1500);
                     }
-                },
-                error: function(err) {
-                    console.log("Đang chờ kết nối...");
                 }
             });
         }
-
-        function copyContent() {
-            var copyText = document.getElementById("txtContent");
-            copyText.select();
-            copyText.setSelectionRange(0, 99999); // Cho mobile
-            navigator.clipboard.writeText(copyText.value);
-            alert("Đã copy nội dung: " + copyText.value);
-        }
     </script>
+
 }
