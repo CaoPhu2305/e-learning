@@ -1,4 +1,5 @@
 ﻿using Data_Oracle.Entities;
+using Services.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +32,16 @@ namespace Services.Interfaces
         Enrollments GetEnrollments(int userID,int courseID);
 
         List<Course> GetUnpurchasedCourses(int userId);
+
+        int CreateFullCourse(CourseDto dto, int lecturerId, string imagePath);
+
+        List<Course> GetLecturerCourses(int lecturerId);
+
+        void AddChapter(ChapterDto dto);
+
+        void AddLesson(LessonDto dto, string videoFileName);
+
+
 
     }
 }

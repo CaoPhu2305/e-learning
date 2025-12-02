@@ -22,6 +22,7 @@ namespace Services.Interfaces
 
         Order GetOrder(int orderID);
 
+        bool IsRegisterFreeTrial(int userId, int courseId);
 
         Enrollments GetEnrollment(int userId, int courseId);
     }

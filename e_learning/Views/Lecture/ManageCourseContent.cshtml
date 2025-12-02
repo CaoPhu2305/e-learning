@@ -1,0 +1,167 @@
+﻿@model List<Data_Oracle.Entities.Chapter>
+@{
+    ViewBag.Title = "Biên tập nội dung khóa học";
+    Layout = "~/Views/Shared/_Layout_Lecture.cshtml";
+    var Course = ViewBag.Course as Data_Oracle.Entities.Course;
+}
+
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <a href="@Url.Action("Dashboard")" class="text-muted small"><i class="bi bi-arrow-left"></i> Quay lại</a>
+            <h2 class="fw-bold text-primary">@Course.CourseName</h2>
+            <span class="badge bg-success">Đang biên tập</span>
+        </div>
+        <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#addChapterModal">
+            <i class="bi bi-folder-plus"></i> Thêm Chương Mới
+        </button>
+    </div>
+
+    <div class="accordion" id="courseAccordion">
+        @if (Model != null && Model.Count > 0)
+        {
+            foreach (var chapter in Model)
+            {
+                <div class="accordion-item border mb-3 rounded overflow-hidden shadow-sm">
+                    <h2 class="accordion-header" id="heading-@chapter.ChapterID">
+                        <button class="accordion-button collapsed bg-light text-dark fw-bold" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#collapse-@chapter.ChapterID">
+                            <span class="me-3 text-primary">Chương @chapter.ChapterIndex:</span>
+                            @chapter.ChapterName
+                            <span class="ms-auto badge bg-info text-dark" style="font-size: 0.7em; font-weight: normal;">
+                                Mục tiêu: @chapter.ChapterComplated
+                            </span>
+                        </button>
+                    </h2>
+
+                    <div id="collapse-@chapter.ChapterID" class="accordion-collapse collapse" data-bs-parent="#courseAccordion">
+                        <div class="accordion-body bg-white">
+
+                            <div class="text-end mb-3">
+                                <button class="btn btn-sm btn-outline-success"
+                                        onclick="openAddLessonModal(@chapter.ChapterID, @Course.CourseID)">
+                                    <i class="bi bi-play-btn-fill"></i> Thêm Bài Học
+                                </button>
+                            </div>
+
+                            @if (chapter.Lessions != null && chapter.Lessions.Count > 0)
+                            {
+                                <div class="list-group list-group-flush">
+                                    @foreach (var lesson in chapter.Lessions)
+                                    {
+                                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-file-play text-danger fs-4 me-3"></i>
+                                                <div>
+                                                    <h6 class="mb-0 fw-bold">@lesson.LessionName</h6>
+                                                    <small class="text-muted">Mục tiêu: @lesson.LessionComplate</small>
+                                                </div>
+                                            </div>
+                                            <span class="badge bg-light text-dark border">Video đã tải lên</span>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="text-center text-muted py-3">
+                                    <small>Chưa có bài học nào trong chương này.</small>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="alert alert-warning text-center">
+                <h4>Chưa có nội dung nào!</h4>
+                <p>Hãy bắt đầu bằng việc tạo Chương đầu tiên.</p>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="modal fade" id="addChapterModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="@Url.Action("CreateChapter")" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold">Thêm Chương Mới</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="CourseId" value="@Course.CourseID" />
+
+                    <div class="mb-3">
+                        <label class="form-label">Tên chương</label>
+                        <input type="text" name="ChapterName" class="form-control" placeholder="VD: Nhập môn C#" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Học xong chương này sẽ được gì?</label>
+                        <textarea name="ChapterCompleted" class="form-control" rows="2" placeholder="VD: Hiểu được cú pháp cơ bản..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-primary">Lưu Chương</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addLessonModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form action="@Url.Action("CreateLesson")" method="post" enctype="multipart/form-data">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title fw-bold">Thêm Bài Học Mới</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="CourseId" value="@Course.CourseID" />
+                    <input type="hidden" name="ChapterId" id="modalChapterId" value="" />
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Tên bài học</label>
+                                <input type="text" name="LessonName" class="form-control" required />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Mô tả</label>
+                                <textarea name="Description" class="form-control" rows="3"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Học xong bài này sẽ được gì?</label>
+                                <input type="text" name="LessonCompleted" class="form-control" placeholder="VD: Viết được hàm Hello World" required />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Upload Video (MP4)</label>
+                                <input type="file" name="VideoFile" class="form-control" accept="video/mp4,video/x-m4v,video/*" required />
+                                <small class="text-muted">Dung lượng tối đa: 100MB</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-success">Lưu Bài Học</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>// Hàm để truyền ChapterID vào Modal Bài học
+        function openAddLessonModal(chapterId, courseId) {
+            $('#modalChapterId').val(chapterId);
+            $('#addLessonModal').modal('show');
+        }</script>
+}

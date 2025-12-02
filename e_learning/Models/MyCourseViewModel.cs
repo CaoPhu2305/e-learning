@@ -15,5 +15,8 @@ namespace e_learning.Models
         public string StatusName { get; set; }
         public bool IsTrial { get; set; }
 
+        public decimal StatusID { get; set; }
+        public int ProgressPercent { get; set; }
+
     }
 }

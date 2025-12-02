@@ -24,5 +24,13 @@ namespace Data_Oracle.Interfaces
 
         Enrollments GetEnrollmentByUserAndCourse(decimal userId, decimal courseId);
 
+       
+
+        // Thêm mới
+        void Add(Enrollments enrollment);
+
+      
+
+
     }
 }

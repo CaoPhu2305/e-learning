@@ -76,34 +76,54 @@ namespace Services.Implamentatios
             return _ordersRepository.GetOrderByID((int)orderID);
         }
 
+        public bool IsRegisterFreeTrial(int userId, int courseId)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool RegisterFreeTrial(int userId, int courseId)
         {
-
-            var course = _courseRepository.GetCourseByID(userId);
-
-            if (course == null || course.IsTrialAvailable ==  false)
+            try
             {
+                // 1. Kiểm tra khóa học (Dùng CourseRepository)
+                var course = _courseRepository.GetCourseByID(courseId);
+
+                // Logic kiểm tra điều kiện nghiệp vụ
+                if (course == null || course.IsTrialAvailable == false)
+                {
+                    return false;
+                }
+
+                // 2. Kiểm tra đã đăng ký chưa (Dùng EnrollmentsRepository)
+                var existing = _enrollmentsRepository.GetEnrollmentByUserAndCourse(userId, courseId);
+                if (existing != null)
+                {
+                    return true; // Đã có rồi thì coi như thành công
+                }
+
+                // 3. Tạo đối tượng Enrollment mới
+                var enrollment = new Enrollments
+                {
+                    EnrollmentsName = "Trial - " + course.CourseName,
+                    UserID = (decimal)userId,
+                    CourseID = (decimal)courseId,
+                    EnrollmentsDate = DateTime.Now,
+
+                    // Logic nghiệp vụ: Gán trạng thái Trial
+                    EnrollmentStatusID = StatusConst.ENROLL_TRIAL
+                };
+
+                // 4. Lưu xuống DB thông qua Repository
+                _enrollmentsRepository.Add(enrollment);
+                _enrollmentsRepository.SaveChange();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                // Ghi log lỗi tại đây nếu cần (VD: _logger.LogError(ex))
                 return false;
             }
-
-
-            var enrollment_test = _enrollmentsRepository.GetEnrollmentsByUserID(userId);
-
-            if (enrollment_test != null) return true;
-
-            var enrollment = new Enrollments
-            {
-                EnrollmentsName = "Trial - " + course.CourseName,
-                UserID = userId,
-                CourseID = courseId,
-                EnrollmentsDate = DateTime.Now,
-                EnrollmentStatusID = StatusConst.ENROLL_TRIAL // Trạng thái Dùng thử
-            };
-
-            _enrollmentsRepository.Save(enrollment);
-
-            return true;
-            
         }
     }
 }

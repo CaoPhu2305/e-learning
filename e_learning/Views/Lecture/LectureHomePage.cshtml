@@ -1,8 +1,189 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "LectureHomePage";
     Layout = "~/Views/Shared/_Layout_Lecture.cshtml";
 }
 
-<h2>LectureHomePage</h2>
+<style>
+    .dashboard-card {
+        transition: transform 0.3s;
+        border: none;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #fff;
+    }
 
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+    .icon-box {
+        width: 64px;
+        height: 64px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        margin-bottom: 15px;
+    }
+
+    .welcome-banner {
+        background: linear-gradient(135deg, #06BBCC 0%, #2980b9 100%);
+        color: white;
+        border-radius: 15px;
+        padding: 40px;
+        margin-bottom: 40px;
+        box-shadow: 0 10px 20px rgba(6, 187, 204, 0.2);
+    }
+</style>
+
+<div class="container py-5">
+
+    <div class="welcome-banner wow fadeInUp" data-wow-delay="0.1s">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="fw-bold text-white mb-2">Xin chào, Giảng viên!</h1>
+                <p class="lead mb-0" style="opacity: 0.9;">Chúc bạn một ngày làm việc hiệu quả. Hãy kiểm tra tiến độ các khóa học nhé.</p>
+            </div>
+            <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                <a href="@Url.Action("CreateCourse", "Lecture")" class="btn btn-light btn-lg text-primary fw-bold px-4 shadow-sm">
+                    <i class="bi bi-plus-circle me-2"></i> Tạo khóa học mới
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+
+        <div class="col-md-4 wow fadeInUp" data-wow-delay="0.1s">
+            <div class="card dashboard-card shadow-sm h-100">
+                <div class="card-body p-4 d-flex align-items-center">
+                    <div class="icon-box bg-primary bg-opacity-10 text-primary me-4">
+                        <i class="bi bi-journal-bookmark-fill"></i>
+                    </div>
+                    <div>
+                        <p class="text-muted mb-1 small text-uppercase fw-bold">Khóa học của bạn</p>
+                        <h2 class="fw-bold mb-0">12</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 wow fadeInUp" data-wow-delay="0.2s">
+            <div class="card dashboard-card shadow-sm h-100">
+                <div class="card-body p-4 d-flex align-items-center">
+                    <div class="icon-box bg-success bg-opacity-10 text-success me-4">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                    <div>
+                        <p class="text-muted mb-1 small text-uppercase fw-bold">Tổng học viên</p>
+                        <h2 class="fw-bold mb-0">1,250</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 wow fadeInUp" data-wow-delay="0.3s">
+            <div class="card dashboard-card shadow-sm h-100">
+                <div class="card-body p-4 d-flex align-items-center">
+                    <div class="icon-box bg-warning bg-opacity-10 text-warning me-4">
+                        <i class="bi bi-star-fill"></i>
+                    </div>
+                    <div>
+                        <p class="text-muted mb-1 small text-uppercase fw-bold">Đánh giá trung bình</p>
+                        <h2 class="fw-bold mb-0">4.8 <small class="fs-6 text-muted">/ 5.0</small></h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8 wow fadeInUp" data-wow-delay="0.4s">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
+                    <h5 class="mb-0 fw-bold text-primary"><i class="bi bi-clock-history me-2"></i>Hoạt động gần đây</h5>
+                    <a href="@Url.Action("Dashboard", "Lecturer")" class="btn btn-sm btn-outline-primary rounded-pill px-3">Xem tất cả</a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="bg-light text-secondary">
+                                <tr>
+                                    <th class="ps-4 py-3">Tên khóa học</th>
+                                    <th>Ngày tạo</th>
+                                    <th>Trạng thái</th>
+                                    <th class="text-end pe-4">Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="ps-4">
+                                        <div class="fw-bold">Lập trình C# căn bản</div>
+                                        <small class="text-muted">ID: 101</small>
+                                    </td>
+                                    <td>20/11/2024</td>
+                                    <td><span class="badge bg-success bg-opacity-75">Đang hoạt động</span></td>
+
+                                    <td class="text-end pe-4">
+                                        <div class="btn-group" role="group">
+                                            <a href="#" class="btn btn-sm btn-light text-primary" title="Xem chi tiết">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-sm btn-light text-warning" title="Chỉnh sửa">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-sm btn-light text-danger" title="Xóa" onclick="return confirm('Bạn có chắc muốn xóa?')">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="ps-4 fw-bold">ASP.NET MVC nâng cao</td>
+                                    <td>25/11/2024</td>
+                                    <td><span class="badge bg-warning text-dark">Chờ duyệt</span></td>
+                                    <td class="text-end pe-4">
+                                        <div class="btn-group" role="group">
+                                            <a href="#" class="btn btn-sm btn-light text-primary"><i class="bi bi-eye"></i></a>
+                                            <a href="#" class="btn btn-sm btn-light text-warning"><i class="bi bi-pencil-square"></i></a>
+                                            <button class="btn btn-sm btn-light text-danger"><i class="bi bi-trash"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.5s">
+            <div class="card shadow-sm border-0 h-100 bg-light">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-lightbulb-fill text-warning me-2"></i>Mẹo giảng dạy</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-3 d-flex align-items-start">
+                            <i class="bi bi-check-circle-fill text-success mt-1 me-3"></i>
+                            <span class="text-muted">Cập nhật bài giảng thường xuyên để giữ tương tác.</span>
+                        </li>
+                        <li class="mb-3 d-flex align-items-start">
+                            <i class="bi bi-check-circle-fill text-success mt-1 me-3"></i>
+                            <span class="text-muted">Trả lời câu hỏi thảo luận trong vòng 24h.</span>
+                        </li>
+                        <li class="d-flex align-items-start">
+                            <i class="bi bi-check-circle-fill text-success mt-1 me-3"></i>
+                            <span class="text-muted">Thêm bài tập thực hành sau mỗi chương.</span>
+                        </li>
+                    </ul>
+                    <div class="mt-4 text-center">
+                        <img src="~/Content/Assets/template01/img/cat-3.jpg" class="img-fluid rounded-3 shadow-sm" alt="Teaching" style="opacity: 0.9; max-height: 150px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

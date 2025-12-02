@@ -83,6 +83,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
+    <Compile Include="DTO\ChapterDto.cs" />
+    <Compile Include="DTO\CourseDto.cs" />
+    <Compile Include="DTO\LessonDto.cs" />
     <Compile Include="Helper\StatusConst.cs" />
     <Compile Include="Implamentatios\AccountOracleService.cs" />
     <Compile Include="Implamentatios\AccountService .cs" />

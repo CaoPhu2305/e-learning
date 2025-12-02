@@ -56,26 +56,15 @@ namespace Data_Oracle.Repositories
         public List<Enrollments> GetEnrollmentsByUserId(int userId)
         {
 
-            try { 
+            // ID của các trạng thái cần lấy (Trial, Pending, Active)
+            // Nếu StatusConst nằm ở Web, bạn không gọi được ở đây -> Dùng số cứng hoặc chuyển StatusConst sang project Data
+            decimal[] validStatuses = { 1, 2, 3 };
 
-            // Dùng Include để Eager Load bảng Course
-                var tmp =  _dbContext.Enrollments
-                               .Include("Course") // Hoặc .Include(x => x.Course) nếu có using System.Data.Entity;
-                               .Where(e => e.UserID == userId
-                                        && (e.EnrollmentStatusID == StatusConst.ENROLL_ACTIVE
-                                         || e.EnrollmentStatusID == StatusConst.ENROLL_TRIAL))
-                               .OrderByDescending(e => e.EnrollmentsDate)
-                               .ToList();
-
-
-                return tmp;
-            }
-            catch (Exception ex)
-            {
-                var x = ex.Message;
-            }
-
-            return null;
+            return _dbContext.Enrollments
+                             .Include("Course") // QUAN TRỌNG: Load kèm bảng Course
+                             .Where(e => e.UserID == userId && validStatuses.Contains(e.EnrollmentStatusID))
+                             .OrderByDescending(e => e.EnrollmentsDate)
+                             .ToList();
 
         }
 
@@ -90,6 +79,11 @@ namespace Data_Oracle.Repositories
                              .Where(e => e.UserID == userId && e.CourseID == courseId)
                              .OrderByDescending(e => e.EnrollmentsDate)
                              .FirstOrDefault();
+        }
+
+        public void Add(Enrollments enrollment)
+        {
+            _dbContext.Enrollments.Add(enrollment);
         }
     }
 }

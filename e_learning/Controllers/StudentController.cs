@@ -25,7 +25,7 @@ namespace e_learning.Controllers
         public ActionResult StudentHomePage()
         {
 
-            int currentUserId = 23; // ID người dùng hiện tại (lấy từ Session)
+            int currentUserId = Convert.ToInt32(Session["UserID"]); // ID người dùng hiện tại (lấy từ Session)
 
             // Gọi hàm mới để lấy danh sách loại trừ
             List<Course> courses = _courseService.GetUnpurchasedCourses(currentUserId);

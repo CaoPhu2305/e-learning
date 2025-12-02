@@ -204,7 +204,11 @@
     <Compile Include="Helper\StatusConst.cs" />
     <Compile Include="Models\AnswerViewModel.cs" />
     <Compile Include="Models\ChapterViewModel.cs" />
+    <Compile Include="Models\CourseCreateViewModel.cs" />
     <Compile Include="Models\CourseVideo.cs" />
+    <Compile Include="Models\CreateChapterViewModel.cs" />
+    <Compile Include="Models\CreateLessonViewModel.cs" />
+    <Compile Include="Models\LecturerCourseViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\MyCourseViewModel.cs" />
     <Compile Include="Models\QuestionViewModel.cs" />
@@ -724,6 +728,9 @@
     <Content Include="Views\Shared\_QuizPartial.cshtml" />
     <Content Include="Views\Course\Payment.cshtml" />
     <Content Include="Views\Course\MyCourses.cshtml" />
+    <Content Include="Views\Lecture\CreateCourse.cshtml" />
+    <Content Include="Views\Lecture\Dashboard.cshtml" />
+    <Content Include="Views\Lecture\ManageCourseContent.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -17,5 +17,13 @@ namespace e_learning.Helper
         public const int ORDER_SUCCESS = 2;   // Thành công
         public const int ORDER_FAILED = 3;    // Thất bại
 
+        public static string GetStatusName(decimal statusId)
+        {
+            if (statusId == StatusConst.ENROLL_TRIAL) return "Dùng thử";
+            if (statusId == StatusConst.ENROLL_PENDING) return "Chờ thanh toán";
+            if (statusId == StatusConst.ENROLL_ACTIVE) return "Đã sở hữu";
+            return "";
+        }
+
     }
 }

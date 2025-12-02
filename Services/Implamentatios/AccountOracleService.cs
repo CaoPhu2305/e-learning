@@ -73,7 +73,7 @@ namespace Services.Implamentatios
 
                     decimal userID = _userRepository.GetUserByEmail(email).UserID;
 
-                    UserRole newUserRole = new UserRole(userID, 3);
+                    UserRole newUserRole = new UserRole(userID, 2);
 
                     var tmp = newUserRole;
 

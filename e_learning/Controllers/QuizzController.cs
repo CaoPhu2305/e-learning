@@ -114,7 +114,9 @@ namespace e_learning.Controllers
 
             var b = passString;
 
-            var attempt = new QuizAttempt(QuizID, 23, DateTime.Now, score, passString);
+            int userID = Convert.ToInt32(Session["UserID"]);
+
+            var attempt = new QuizAttempt(QuizID, userID, DateTime.Now, score, passString);
 
 
 

@@ -89,7 +89,9 @@ namespace e_learning.Controllers
         public ActionResult CourseLearn(int courseID)
         {
 
-            var enrollment = _courseRegistrationService.GetEnrollment(23, courseID);
+            int userID = Convert.ToInt32(Session["UserID"]);
+
+            var enrollment = _courseRegistrationService.GetEnrollment(userID, courseID);
 
             bool isPurchased = false;
             if (enrollment != null && enrollment.EnrollmentStatusID == e_learning.Helper.StatusConst.ENROLL_ACTIVE)
@@ -155,7 +157,7 @@ namespace e_learning.Controllers
             Quizzes quizze = _courseService.getQuizzByChapterID(ChapterID);
 
             ViewBag.Quizzes = quizze;
-            int currentUserId = 23; // Thay bằng Session UserID thực tế
+            int currentUserId = Convert.ToInt32(Session["UserID"]); // Thay bằng Session UserID thực tế
             var latestAttempt = _quizzService.GetLatestAttempt(currentUserId, (int)quizze.QuizzesID);
             ViewBag.LatestAttempt = latestAttempt;
             return PartialView("_QuizPartial");
@@ -188,10 +190,18 @@ namespace e_learning.Controllers
         [HttpPost]
         public ActionResult JoinFreeTrial(int courseId)
         {
-            int userId = 23; // Lấy từ Session
-            bool success = _courseRegistrationService.RegisterFreeTrial(userId, courseId);
+            // Lấy UserID từ Session (Logic giao diện)
+            if (Session["UserID"] == null)
+            {
+                return Json(new { success = false, message = "Vui lòng đăng nhập!" });
+            }
 
-            if (success)
+            int userId = Convert.ToInt32(Session["UserID"]);
+
+            // Gọi Service xử lý
+            bool isSuccess = _courseRegistrationService.RegisterFreeTrial(userId, courseId);
+
+            if (isSuccess)
             {
                 return Json(new
                 {
@@ -201,14 +211,16 @@ namespace e_learning.Controllers
             }
             else
             {
-                return Json(new { success = false, message = "Lỗi: Bạn đã đăng ký rồi hoặc khóa học không cho dùng thử." });
+                return Json(new { success = false, message = "Khóa học này không hỗ trợ học thử hoặc lỗi hệ thống." });
             }
         }
+
+       
 
         [HttpPost]
         public ActionResult BuyNow(int courseId)
         {
-            int userId = 23;
+            int userId = Convert.ToInt32(Session["UserID"]);
             // Tạo đơn hàng Pending
             int orderId = _courseRegistrationService.CreateBuyOrder(userId, courseId);
 
@@ -234,8 +246,8 @@ namespace e_learning.Controllers
             string template = "compact2";
 
             // Ép kiểu double sang decimal (vì PriceAtPurchase trong Entity là double)
-            //decimal amount = (decimal)order.OrderDetails.First().PriceAtPurchase;
-            decimal amount = 1;
+            decimal amount = (decimal)order.OrderDetails.First().PriceAtPurchase;
+            //decimal amount = 1;
             // [QUAN TRỌNG] Mã hóa nội dung để xử lý dấu cách (Space)
             string rawContent = $"HOCPHI {orderId}";
             string content = HttpUtility.UrlEncode(rawContent);
@@ -304,30 +316,33 @@ namespace e_learning.Controllers
         }
 
 
+
         public ActionResult MyCourses()
         {
-            int userId = 23;
+            int userId = 23; // Lấy từ Session
 
-            // Lấy List<Enrollments> từ Repository
-            var data = _courseService.GetEnrollmentsByUserId(userId);
+            // 1. Gọi Service lấy dữ liệu thô (Entity)
+            var rawData = _courseService.GetEnrollmentsByUserId(userId);
 
-            // Map sang ViewModel
-            var viewModel = data.Select(e => new MyCourseViewModel
+            // 2. Mapping từ Entity sang ViewModel (Logic hiển thị nằm ở đây)
+            var viewModel = rawData.Select(e => new MyCourseViewModel
             {
-                CourseID = e.Course.CourseID,
+                CourseID = e.Course.CourseID,     // Lấy từ bảng Course được Include
                 CourseName = e.Course.CourseName,
                 Image = e.Course.Image,
                 EnrollmentDate = e.EnrollmentsDate,
-                StatusName = e.EnrollmentStatusID == StatusConst.ENROLL_TRIAL ? "Dùng thử" : "Đã sở hữu",
-                IsTrial = e.EnrollmentStatusID == StatusConst.ENROLL_TRIAL
-            }).ToList();
 
-            var tmp = viewModel;
+                // Gán StatusID
+                StatusID = e.EnrollmentStatusID,
+
+                // Logic hiển thị tên trạng thái
+                StatusName = StatusConst.GetStatusName(e.EnrollmentStatusID),
+
+                IsTrial = e.EnrollmentStatusID == StatusConst.ENROLL_TRIAL,
+                ProgressPercent = 0
+            }).ToList();
 
             return View(viewModel);
         }
-
-
-
     }
 }

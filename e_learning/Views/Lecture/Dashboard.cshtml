@@ -1,0 +1,126 @@
+﻿
+
+@model List<Data_Oracle.Entities.Course>
+
+@{
+    ViewBag.Title = "Quản lý khóa học";
+    Layout = "~/Views/Shared/_Layout_Lecture.cshtml";
+}
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-primary"><i class="bi bi-briefcase-fill"></i> Quản lý giảng dạy</h2>
+            <p class="text-muted mb-0">Xin chào, Giảng viên!</p>
+        </div>
+        <a href="@Url.Action("CreateCourse", "Lecturer")" class="btn btn-primary btn-lg shadow-sm">
+            <i class="bi bi-plus-lg"></i> Tạo khóa học mới
+        </a>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-info text-white border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-uppercase opacity-75">Tổng số khóa học</h6>
+                    <h2 class="display-6 fw-bold">@Model.Count</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-uppercase opacity-75">Tổng học viên</h6>
+                    <h2 class="display-6 fw-bold">--</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-warning text-dark border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-uppercase opacity-75">Doanh thu tạm tính</h6>
+                    <h2 class="display-6 fw-bold">0 đ</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0 fw-bold">Danh sách khóa học của tôi</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light text-muted">
+                        <tr>
+                            <th class="ps-4">Thông tin khóa học</th>
+                            <th>Giá bán</th>
+                            <th>Trạng thái</th>
+                            <th class="text-end pe-4">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4">
+                                        <div class="d-flex align-items-center">
+                                            <img src="~/Content/Assets/images/courses/@item.Image"
+                                                 alt="@item.CourseName"
+                                                 class="rounded shadow-sm me-3"
+                                                 style="width: 80px; height: 50px; object-fit: cover;">
+                                            <div>
+                                                <div class="fw-bold text-dark">@item.CourseName</div>
+                                                <small class="text-muted">ID: @item.CourseID</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="fw-bold text-success">
+                                        @String.Format("{0:#,##0} đ", item.Price)
+                                    </td>
+                                    <td>
+                                        @if (item.IsTrialAvailable)
+                                        {
+                                            <span class="badge bg-primary">Có học thử</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">Không học thử</span>
+                                        }
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <div class="btn-group">
+                                            <a href="@Url.Action("CourseLearn", "Course", new {courseId = (int)item.CourseID})"
+                                               class="btn btn-sm btn-outline-secondary" title="Xem chi tiết">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-sm btn-outline-primary" title="Chỉnh sửa">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <button class="btn btn-sm btn-outline-danger" title="Xóa" onclick="return confirm('Bạn có chắc muốn xóa?')">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4" class="text-center py-5 text-muted">
+                                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                    Bạn chưa tạo khóa học nào. Hãy bắt đầu ngay!
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+

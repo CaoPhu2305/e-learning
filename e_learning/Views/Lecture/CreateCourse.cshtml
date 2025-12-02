@@ -1,0 +1,107 @@
+﻿@model e_learning.Models.CourseCreateViewModel
+
+@{
+    ViewBag.Title = "Tạo khóa học mới";
+    Layout = "~/Views/Shared/_Layout_Lecture.cshtml";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <div class="mb-3">
+                <a href="@Url.Action("Dashboard", "Lecturer")" class="text-decoration-none text-muted">
+                    <i class="bi bi-arrow-left"></i> Quay lại Dashboard
+                </a>
+            </div>
+
+            <div class="card shadow-lg border-0 rounded-3">
+                <div class="card-header bg-primary text-white py-3">
+                    <h4 class="mb-0 fw-bold"><i class="bi bi-plus-circle-dotted me-2"></i>Khởi tạo khóa học mới</h4>
+                </div>
+
+                <div class="card-body p-5">
+                    @using (Html.BeginForm("CreateCourse", "Lecturer", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-dark">Tên khóa học <span class="text-danger">*</span></label>
+                            @Html.TextBoxFor(m => m.CourseName, new { @class = "form-control form-control-lg", placeholder = "VD: Lập trình Python cho người mới bắt đầu" })
+                            @Html.ValidationMessageFor(m => m.CourseName, "", new { @class = "text-danger small" })
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-dark">Giá bán (VND) <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    @Html.TextBoxFor(m => m.Price, new { @class = "form-control", type = "number", min = "0", placeholder = "0" })
+                                    <span class="input-group-text">₫</span>
+                                </div>
+                                @Html.ValidationMessageFor(m => m.Price, "", new { @class = "text-danger small" })
+                            </div>
+
+                            <div class="col-md-6 d-flex align-items-center">
+                                <div class="form-check form-switch mt-4 ms-2 p-3 bg-light rounded w-100">
+                                    @Html.CheckBoxFor(m => m.IsTrialAvailable, new { @class = "form-check-input ms-0 me-2", style = "float:none;" })
+                                    <label class="form-check-label fw-bold cursor-pointer" for="IsTrialAvailable">Cho phép học thử (Chapter 1)</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-dark">Mô tả ngắn <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = "5", placeholder = "Giới thiệu tóm tắt về nội dung và mục tiêu khóa học..." })
+                            @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger small" })
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-dark">Ảnh bìa khóa học</label>
+                            <div class="upload-box border border-2 border-dashed rounded-3 p-4 text-center bg-light" onclick="document.getElementById('ImageFile').click();" style="cursor: pointer;">
+                                <i class="bi bi-cloud-upload fs-1 text-muted"></i>
+                                <p class="text-muted mt-2 mb-0">Nhấn để chọn ảnh hoặc kéo thả vào đây</p>
+                                <input type="file" name="ImageFile" id="ImageFile" class="d-none" accept="image/*" onchange="previewImage(this)" />
+                            </div>
+
+                            <div id="preview-container" class="mt-3 text-center" style="display:none;">
+                                <img id="img-preview" src="#" class="img-fluid rounded shadow-sm" style="max-height: 200px;" />
+                                <button type="button" class="btn btn-sm btn-outline-danger mt-2" onclick="removeImage()"><i class="bi bi-trash"></i> Xóa ảnh</button>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="@Url.Action("Dashboard", "Lecturer")" class="btn btn-light border px-4">Hủy bỏ</a>
+                            <button type="submit" class="btn btn-primary px-5 fw-bold shadow-sm">
+                                <i class="bi bi-check-lg"></i> TẠO KHÓA HỌC
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#img-preview').attr('src', e.target.result);
+                    $('#preview-container').fadeIn();
+                    $('.upload-box').hide();
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function removeImage() {
+            $('#ImageFile').val('');
+            $('#preview-container').hide();
+            $('.upload-box').fadeIn();
+        }
+    </script>
+}

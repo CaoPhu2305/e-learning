@@ -119,37 +119,51 @@
                 <div class="col-lg-3 col-md-4 col-sm-6">
                     <div class="course-card position-relative">
 
-                        @if (item.IsTrial)
+                        @if (item.StatusID == 1) // Trial
                         {
                             <span class="badge-trial">DÙNG THỬ</span>
+                        }
+                        else if (item.StatusID == 2) // Pending
+                        {
+                            <span class="badge-trial" style="background: #ffc107; color: #000;">CHỜ THANH TOÁN</span>
                         }
 
                         <img src="~/Content/Assets/images/courses/@item.Image" class="course-card-img" alt="@item.CourseName">
 
                         <div class="course-card-body">
-                            <h5 class="course-title" title="@item.CourseName">@item.CourseName</h5>
-
-                            <div class="course-meta">
-                                <i class="bi bi-calendar3"></i> Đăng ký: @item.EnrollmentDate.ToString("dd/MM/yyyy")
-                            </div>
-
-                            <div class="progress-container">
-                                <div class="d-flex justify-content-between mb-1">
-                                    <span class="small text-muted">Tiến độ</span>
-                                    <span class="small fw-bold">0%</span>
-                                </div>
-                                <div class="progress">
-                                    <div class="progress-bar" role="progressbar" style="width: 0%"></div>
-                                </div>
-                            </div>
-
-                          
-
+                            <h5 class="course-title">@item.CourseName</h5>
                             <div class="mt-3">
-                                <a href="@Url.Action("CourseLearn", "Course", new { courseID = (int)item.CourseID })"
-                                   class="btn btn-primary btn-start-learning">
-                                    <i class="bi bi-play-circle-fill"></i> Vào học ngay
-                                </a>
+                                @if (item.StatusID == 3) // ACTIVE: Đã mua xong xuôi
+                                {
+                                    <a href="@Url.Action("CourseLearn", "Course", new { courseID = (int)item.CourseID })"
+                                       class="btn btn-primary btn-start-learning">
+                                        <i class="bi bi-play-circle-fill"></i> Vào học ngay
+                                    </a>
+                                }
+                                else if (item.StatusID == 1) // TRIAL: Dùng thử
+                                {
+                                    <div class="d-flex gap-2">
+                                        <a href="@Url.Action("CourseLearn", "Course", new { courseID = (int)item.CourseID })"
+                                           class="btn btn-outline-primary w-50">
+                                            Học thử
+                                        </a>
+                                        <form action="@Url.Action("BuyNow", "Course")" method="post" class="w-50">
+                                            <input type="hidden" name="courseId" value="@item.CourseID" />
+                                            <button type="submit" class="btn btn-success w-100">Mua</button>
+                                        </form>
+                                    </div>
+                                }
+                                else if (item.StatusID == 2) // PENDING: Kẹt thanh toán
+                                {
+                                    <p class="text-danger small mb-2"><i class="bi bi-exclamation-circle"></i> Bạn chưa hoàn tất thanh toán</p>
+
+                                    <form action="@Url.Action("BuyNow", "Course")" method="post">
+                                        <input type="hidden" name="courseId" value="@item.CourseID" />
+                                        <button type="submit" class="btn btn-warning w-100 fw-bold">
+                                            <i class="bi bi-credit-card-2-front"></i> Thanh toán ngay
+                                        </button>
+                                    </form>
+                                }
                             </div>
                         </div>
                     </div>
