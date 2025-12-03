@@ -88,62 +88,59 @@ namespace e_learning.Controllers
 
         public ActionResult CourseLearn(int courseID)
         {
-
+            // 1. Kiểm tra đăng nhập (Thêm cái này cho an toàn, tránh lỗi null session)
+            if (Session["UserID"] == null) return RedirectToAction("Login", "Account");
             int userID = Convert.ToInt32(Session["UserID"]);
 
-            var enrollment = _courseRegistrationService.GetEnrollment(userID, courseID);
+            // --- [LOGIC CŨ GIỮ NGUYÊN + BỔ SUNG LOGIC MỚI] ---
 
-            bool isPurchased = false;
-            if (enrollment != null && enrollment.EnrollmentStatusID == e_learning.Helper.StatusConst.ENROLL_ACTIVE)
-            {
-                isPurchased = true;
-            }
+            // A. Kiểm tra xem đã mua chưa (Logic cũ)
+            var enrollment = _courseRegistrationService.GetEnrollment(userID, courseID);
+            bool isEnrolled = (enrollment != null && enrollment.EnrollmentStatusID == e_learning.Helper.StatusConst.ENROLL_ACTIVE);
+
+            // B. Kiểm tra xem có phải chủ sở hữu (Giảng viên) không (Logic mới)
+            // Bạn cần thêm hàm này vào Service (xem hướng dẫn phía dưới)
+            bool isOwner = _courseService.IsCourseOwner(userID, courseID);
+
+            // C. Quyết định cuối cùng: Đã mua HOẶC Là chủ sở hữu
+            bool isPurchased = isEnrolled || isOwner;
 
             // Truyền biến này sang View
             ViewBag.IsPurchased = isPurchased;
 
+            // --- [KẾT THÚC PHẦN SỬA ĐỔI] ---
+
             Course course = _courseService.GetCourseByID(courseID);
 
-            if (course.CourseType.CourcesTypeID == 1)
+            if (course != null && course.CourseType.CourcesTypeID == 1)
             {
-
                 Data_Oracle.Entities.CourseVideo courseVideo = _courseService.GetCourseVideoByID(courseID);
 
-                List<Chapter> chapters = _courseService.GetChapterByCouresID((int)courseVideo.CourseVideoID);
-
-                List<ChapterViewModel> chapterViewModel = new List<ChapterViewModel>();
-
-                foreach (Chapter chapter in chapters)
+                // Kiểm tra null để tránh lỗi crash nếu dữ liệu video chưa có
+                if (courseVideo != null)
                 {
+                    List<Chapter> chapters = _courseService.GetChapterByCouresID((int)courseVideo.CourseVideoID);
+                    List<ChapterViewModel> chapterViewModel = new List<ChapterViewModel>();
 
-                    ChapterViewModel chapterViewModelTmp = new ChapterViewModel();
+                    foreach (Chapter chapter in chapters)
+                    {
+                        ChapterViewModel chapterViewModelTmp = new ChapterViewModel();
+                        List<Lession> lessions = _courseService.GetLessionByChapterId((int)chapter.ChapterID);
 
-                    List<Lession> lessions = _courseService.GetLessionByChapterId((int)chapter.ChapterID);
+                        chapterViewModelTmp.InitValue(chapter.ChapterID, chapter.CourcesVideoID, chapter.ChapterName, chapter.ChapterIndex, chapter.ChapterComplated);
+                        chapterViewModelTmp.Lessions = lessions;
+                        chapterViewModel.Add(chapterViewModelTmp);
+                    }
 
-                    chapterViewModelTmp.InitValue(chapter.ChapterID, chapter.CourcesVideoID, chapter.ChapterName, chapter.ChapterIndex, chapter.ChapterComplated);
+                    Models.CourseVideo courseVideo1 = new Models.CourseVideo(chapterViewModel);
+                    courseVideo1.InitValue(courseVideo.CourseVideoID, courseVideo.CourcesVideoName, courseVideo.CourcesVideoLevel, courseVideo.CourcesVideoDuration, courseVideo.NumberOfLession, courseVideo.NumberOfStudent);
 
-                    chapterViewModelTmp.Lessions = lessions;
-
-                    chapterViewModel.Add(chapterViewModelTmp);
-
+                    ViewBag.CourseVideo = courseVideo1;
                 }
-
-                Models.CourseVideo courseVideo1 = new Models.CourseVideo(chapterViewModel);
-
-                courseVideo1.InitValue(courseVideo.CourseVideoID, courseVideo.CourcesVideoName, courseVideo.CourcesVideoLevel, courseVideo.CourcesVideoDuration, courseVideo.NumberOfLession, courseVideo.NumberOfStudent);
-
-
-                var tmp1 = courseVideo1;
-
-                ViewBag.CourseVideo = courseVideo1;
-               
-
             }
 
             if (course != null)
             {
-
-                
                 return View(course);
             }
 

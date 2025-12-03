@@ -201,16 +201,20 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helper\NoCacheAttribute.cs" />
     <Compile Include="Helper\StatusConst.cs" />
+    <Compile Include="Models\AnswerItem.cs" />
     <Compile Include="Models\AnswerViewModel.cs" />
     <Compile Include="Models\ChapterViewModel.cs" />
     <Compile Include="Models\CourseCreateViewModel.cs" />
     <Compile Include="Models\CourseVideo.cs" />
     <Compile Include="Models\CreateChapterViewModel.cs" />
     <Compile Include="Models\CreateLessonViewModel.cs" />
+    <Compile Include="Models\CreateQuizViewModel.cs" />
     <Compile Include="Models\LecturerCourseViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\MyCourseViewModel.cs" />
+    <Compile Include="Models\QuestionItem.cs" />
     <Compile Include="Models\QuestionViewModel.cs" />
     <Compile Include="Models\QuizViewModel.cs" />
     <Compile Include="Models\RegisterViewModel.cs" />
@@ -731,6 +735,7 @@
     <Content Include="Views\Lecture\CreateCourse.cshtml" />
     <Content Include="Views\Lecture\Dashboard.cshtml" />
     <Content Include="Views\Lecture\ManageCourseContent.cshtml" />
+    <Content Include="Views\Lecture\CreateQuiz.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

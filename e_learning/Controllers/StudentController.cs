@@ -1,5 +1,6 @@
 ﻿using Data_Oracle.Entities;
 using e_learning.Filters;
+using e_learning.Helper;
 using Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Web.Mvc;
 
 namespace e_learning.Controllers
 {
+    [NoCache]
     public class StudentController : Controller
     {
         // GET: Student

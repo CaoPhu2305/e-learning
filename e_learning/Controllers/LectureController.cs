@@ -1,6 +1,8 @@
 ﻿using e_learning.Filters;
+using e_learning.Helper;
 using e_learning.Models;
 using Services.DTO;
+using Services.Implamentatios;
 using Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -11,31 +13,63 @@ using System.Web.Mvc;
 
 namespace e_learning.Controllers
 {
+    [NoCache]
     public class LectureController : Controller
     {
         // GET: Lecture
         //[AuthorizeRole("Course", "View")]       
 
         private readonly ICourseService _courseService;
+        private readonly IQuizzService _quizzService;
 
-        public LectureController(ICourseService courseService)
+        public LectureController(ICourseService courseService,
+            IQuizzService quizzService)
         {
             _courseService = courseService;
+            _quizzService = quizzService;
         }
 
         public ActionResult LectureHomePage()
         {
-            if (Session["UserID"] == null)
+            if (Session["UserID"] == null) return RedirectToAction("Login", "Account");
+            int lecturerId = Convert.ToInt32(Session["UserID"]);
+
+            // 1. Lấy danh sách khóa học
+            var myCourses = _courseService.GetLecturerCourses(lecturerId);
+
+            // 2. Tính toán thống kê
+            ViewBag.TotalCourses = myCourses.Count;
+
+            // [MỚI] Gọi Service lấy số liệu thật
+            ViewBag.TotalStudents = _courseService.GetTotalStudents(lecturerId);
+
+            // Phần đánh giá trung bình tạm thời để fake hoặc tính sau
+            ViewBag.AvgRating = 4.8;
+
+            return View(myCourses);
+        }
+
+        public ActionResult EditCourseContent(int id)
+        {
+            // Chuyển hướng sang trang ManageCourseContent bạn đã làm
+            return RedirectToAction("ManageCourseContent", new { id = id });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteCourse(int id)
+        {
+            try
             {
-                return RedirectToAction("Login", "Account");
+                _courseService.DeleteCourse(id);
+                TempData["Success"] = "Đã xóa khóa học thành công!";
             }
-
-            // Sau này có thể lấy thống kê thật từ Service để truyền vào ViewBag
-            // Ví dụ:
-            // ViewBag.TotalCourses = _courseService.CountCourses(userId);
-            // ViewBag.TotalStudents = ...
-
-            return View();
+            catch (Exception ex)
+            {
+                // Hiển thị thông báo lỗi chi tiết hơn nếu cần
+                TempData["Error"] = "Không thể xóa: " + ex.Message;
+            }
+            return RedirectToAction("LectureHomePage"); // Hoặc Dashboard
         }
 
         public ActionResult Dashboard()
@@ -99,6 +133,13 @@ namespace e_learning.Controllers
 
                     // Gọi Service (Hàm này sẽ trả về CourseID vừa tạo)
                     // Bạn cần sửa lại Service một chút để trả về ID thay vì void
+
+                    var a = lecturerId;
+
+                    var b = courseDto;
+
+                    var c = fileName;
+
                      int newCourseId = _courseService.CreateFullCourse(courseDto, lecturerId, fileName);
 
                     if (newCourseId > 0)
@@ -190,6 +231,126 @@ namespace e_learning.Controllers
             }
 
             return RedirectToAction("ManageCourseContent", new { id = model.CourseId });
+        }
+
+
+        public ActionResult CreateQuiz(int chapterId)
+        {
+            ViewBag.ChapterId = chapterId;
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult EditQuiz(int quizId)
+        {
+            var quiz = _quizzService.GetQuizzes(quizId);
+            if (quiz == null) return HttpNotFound("Không tìm thấy bài kiểm tra.");
+
+            var questionsEntity = _quizzService.GetQuestions(quizId);
+
+            var model = new CreateQuizViewModel
+            {
+                ChapterId = (int)quiz.ChapterID,
+                QuizName = quiz.QuizzesName,
+                TimeLimit =60,
+                PassScore = quiz.Pass_Score_Percent,
+                Questions = new List<QuestionItem>()
+            };
+
+            // 4. Map danh sách Câu hỏi và Đáp án
+            if (questionsEntity != null && questionsEntity.Count > 0)
+            {
+                foreach (var q in questionsEntity)
+                {
+                    // Tạo item câu hỏi cho ViewModel
+                    var qItem = new QuestionItem
+                    {
+                        Content = q.QuestionsContent,
+                        Answers = new List<AnswerItem>()
+                    };
+
+                    // Lấy danh sách đáp án của câu hỏi này từ Service
+                    var answersEntity = _quizzService.GetAnswerOptions((int)q.QuestionsID);
+
+                    if (answersEntity != null)
+                    {
+                        foreach (var a in answersEntity)
+                        {
+                            qItem.Answers.Add(new AnswerItem
+                            {
+                                Content = a.AnswerOptionsName,
+                                // Entity của bạn là bool? hay string? 
+                                // Nếu DB là bool (1/0) và Entity là bool:
+                                IsCorrect = a.IsCorrect == true
+                            });
+                        }
+                    }
+
+                    // Thêm vào danh sách câu hỏi của Model
+                    model.Questions.Add(qItem);
+                }
+            }
+
+            // 5. Truyền QuizId qua ViewBag để dùng cho việc Update sau này
+            ViewBag.ChapterId = (int)quiz.ChapterID;
+            ViewBag.QuizId = quizId;
+
+            // 6. Trả về View "CreateQuiz" nhưng kèm dữ liệu đã có
+            return View("CreateQuiz", model);
+        }
+
+        [HttpPost]
+        public ActionResult SaveQuiz(CreateQuizViewModel model, int? quizId)
+        {
+            // 1. Validate
+            if (model.Questions == null || model.Questions.Count == 0)
+            {
+                return Json(new { success = false, message = "Đề thi phải có ít nhất 1 câu hỏi!" });
+            }
+
+            try
+            {
+                // 2. MAPPING: Chuyển từ ViewModel (Web) -> DTO (Data)
+                // Đoạn này fix lỗi "Không có DTO" của bạn
+                var quizDto = new QuizDto
+                {
+                    ChapterId = model.ChapterId,
+                    QuizName = model.QuizName,
+                    TimeLimit = model.TimeLimit,
+                    PassScore = model.PassScore,
+
+                    // Map danh sách câu hỏi lồng nhau
+                    Questions = model.Questions.Select(q => new QuestionDto
+                    {
+                        Content = q.Content,
+                        Answers = q.Answers.Select(a => new AnswerDto
+                        {
+                            Content = a.Content,
+                            IsCorrect = a.IsCorrect
+                        }).ToList()
+                    }).ToList()
+                };
+
+                // 3. GỌI SERVICE
+                bool result;
+                if (quizId.HasValue && quizId.Value > 0)
+                {
+                    // Update
+                    result = _quizzService.UpdateFullQuiz(quizId.Value, quizDto);
+                }
+                else
+                {
+                    // Create mới
+                    result = _quizzService.CreateFullQuiz(quizDto);
+                }
+
+                if (result) return Json(new { success = true });
+                else return Json(new { success = false, message = "Lỗi khi lưu dữ liệu." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Lỗi server: " + ex.Message });
+            }
         }
 
 

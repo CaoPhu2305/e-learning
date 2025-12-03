@@ -46,5 +46,15 @@ namespace Data_Oracle.Interfaces
         void AddChapter(Chapter chapter);
 
         void AddLesson(Lession lesson);
+
+        Course GetLatestCourseByName(string courseName);
+
+        void DeleteCourse(int courseId);
+
+        bool CheckCourseOwner(decimal userId, decimal courseId);
+
+        int CountTotalStudentsByLecturer(int lecturerId);
+
+        decimal GetNextChapterId();
     }
 }

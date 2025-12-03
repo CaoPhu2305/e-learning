@@ -1,189 +1,332 @@
-﻿@{
-    ViewBag.Title = "LectureHomePage";
+﻿@model List<Data_Oracle.Entities.Course>
+
+@{
+    ViewBag.Title = "Bảng điều khiển giảng viên";
     Layout = "~/Views/Shared/_Layout_Lecture.cshtml";
 }
 
 <style>
-    .dashboard-card {
-        transition: transform 0.3s;
-        border: none;
-        border-radius: 12px;
-        overflow: hidden;
+    /* 1. Card Thống Kê */
+    .stat-card {
         background: #fff;
+        border-radius: 16px;
+        border: none;
+        padding: 25px;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        height: 100%;
+        display: flex;
+        align-items: center;
     }
 
-        .dashboard-card:hover {
+        .stat-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 30px rgba(0,0,0,0.1);
         }
 
-    .icon-box {
-        width: 64px;
-        height: 64px;
+    .stat-icon-wrapper {
+        width: 60px;
+        height: 60px;
         border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 28px;
-        margin-bottom: 15px;
+        margin-right: 20px;
+        flex-shrink: 0; /* Không bị co lại */
     }
 
+    /* Màu sắc riêng cho từng card */
+    .stat-blue .stat-icon-wrapper {
+        background: rgba(13, 110, 253, 0.1);
+        color: #0d6efd;
+    }
+
+    .stat-green .stat-icon-wrapper {
+        background: rgba(25, 135, 84, 0.1);
+        color: #198754;
+    }
+
+    .stat-orange .stat-icon-wrapper {
+        background: rgba(255, 193, 7, 0.1);
+        color: #ffc107;
+    }
+
+    .stat-content h3 {
+        font-weight: 800;
+        margin: 0;
+        font-size: 2rem;
+        color: #333;
+    }
+
+    .stat-content p {
+        margin: 0;
+        color: #888;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* 2. Banner Chào Mừng */
     .welcome-banner {
         background: linear-gradient(135deg, #06BBCC 0%, #2980b9 100%);
         color: white;
-        border-radius: 15px;
+        border-radius: 16px;
         padding: 40px;
         margin-bottom: 40px;
-        box-shadow: 0 10px 20px rgba(6, 187, 204, 0.2);
+        box-shadow: 0 10px 25px rgba(6, 187, 204, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* 3. Bảng Danh Sách */
+    .table-card {
+        border-radius: 16px;
+        border: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        overflow: hidden;
+        background: #fff;
+    }
+
+    /* Badge trạng thái đẹp hơn */
+    .badge-soft-success {
+        background-color: rgba(25, 135, 84, 0.1);
+        color: #198754;
+        padding: 6px 12px;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        display: inline-block;
+    }
+
+    .badge-soft-warning {
+        background-color: rgba(255, 193, 7, 0.15);
+        color: #d68e00;
+        padding: 6px 12px;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        display: inline-block;
+    }
+
+    /* Nút hành động */
+    .btn-icon {
+        width: 32px;
+        height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        border: none;
+        transition: all 0.2s;
+        margin: 0 2px;
+        text-decoration: none !important;
+    }
+
+        .btn-icon:hover {
+            transform: scale(1.1);
+        }
+
+    .btn-view {
+        background: #e7f1ff;
+        color: #0d6efd;
+    }
+
+    .btn-edit {
+        background: #fff3cd;
+        color: #ffc107;
+    }
+
+    .btn-delete {
+        background: #f8d7da;
+        color: #dc3545;
+    }
+
+    .course-img {
+        width: 60px;
+        height: 40px;
+        object-fit: cover;
+        border-radius: 6px;
     }
 </style>
 
 <div class="container py-5">
 
     <div class="welcome-banner wow fadeInUp" data-wow-delay="0.1s">
-        <div class="row align-items-center">
+        <div class="row align-items-center position-relative" style="z-index: 1;">
             <div class="col-lg-8">
-                <h1 class="fw-bold text-white mb-2">Xin chào, Giảng viên!</h1>
-                <p class="lead mb-0" style="opacity: 0.9;">Chúc bạn một ngày làm việc hiệu quả. Hãy kiểm tra tiến độ các khóa học nhé.</p>
+                <h1 class="fw-bold mb-2">Xin chào, Giảng viên!</h1>
+                <p class="lead mb-0 opacity-75">Chúc bạn một ngày làm việc hiệu quả.</p>
             </div>
             <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
-                <a href="@Url.Action("CreateCourse", "Lecture")" class="btn btn-light btn-lg text-primary fw-bold px-4 shadow-sm">
-                    <i class="bi bi-plus-circle me-2"></i> Tạo khóa học mới
+                <a href="@Url.Action("CreateCourse", "Lecture")" class="btn btn-light text-primary fw-bold px-4 py-2 shadow-sm rounded-pill border-0">
+                    <i class="bi bi-plus-circle-fill me-2"></i> Tạo khóa học mới
                 </a>
             </div>
         </div>
     </div>
 
     <div class="row g-4 mb-5">
-
         <div class="col-md-4 wow fadeInUp" data-wow-delay="0.1s">
-            <div class="card dashboard-card shadow-sm h-100">
-                <div class="card-body p-4 d-flex align-items-center">
-                    <div class="icon-box bg-primary bg-opacity-10 text-primary me-4">
-                        <i class="bi bi-journal-bookmark-fill"></i>
-                    </div>
-                    <div>
-                        <p class="text-muted mb-1 small text-uppercase fw-bold">Khóa học của bạn</p>
-                        <h2 class="fw-bold mb-0">12</h2>
-                    </div>
+            <div class="stat-card stat-blue">
+                <div class="stat-icon-wrapper"><i class="bi bi-journal-bookmark-fill"></i></div>
+                <div class="stat-content">
+                    <p>Khóa học</p>
+                    <h3>@Model.Count</h3>
                 </div>
             </div>
         </div>
-
         <div class="col-md-4 wow fadeInUp" data-wow-delay="0.2s">
-            <div class="card dashboard-card shadow-sm h-100">
-                <div class="card-body p-4 d-flex align-items-center">
-                    <div class="icon-box bg-success bg-opacity-10 text-success me-4">
-                        <i class="bi bi-people-fill"></i>
-                    </div>
-                    <div>
-                        <p class="text-muted mb-1 small text-uppercase fw-bold">Tổng học viên</p>
-                        <h2 class="fw-bold mb-0">1,250</h2>
-                    </div>
+            <div class="stat-card stat-green">
+                <div class="stat-icon-wrapper"><i class="bi bi-people-fill"></i></div>
+                <div class="stat-content">
+                    <p>Học viên</p>
+                    <h3>@(ViewBag.TotalStudents ?? "0")</h3>
                 </div>
             </div>
         </div>
-
         <div class="col-md-4 wow fadeInUp" data-wow-delay="0.3s">
-            <div class="card dashboard-card shadow-sm h-100">
-                <div class="card-body p-4 d-flex align-items-center">
-                    <div class="icon-box bg-warning bg-opacity-10 text-warning me-4">
-                        <i class="bi bi-star-fill"></i>
-                    </div>
-                    <div>
-                        <p class="text-muted mb-1 small text-uppercase fw-bold">Đánh giá trung bình</p>
-                        <h2 class="fw-bold mb-0">4.8 <small class="fs-6 text-muted">/ 5.0</small></h2>
-                    </div>
+            <div class="stat-card stat-orange">
+                <div class="stat-icon-wrapper"><i class="bi bi-star-fill"></i></div>
+                <div class="stat-content">
+                    <p>Đánh giá</p>
+                    <h3>@(ViewBag.AvgRating ?? "0.0") <small class="fs-6 text-muted fw-normal">/5</small></h3>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row g-4">
-        <div class="col-lg-8 wow fadeInUp" data-wow-delay="0.4s">
-            <div class="card shadow-sm border-0 h-100">
-                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
-                    <h5 class="mb-0 fw-bold text-primary"><i class="bi bi-clock-history me-2"></i>Hoạt động gần đây</h5>
-                    <a href="@Url.Action("Dashboard", "Lecturer")" class="btn btn-sm btn-outline-primary rounded-pill px-3">Xem tất cả</a>
+    <div class="row wow fadeInUp" data-wow-delay="0.4s">
+        <div class="col-12">
+            <div class="card table-card h-100">
+                <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold text-dark"><i class="bi bi-list-task me-2 text-primary"></i>Danh sách khóa học</h5>
+                    <div class="input-group w-auto d-none d-md-flex">
+                        <input type="text" class="form-control form-control-sm border-end-0" placeholder="Tìm kiếm..." style="border-radius: 20px 0 0 20px; padding-left: 15px;">
+                        <span class="input-group-text bg-white border-start-0" style="border-radius: 0 20px 20px 0;"><i class="bi bi-search"></i></span>
+                    </div>
                 </div>
+
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-hover mb-0 align-middle">
-                            <thead class="bg-light text-secondary">
+                            <thead class="bg-light text-secondary small text-uppercase">
                                 <tr>
-                                    <th class="ps-4 py-3">Tên khóa học</th>
-                                    <th>Ngày tạo</th>
-                                    <th>Trạng thái</th>
-                                    <th class="text-end pe-4">Hành động</th>
+                                    <th class="ps-4 py-3" style="width: 40%;">Khóa học</th>
+                                    <th style="width: 15%;">Giá bán</th>
+                                    <th style="width: 15%;">Ngày tạo</th>
+                                    <th style="width: 15%;">Trạng thái</th>
+                                    <th style="width: 15%;">Dùng thử</th>
+                                    <th class="text-end pe-4" style="width: 15%;">Hành động</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td class="ps-4">
-                                        <div class="fw-bold">Lập trình C# căn bản</div>
-                                        <small class="text-muted">ID: 101</small>
-                                    </td>
-                                    <td>20/11/2024</td>
-                                    <td><span class="badge bg-success bg-opacity-75">Đang hoạt động</span></td>
+                                @if (Model != null && Model.Any())
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        <tr class="course-row">
+                                            <td class="ps-4">
+                                                <div class="d-flex align-items-center">
+                                                    <img src="~/Content/Assets/images/courses/@item.Image"
+                                                         class="course-img shadow-sm me-3"
+                                                         onerror="this.src='https://via.placeholder.com/60x40?text=IMG'" />
+                                                    <div>
+                                                        <div class="fw-bold text-dark text-truncate" style="max-width: 200px;">@item.CourseName</div>
+                                                        <small class="text-muted">ID: @((int)item.CourseID)</small>
+                                                    </div>
+                                                </div>
+                                            </td>
 
-                                    <td class="text-end pe-4">
-                                        <div class="btn-group" role="group">
-                                            <a href="#" class="btn btn-sm btn-light text-primary" title="Xem chi tiết">
-                                                <i class="bi bi-eye"></i>
-                                            </a>
-                                            <a href="#" class="btn btn-sm btn-light text-warning" title="Chỉnh sửa">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </a>
-                                            <button type="button" class="btn btn-sm btn-light text-danger" title="Xóa" onclick="return confirm('Bạn có chắc muốn xóa?')">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
+                                            <td class="fw-bold text-primary">
+                                                @String.Format("{0:#,##0} đ", item.Price)
+                                            </td>
 
-                                <tr>
-                                    <td class="ps-4 fw-bold">ASP.NET MVC nâng cao</td>
-                                    <td>25/11/2024</td>
-                                    <td><span class="badge bg-warning text-dark">Chờ duyệt</span></td>
-                                    <td class="text-end pe-4">
-                                        <div class="btn-group" role="group">
-                                            <a href="#" class="btn btn-sm btn-light text-primary"><i class="bi bi-eye"></i></a>
-                                            <a href="#" class="btn btn-sm btn-light text-warning"><i class="bi bi-pencil-square"></i></a>
-                                            <button class="btn btn-sm btn-light text-danger"><i class="bi bi-trash"></i></button>
-                                        </div>
-                                    </td>
-                                </tr>
+                                            <td class="text-muted small">
+                                                @(item.CreatedDate.HasValue ? item.CreatedDate.Value.ToString("dd/MM/yyyy") : "--")
+                                            </td>
+
+                                            <td>
+                                                @if (item.CourseStatusID == 1)
+                                                {
+                                                    <span class="badge-soft-warning">
+                                                        <i class="bi bi-clock-history me-1"></i> Chờ duyệt
+                                                    </span>
+                                                }
+                                                else if (item.CourseStatusID == 2)
+                                                {
+                                                    <span class="badge-soft-success">
+                                                        <i class="bi bi-check-circle-fill me-1"></i> Đã duyệt
+                                                    </span>
+                                                }
+                                                else if (item.CourseStatusID == 3)
+                                                {
+                                                    <span class="badge bg-danger bg-opacity-10 text-danger px-3 py-2 rounded-pill fw-bold" style="font-size: 0.8rem;">
+                                                        <i class="bi bi-x-circle-fill me-1"></i> Bị từ chối
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-secondary bg-opacity-25 text-secondary px-3 py-2 rounded-pill fw-bold">Nháp</span>
+                                                }
+                                            </td>
+
+                                            <td>
+                                                @if (item.IsTrialAvailable == true)
+                                                {
+                                                    <span class="badge-soft-success">Công khai</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge-soft-warning">Cho Phép Thử</span>
+                                                }
+                                            </td>
+
+                                            <td class="text-end pe-4">
+                                                <div class="d-flex justify-content-end gap-1">
+
+                                                    <a href="@Url.Action("CourseLearn", "Course", new { courseID = (int)item.CourseID })"
+                                                       target="_blank" class="btn-icon btn-view" title="Xem trước nội dung">
+                                                        <i class="bi bi-eye"></i>
+                                                    </a>
+
+                                                    <a href="@Url.Action("ManageCourseContent", "Lecture", new { id = (int)item.CourseID })"
+                                                       class="btn-icon btn-edit" title="Biên tập nội dung">
+                                                        <i class="bi bi-pencil-square"></i>
+                                                    </a>
+
+                                                    <form action="@Url.Action("DeleteCourse", "Lecture")" method="post" style="display:inline-block;">
+                                                        @Html.AntiForgeryToken()
+                                                        <input type="hidden" name="id" value="@((int)item.CourseID)" />
+                                                        <button type="submit" class="btn-icon btn-delete" title="Xóa khóa học"
+                                                                onclick="return confirm('CẢNH BÁO: Bạn có chắc chắn muốn xóa khóa học này không?');">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </form>
+
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="5" class="text-center py-5">
+                                            <div class="text-muted opacity-50 mb-3"><i class="bi bi-inbox fs-1"></i></div>
+                                            <p class="text-muted mb-2">Bạn chưa có khóa học nào.</p>
+                                            <a href="@Url.Action("CreateCourse", "Lecture")" class="btn btn-sm btn-primary rounded-pill px-4">Tạo ngay</a>
+                                        </td>
+                                    </tr>
+                                }
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
-
-        <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.5s">
-            <div class="card shadow-sm border-0 h-100 bg-light">
-                <div class="card-body p-4">
-                    <h5 class="fw-bold mb-3"><i class="bi bi-lightbulb-fill text-warning me-2"></i>Mẹo giảng dạy</h5>
-                    <ul class="list-unstyled">
-                        <li class="mb-3 d-flex align-items-start">
-                            <i class="bi bi-check-circle-fill text-success mt-1 me-3"></i>
-                            <span class="text-muted">Cập nhật bài giảng thường xuyên để giữ tương tác.</span>
-                        </li>
-                        <li class="mb-3 d-flex align-items-start">
-                            <i class="bi bi-check-circle-fill text-success mt-1 me-3"></i>
-                            <span class="text-muted">Trả lời câu hỏi thảo luận trong vòng 24h.</span>
-                        </li>
-                        <li class="d-flex align-items-start">
-                            <i class="bi bi-check-circle-fill text-success mt-1 me-3"></i>
-                            <span class="text-muted">Thêm bài tập thực hành sau mỗi chương.</span>
-                        </li>
-                    </ul>
-                    <div class="mt-4 text-center">
-                        <img src="~/Content/Assets/template01/img/cat-3.jpg" class="img-fluid rounded-3 shadow-sm" alt="Teaching" style="opacity: 0.9; max-height: 150px;">
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
-
 </div>

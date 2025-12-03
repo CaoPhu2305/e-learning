@@ -1,0 +1,385 @@
+﻿@model e_learning.Models.CreateQuizViewModel
+
+@{
+    ViewBag.Title = "Biên tập đề thi";
+    Layout = "~/Views/Shared/_Layout_Lecture.cshtml";
+
+    // Lấy ID an toàn để tránh lỗi null
+    int chapterId = Model != null ? Model.ChapterId : (ViewBag.ChapterId != null ? (int)ViewBag.ChapterId : 0);
+    int quizId = ViewBag.QuizId != null ? (int)ViewBag.QuizId : 0;
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<style>
+    .quiz-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .question-card {
+        background: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        margin-bottom: 25px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        transition: all 0.3s ease;
+    }
+
+        .question-card:hover {
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            border-color: #b3b3b3;
+        }
+
+    .question-header {
+        background: #f8f9fa;
+        padding: 15px 20px;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .question-body {
+        padding: 25px;
+    }
+
+    /* Style cho dòng đáp án */
+    .answer-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+        padding: 8px;
+        border-radius: 6px;
+        border: 1px solid transparent;
+        transition: background-color 0.2s;
+    }
+
+        .answer-row:hover {
+            background-color: #f1f8ff;
+            border-color: #cce5ff;
+        }
+
+    .correct-radio {
+        width: 22px;
+        height: 22px;
+        margin-right: 15px;
+        cursor: pointer;
+        accent-color: #28a745; /* Màu xanh lá chuẩn */
+    }
+
+    /* Input style */
+    .q-content-input {
+        font-weight: 600;
+        color: #333;
+        border-color: #ced4da;
+    }
+
+    .a-content-input {
+        color: #555;
+    }
+
+    /* Nút xóa đáp án (Dấu X màu đỏ) */
+    .btn-delete-answer {
+        color: #dc3545;
+        font-size: 1.2rem;
+        margin-left: 12px;
+        cursor: pointer;
+        padding: 6px 10px;
+        border-radius: 50%;
+        transition: all 0.2s;
+    }
+
+        .btn-delete-answer:hover {
+            background-color: #ffe6e6;
+            transform: scale(1.1);
+        }
+
+    /* Nút xóa câu hỏi (Thùng rác) */
+    .btn-delete-question {
+        cursor: pointer;
+        color: #6c757d;
+        transition: 0.2s;
+    }
+
+        .btn-delete-question:hover {
+            color: #dc3545;
+            transform: scale(1.2);
+        }
+
+    .btn-add-answer {
+        text-decoration: none;
+        font-weight: 600;
+        color: #0d6efd;
+        cursor: pointer;
+    }
+
+        .btn-add-answer:hover {
+            text-decoration: underline;
+        }
+</style>
+
+<div class="container py-5 quiz-container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-primary mb-1">
+                <i class="fas fa-file-alt me-2"></i>@(quizId > 0 ? "Cập nhật đề thi" : "Tạo đề thi mới")
+            </h2>
+            <p class="text-muted mb-0 small">Chương ID: @chapterId</p>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button onclick="window.history.back()" class="btn btn-light border px-4 fw-bold">Hủy</button>
+            <button type="button" id="btnSaveQuiz" class="btn btn-success btn-lg shadow-sm px-4 fw-bold">
+                <i class="fas fa-save me-2"></i> LƯU ĐỀ THI
+            </button>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-4 border-0">
+        <div class="card-body p-4 bg-light rounded-3">
+            <h5 class="mb-3 fw-bold text-dark border-bottom pb-2">
+                <i class="fas fa-sliders-h me-2"></i>Cấu hình chung
+            </h5>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Tên bài kiểm tra <span class="text-danger">*</span></label>
+                    <input type="text" id="QuizName" class="form-control form-control-lg" placeholder="VD: Kiểm tra cuối chương..." />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Thời gian (Phút)</label>
+                    <input type="number" id="TimeLimit" class="form-control form-control-lg" value="15" min="1" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Điểm đạt (%)</label>
+                    <input type="number" id="PassScore" class="form-control form-control-lg" value="50" min="0" max="100" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="questions-list">
+    </div>
+
+    <button type="button" id="btnAddQuestion" class="btn btn-outline-primary w-100 py-3 border-dashed fw-bold mt-3" style="border-width: 2px; border-style: dashed;">
+        <i class="fas fa-plus-circle me-2"></i> THÊM CÂU HỎI MỚI
+    </button>
+</div>
+
+@section Scripts {
+    <script>
+        // Biến đếm để tạo ID duy nhất cho nhóm radio button
+        var uniqueIdCounter = 0;
+
+        $(document).ready(function() {
+
+            // --- 1. KHỞI TẠO DỮ LIỆU (TỪ SERVER) ---
+            var existingModel = @Html.Raw(Json.Encode(Model));
+
+            if (existingModel && existingModel.Questions && existingModel.Questions.length > 0) {
+                // CASE EDIT: Fill dữ liệu cũ
+                $('#QuizName').val(existingModel.QuizName);
+                $('#TimeLimit').val(existingModel.TimeLimit);
+                $('#PassScore').val(existingModel.PassScore);
+
+                // Vẽ lại từng câu hỏi
+                existingModel.Questions.forEach(function(q) {
+                    renderQuestion(q);
+                });
+            } else {
+                // CASE CREATE: Tạo sẵn 1 câu hỏi rỗng
+                renderQuestion();
+            }
+
+            // --- 2. CÁC SỰ KIỆN CLICK ---
+
+            // Nút thêm câu hỏi lớn
+            $('#btnAddQuestion').click(function() { renderQuestion(); });
+
+            // Nút xóa câu hỏi (Ủy quyền sự kiện)
+            $(document).on('click', '.btn-delete-question', function() {
+                if(confirm('Bạn có chắc chắn muốn xóa câu hỏi này không?')) {
+                    $(this).closest('.question-card').remove();
+                    updateQuestionNumbers();
+                }
+            });
+
+            // Nút thêm đáp án con
+            $(document).on('click', '.btn-add-answer', function() {
+                var container = $(this).closest('.question-body').find('.answers-container');
+                var groupId = container.data('group-id');
+                container.append(generateAnswerRow(groupId, "", false));
+            });
+
+            // [QUAN TRỌNG] Nút Xóa đáp án con (Dấu X)
+            $(document).on('click', '.btn-delete-answer', function() {
+                // Kiểm tra còn ít nhất 2 đáp án không (tùy chọn)
+                var container = $(this).closest('.answers-container');
+                // if (container.children().length <= 2) { alert("Cần tối thiểu 2 đáp án!"); return; }
+
+                $(this).closest('.answer-row').remove();
+            });
+
+            // Nút Lưu
+            $('#btnSaveQuiz').click(function() { saveQuizData(); });
+        });
+
+        // --- CÁC HÀM RENDER GIAO DIỆN ---
+
+        function renderQuestion(data = null) {
+            uniqueIdCounter++;
+            var qContent = data ? data.Content : "";
+            var qNum = $('.question-card').length + 1;
+
+            var html = `
+                <div class="question-card animate__animated animate__fadeIn">
+                    <div class="question-header">
+                        <span class="fw-bold text-primary q-title" style="font-size: 1.1rem;">Câu hỏi #${qNum}</span>
+                        <i class="fas fa-trash-alt btn-delete-question" title="Xóa câu hỏi này"></i>
+                    </div>
+                    <div class="question-body">
+                        <div class="mb-3">
+                            <input type="text" class="form-control q-content-input form-control-lg" value="${qContent}" placeholder="Nhập nội dung câu hỏi..." required />
+                        </div>
+
+                        <label class="form-label small text-muted mb-2 fw-bold text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">
+                            Đáp án (Chọn ô tròn làm đáp án đúng)
+                        </label>
+
+                        <div class="answers-container" data-group-id="${uniqueIdCounter}">
+                            ${renderAnswersHtml(uniqueIdCounter, data ? data.Answers : null)}
+                        </div>
+
+                        <div class="mt-3 ps-1">
+                            <span class="btn-add-answer">
+                                <i class="fas fa-plus me-1"></i> Thêm đáp án khác
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            $('#questions-list').append(html);
+        }
+
+        function renderAnswersHtml(groupId, answers) {
+            var html = "";
+            if (answers && answers.length > 0) {
+                answers.forEach(function(ans) {
+                    html += generateAnswerRow(groupId, ans.Content, ans.IsCorrect);
+                });
+            } else {
+                // Mặc định tạo 4 dòng trống
+                for(var i=0; i<4; i++) html += generateAnswerRow(groupId, "", false);
+            }
+            return html;
+        }
+
+        // [HÀM TẠO DÒNG ĐÁP ÁN - ĐÃ FIX ICON]
+        function generateAnswerRow(groupId, val, isCorrect) {
+            if(!val) val = ""; // Tránh hiện undefined
+            var checked = isCorrect ? "checked" : "";
+
+            return `
+                <div class="answer-row">
+                    <div title="Chọn làm đáp án đúng">
+                        <input type="radio" name="correct_group_${groupId}" class="correct-radio" ${checked} />
+                    </div>
+                    <input type="text" class="form-control ms-2 a-content-input" value="${val}" placeholder="Nhập đáp án..." />
+
+                    <i class="fas fa-times btn-delete-answer" title="Xóa đáp án này"></i>
+                </div>
+            `;
+        }
+
+        function updateQuestionNumbers() {
+            $('.question-card').each(function(index) {
+                $(this).find('.q-title').text('Câu hỏi #' + (index + 1));
+            });
+        }
+
+        // --- HÀM GỬI DỮ LIỆU VỀ SERVER ---
+        function saveQuizData() {
+            var quizName = $('#QuizName').val().trim();
+            if (!quizName) { alert("Vui lòng nhập tên bài kiểm tra"); return; }
+
+            var quizData = {
+                ChapterId: @chapterId,
+                QuizName: quizName,
+                TimeLimit: parseInt($('#TimeLimit').val()) || 15,
+                PassScore: parseFloat($('#PassScore').val()) || 50,
+                Questions: []
+            };
+
+            try {
+                $('.question-card').each(function() {
+                    var card = $(this);
+                    var qText = card.find('.q-content-input').val().trim();
+
+                    if (qText) {
+                        var questionObj = { Content: qText, Answers: [] };
+                        var hasCorrect = false;
+
+                        // Duyệt qua các đáp án
+                        card.find('.answer-row').each(function() {
+                            var row = $(this);
+                            var aText = row.find('.a-content-input').val().trim();
+                            var isTrue = row.find('.correct-radio').is(':checked');
+
+                            if (aText) {
+                                questionObj.Answers.push({ Content: aText, IsCorrect: isTrue });
+                                if (isTrue) hasCorrect = true;
+                            }
+                        });
+
+                        // Validate Logic
+                        if (questionObj.Answers.length < 2) {
+                            alert("Lỗi ở câu: '" + qText + "'\nPhải có ít nhất 2 đáp án!");
+                            throw "Validation Error";
+                        }
+                        if (!hasCorrect) {
+                            alert("Lỗi ở câu: '" + qText + "'\nChưa chọn đáp án đúng!");
+                            throw "Validation Error";
+                        }
+
+                        quizData.Questions.push(questionObj);
+                    }
+                });
+            } catch(e) { return; } // Dừng nếu validate fail
+
+            if (quizData.Questions.length === 0) { alert("Vui lòng nhập ít nhất 1 câu hỏi."); return; }
+
+            // Hiệu ứng Loading
+            var btn = $('#btnSaveQuiz');
+            var originalText = btn.html();
+            btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i> Đang lưu...');
+
+            // URL Action
+            var url = '@Url.Action("SaveQuiz", "Lecturer")' + '?quizId=' + @quizId;
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(quizData),
+                success: function (res) {
+                    if (res.success) {
+                        alert("Lưu thành công!");
+                        // Quay lại trang trước đó hoặc reload
+                        if(document.referrer) window.location.href = document.referrer;
+                        else window.history.back();
+                    }
+                    else {
+                        alert(res.message);
+                        btn.prop('disabled', false).html(originalText);
+                    }
+                },
+                error: function () {
+                    alert("Lỗi kết nối Server!");
+                    btn.prop('disabled', false).html(originalText);
+                }
+            });
+        }
+    </script>
+}

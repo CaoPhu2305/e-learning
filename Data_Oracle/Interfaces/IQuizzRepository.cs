@@ -14,7 +14,21 @@ namespace Data_Oracle.Interfaces
 
         List<Questions> GetQuestionsByQuizzID(int QuizzesID);
 
-       
+        decimal GetNextQuizId();
 
+        decimal GetNextQuestionId();
+
+        decimal GetNextAnswerId();
+
+        void AddQuiz(Quizzes quiz);
+
+        void AddQuestion(Questions q);
+
+        void AddAnswer(AnswerOptions a);
+
+        void SaveChanges();
+        Quizzes GetQuizById(int quizId);
+        void UpdateQuiz(Quizzes quiz);
+        void DeleteQuestionsByQuizId(decimal quizId);
     }
 }

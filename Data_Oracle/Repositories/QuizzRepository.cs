@@ -42,5 +42,85 @@ namespace Data_Oracle.Repositories
             return null;
 
         }
+
+        public decimal GetNextQuizId()
+        {
+            return _dbContext.Database.SqlQuery<decimal>("SELECT SEQ_QUIZZES.NEXTVAL FROM DUAL").FirstOrDefault();
+        }
+        public decimal GetNextQuestionId()
+        {
+            return _dbContext.Database.SqlQuery<decimal>("SELECT SEQ_QUESTIONS.NEXTVAL FROM DUAL").FirstOrDefault();
+        }
+        public decimal GetNextAnswerId()
+        {
+            return _dbContext.Database.SqlQuery<decimal>("SELECT SEQ_ANSWER_OPTIONS.NEXTVAL FROM DUAL").FirstOrDefault();
+        }
+
+        // Các hàm Add thông thường (Không SaveChanges)
+        public void AddQuiz(Quizzes quiz) { _dbContext.Quizzes.Add(quiz); }
+        public void AddQuestion(Questions q) { _dbContext.Questions.Add(q); }
+        public void AddAnswer(AnswerOptions a) { _dbContext.AnswerOptions.Add(a); }
+        public void SaveChanges()
+        {
+            try
+            {
+                _dbContext.SaveChanges();
+            }
+            catch (System.Data.Entity.Infrastructure.DbUpdateException ex)
+            {
+                // BƯỚC 1: Đặt Breakpoint (dấu chấm đỏ) tại dòng 'var msg = ...' dưới đây
+                // BƯỚC 2: Chạy Debug, khi dừng lại, rê chuột vào biến 'innerMsg' để xem
+
+                var innerMsg = ex.InnerException?.InnerException?.Message ?? ex.InnerException?.Message ?? ex.Message;
+
+                // Hoặc in ra cửa sổ Output của Visual Studio
+                System.Diagnostics.Debug.WriteLine("LỖI DB CHI TIẾT: " + innerMsg);
+
+                throw new Exception("Lỗi lưu DB: " + innerMsg); // Ném lỗi ra ngoài để hiện lên web
+            }
+            catch (System.Data.Entity.Validation.DbEntityValidationException ex)
+            {
+                // Lỗi này xảy ra nếu dữ liệu không thỏa mãn DataAnnotation (VD: Required, MaxLength)
+                foreach (var entityValidationErrors in ex.EntityValidationErrors)
+                {
+                    foreach (var validationError in entityValidationErrors.ValidationErrors)
+                    {
+                        System.Diagnostics.Debug.WriteLine("Property: " + validationError.PropertyName + " Error: " + validationError.ErrorMessage);
+                    }
+                }
+                throw;
+            }
+        }
+
+        public Quizzes GetQuizById(int quizId)
+        {
+            return _dbContext.Quizzes.FirstOrDefault(x => x.QuizzesID == quizId);
+        }
+
+        public void UpdateQuiz(Quizzes quiz)
+        {
+            // Đánh dấu đối tượng là Modified để EF biết mà update
+            _dbContext.Entry(quiz).State = System.Data.Entity.EntityState.Modified;
+            _dbContext.SaveChanges();
+        }
+
+        public void DeleteQuestionsByQuizId(decimal quizId)
+        {
+            // 1. Tìm tất cả câu hỏi của Quiz này
+            var questions = _dbContext.Questions.Where(q => q.QuizzesID == quizId).ToList();
+
+            foreach (var q in questions)
+            {
+                // 2. Tìm và xóa tất cả đáp án của câu hỏi này trước
+                var answers = _dbContext.AnswerOptions.Where(a => a.QuestionsID == q.QuestionsID).ToList();
+                _dbContext.AnswerOptions.RemoveRange(answers);
+
+                // 3. Xóa câu hỏi
+                _dbContext.Questions.Remove(q);
+            }
+
+            // Lưu thay đổi
+            _dbContext.SaveChanges();
+        }
     }
 }

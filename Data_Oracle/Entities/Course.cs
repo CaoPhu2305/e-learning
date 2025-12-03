@@ -51,6 +51,8 @@ namespace Data_Oracle.Entities
         [Column("IS_TRIAL_AVAILABLE")]
         public Boolean IsTrialAvailable { get; set; }
 
+        [Column("CREATED_DATE")]
+        public DateTime? CreatedDate { get; set; }
 
 
         // nếu chia ra video và kèm 1 1 hay lớp nhiều người thêm type vào 

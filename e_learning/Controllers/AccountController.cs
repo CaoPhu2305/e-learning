@@ -44,7 +44,7 @@ namespace e_learning.Controllers
 
                     var role = userService.GetUserRole(user.UserID);
 
-                    if(role != null)
+                    if (role != null)
                     {
 
                         Session["UserID"] = user.UserID;
@@ -60,12 +60,12 @@ namespace e_learning.Controllers
                             default:
                                 return RedirectToAction("Index", "Home");
                         }
-                    }     
-                }else
+                    }
+                } else
                 {
                     ModelState.AddModelError("", "Invalid email or password");
                 }
-                   
+
             }
             return View(model);
         }
@@ -90,9 +90,25 @@ namespace e_learning.Controllers
 
         public ActionResult Logout()
         {
+            // 1. Xóa toàn bộ dữ liệu trong Session (UserID, Role, Name...)
+            Session.Clear();
+
+            // 2. Hủy Session hiện tại (Tạo session ID mới cho lần truy cập sau)
+            Session.Abandon();
+
+            // 3. Đăng xuất khỏi FormsAuthentication (Nếu bạn có dùng Cookie Auth)
             FormsAuthentication.SignOut();
-            return RedirectToAction("Index", "Home");
+
+            // 4. (Tùy chọn) Xóa Cookie Session phía Client để chắc chắn
+            if (Request.Cookies["ASP.NET_SessionId"] != null)
+            {
+                var c = new HttpCookie("ASP.NET_SessionId");
+                c.Expires = DateTime.Now.AddDays(-1);
+                Response.Cookies.Add(c);
+            }
+
+            // 5. Chuyển hướng về trang Login (hoặc Trang chủ)
+            return RedirectToAction("Login", "Account");
         }
-       
     }
 }

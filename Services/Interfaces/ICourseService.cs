@@ -41,6 +41,11 @@ namespace Services.Interfaces
 
         void AddLesson(LessonDto dto, string videoFileName);
 
+        void DeleteCourse(int courseId);
+
+        bool IsCourseOwner(int userId, int courseId);
+
+        int GetTotalStudents(int lecturerId);
 
 
     }

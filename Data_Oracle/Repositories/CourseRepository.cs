@@ -56,15 +56,13 @@ namespace Data_Oracle.Repositories
         public List<Course> GetCoursesNotEnrolled(int userId)
         {
             var enrolledCourseIds = _dbContext.Enrollments
-                                      .Where(e => e.UserID == userId)
-                                      .Select(e => e.CourseID); // Chỉ lấy ID
+                                              .Where(e => e.UserID == userId)
+                                              .Select(e => e.CourseID);
 
-            // 2. Lấy các khóa học KHÔNG nằm trong danh sách trên
-            // SQL sinh ra sẽ dạng: SELECT * FROM Courses WHERE CourseID NOT IN (...)
             var courses = _dbContext.Courses
-                                    .Where(c => !enrolledCourseIds.Contains(c.CourseID))
+                                    .Where(c => !enrolledCourseIds.Contains(c.CourseID)
+                                             && c.CourseStatusID == StatusConst.COURSE_APPROVED) // <--- THÊM ĐIỀU KIỆN NÀY
                                     .ToList();
-
             return courses;
         }
 
@@ -132,8 +130,82 @@ namespace Data_Oracle.Repositories
         public void AddLesson(Lession lesson)
         {
             _dbContext.Lessions.Add(lesson);
+
         }
 
+        public Course GetLatestCourseByName(string courseName)
+        {
+            return _dbContext.Courses
+                .Where(c => c.CourseName == courseName)
+                .OrderByDescending(c => c.CreatedDate) // Lấy cái mới nhất vừa tạo
+                .FirstOrDefault();
+        }
+
+        public void DeleteCourse(int courseId)
+        {
+            var course = _dbContext.Courses.Find(courseId);
+            if (course != null)
+            {
+                // 1. Xóa LecturerCourse (Bảng trung gian)
+                var lecturerCourses = _dbContext.lecturerCourses.Where(lc => lc.CourseID == courseId).ToList();
+                _dbContext.lecturerCourses.RemoveRange(lecturerCourses);
+
+                // 2. Xóa Video và các Chapter/Lesson liên quan
+                // Nếu DB chưa set Cascade Delete, bạn phải xóa bằng tay từng cấp:
+                // Lesson -> Chapter -> CourseVideo
+
+                // Giả sử bạn xóa CourseVideo, EF sẽ tự xóa con nếu config đúng.
+                // Nếu không, phải query từng cái ra xóa.
+                var video = _dbContext.CoursesVideos.FirstOrDefault(v => v.CourseVideoID == courseId);
+                if (video != null)
+                {
+                    // Xóa Chapter -> Lesson
+                    var chapters = _dbContext.Chapters.Where(c => c.CourcesVideoID == video.CourseVideoID).ToList();
+                    foreach (var chap in chapters)
+                    {
+                        var lessons = _dbContext.Lessions.Where(l => l.ChapterID == chap.ChapterID).ToList();
+                        _dbContext.Lessions.RemoveRange(lessons);
+                    }
+                    _dbContext.Chapters.RemoveRange(chapters);
+                    _dbContext.CoursesVideos.Remove(video);
+                }
+
+                // 3. Xóa Course
+                _dbContext.Courses.Remove(course);
+
+                _dbContext.SaveChanges();
+            }
+        }
+
+        public bool CheckCourseOwner(decimal userId, decimal courseId)
+        {
+            // Kiểm tra trong bảng LECTURE_COURSE xem có cặp (UserID, CourseID) này không
+            return _dbContext.lecturerCourses.Any(lc => lc.UserID == userId && lc.CourseID == courseId);
+        }
+
+        public int CountTotalStudentsByLecturer(int lecturerId)
+        {
+            // Logic: 
+            // Bảng LECTURE_COURSE (lấy các khóa của GV này)
+            // JOIN bảng ENROLLMENTS (lấy các lượt đăng ký)
+            // Đếm số lượng USER_ID khác nhau (Distinct)
+
+            var count = (from lc in _dbContext.lecturerCourses
+                         join e in _dbContext.Enrollments on lc.CourseID equals e.CourseID
+                         where lc.UserID == lecturerId
+                         // Chỉ đếm những người đã mua hoặc đang học thử (tùy bạn chọn)
+                         // && (e.EnrollmentStatusID == StatusConst.ENROLL_ACTIVE || e.EnrollmentStatusID == StatusConst.ENROLL_TRIAL)
+                         select e.UserID)
+                         .Distinct() // Quan trọng: 1 người học 3 khóa thì chỉ tính là 1 học viên
+                         .Count();
+
+            return count;
+        }
+
+        public decimal GetNextChapterId()
+        {
+            return _dbContext.Database.SqlQuery<decimal>("SELECT SEQ_CHAPTER.NEXTVAL FROM DUAL").FirstOrDefault();
+        }
 
     }
 }

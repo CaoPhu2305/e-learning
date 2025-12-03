@@ -7,6 +7,9 @@ namespace e_learning.Helper
 {
     public class StatusConst
     {
+        public const int COURSE_PENDING = 1;   // Chờ duyệt (Under Review)
+        public const int COURSE_APPROVED = 2;  // Đã duyệt (Approved)
+        public const int COURSE_DENIED = 3;
 
         public const int ENROLL_TRIAL = 1;    // Đang dùng thử
         public const int ENROLL_PENDING = 2;  // Chờ thanh toán

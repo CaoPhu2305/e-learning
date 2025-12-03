@@ -1,4 +1,5 @@
 ﻿using Data_Oracle.Entities;
+using Services.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,10 @@ namespace Services.Interfaces
         Dictionary<int, int> GetUserAnswersByAttemptId(int AtemptID);
 
         QuizAttempt GetLatestAttempt(int UserID, int QuizzID);
+
+        bool CreateFullQuiz(QuizDto dto);
+
+        bool UpdateFullQuiz(int quizId, QuizDto dto);
 
     }
 }

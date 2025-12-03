@@ -11,7 +11,7 @@ namespace Data_Oracle.Entities
     [Table("COURSE_VIDEO")]
     public class CourseVideo
     {
-
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Key, ForeignKey("Course")]
         [Column("COURSE_VIDEO_ID")]
         public decimal CourseVideoID { get; set; }
