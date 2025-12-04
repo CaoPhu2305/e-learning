@@ -1,0 +1,202 @@
+﻿@{
+    ViewBag.Title = "Quản lý người dùng";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+
+@section Styles {
+    <style>
+        .user-table-card {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #f1f3f5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e9ecef;
+            color: #495057;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-right: 12px;
+        }
+        /* Badge Role */
+        .badge-role {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .role-admin {
+            background: #e7f1ff;
+            color: #0d6efd;
+        }
+
+        .role-lecturer {
+            background: #fff3cd;
+            color: #ffc107;
+        }
+
+        .role-student {
+            background: #d1e7dd;
+            color: #198754;
+        }
+
+        /* Badge Status */
+        .status-active {
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        .status-locked {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        /* Dữ liệu được mã hóa */
+        .encrypted-data {
+            font-family: monospace;
+            color: #6c757d;
+            letter-spacing: 1px;
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px dashed #dee2e6;
+        }
+
+        .decrypted-data {
+            color: #212529;
+            font-weight: 500;
+        }
+    </style>
+}
+
+<div class="container-fluid py-4 px-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-dark mb-1">Quản Lý Người Dùng</h2>
+            <p class="text-muted mb-0">Quản lý tài khoản, phân quyền và bảo mật dữ liệu.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-primary btn-sm">
+                <i class="fas fa-file-export me-1"></i> Export (Encrypted)
+            </button>
+            <button class="btn btn-primary btn-sm shadow-sm">
+                <i class="fas fa-user-plus me-1"></i> Thêm mới
+            </button>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
+                <input type="text" class="form-control border-start-0 ps-0" placeholder="Tìm kiếm user...">
+            </div>
+        </div>
+        <div class="col-md-2">
+            <select class="form-select">
+                <option>Tất cả vai trò</option>
+                <option>Admin</option>
+                <option>Giảng viên</option>
+                <option>Học viên</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="user-table-card">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light text-secondary small text-uppercase">
+                    <tr>
+                        <th class="ps-4 py-3">User Info</th>
+                        <th>Email (Encrypted)</th>
+                        <th>Phone (Masked)</th>
+                        <th>Vai trò (RBAC)</th>
+                        <th>Trạng thái</th>
+                        <th class="text-end pe-4">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="ps-4">
+                            <div class="d-flex align-items-center">
+                                <div class="user-avatar">AD</div>
+                                <div>
+                                    <div class="fw-bold">Administrator</div>
+                                    <small class="text-muted">ID: 1</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="encrypted-data" title="Dữ liệu này đang được mã hóa dưới DB">
+                                <i class="fas fa-lock list-icon small me-1"></i> A8F2...9B1C
+                            </span>
+                            <button class="btn btn-link btn-sm p-0 ms-2" onclick="decryptData(this, 'admin@sys.com')"><i class="fas fa-eye"></i></button>
+                        </td>
+                        <td>
+                            <span>*******888</span>
+                        </td>
+                        <td><span class="badge-role role-admin">Admin</span></td>
+                        <td><span class="status-active"><i class="fas fa-check-circle me-1"></i> Active</span></td>
+                        <td class="text-end pe-4">
+                            <button class="btn btn-light btn-sm text-primary"><i class="fas fa-edit"></i></button>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="ps-4">
+                            <div class="d-flex align-items-center">
+                                <div class="user-avatar bg-warning bg-opacity-10 text-warning">L</div>
+                                <div>
+                                    <div class="fw-bold">Lecturer A</div>
+                                    <small class="text-muted">ID: 23</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="encrypted-data"><i class="fas fa-lock list-icon small me-1"></i> C4D1...E5F9</span>
+                            <button class="btn btn-link btn-sm p-0 ms-2" onclick="decryptData(this, 'lecturer@edu.vn')"><i class="fas fa-eye"></i></button>
+                        </td>
+                        <td><span>*******123</span></td>
+                        <td><span class="badge-role role-lecturer">Lecturer</span></td>
+                        <td><span class="status-active"><i class="fas fa-check-circle me-1"></i> Active</span></td>
+                        <td class="text-end pe-4">
+                            <button class="btn btn-light btn-sm text-primary"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-light btn-sm text-danger"><i class="fas fa-lock"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>// Hàm giả lập giải mã (Sau này gọi API xuống Oracle để giải mã thật)
+        function decryptData(btn, realValue) {
+            var container = $(btn).prev('.encrypted-data');
+            // Hiệu ứng loading
+            container.html('<i class="fas fa-spinner fa-spin"></i> Decrypting...');
+
+            setTimeout(function() {
+                container.removeClass('encrypted-data').addClass('decrypted-data').html(realValue);
+                $(btn).remove(); // Xóa nút mắt
+            }, 800);
+        }</script>
+}

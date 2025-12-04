@@ -12,7 +12,18 @@ namespace e_learning.Controllers
         // GET: Admin
         //[AuthorizeRole("User", "View")]
 
-        public ActionResult AdminHomePage()
+        public ActionResult AdminHomePage() // Hoặc tên là Dashboard
+        {
+            return View();
+        }
+
+        public ActionResult SecurityDashboard()
+        {
+            ViewBag.Title = "Security & Analytics";
+            return View();
+        }
+
+        public ActionResult ManageUsers()
         {
             return View();
         }

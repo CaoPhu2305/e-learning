@@ -736,6 +736,8 @@
     <Content Include="Views\Lecture\Dashboard.cshtml" />
     <Content Include="Views\Lecture\ManageCourseContent.cshtml" />
     <Content Include="Views\Lecture\CreateQuiz.cshtml" />
+    <Content Include="Views\Admin\SecurityDashboard.cshtml" />
+    <Content Include="Views\Admin\ManageUsers.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

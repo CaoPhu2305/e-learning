@@ -1,8 +1,283 @@
-﻿
-@{
-    ViewBag.Title = "AdminHomePage";
+﻿@{
+    ViewBag.Title = "Dashboard";
     Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+
+    string adminName = ViewBag.AdminName ?? "Administrator";
+    string adminEmail = ViewBag.AdminEmail ?? "admin@system.com";
 }
 
-<h2>AdminHomePage</h2>
+<style>
+    /* Admin Container */
+    .admin-container {
+        padding: 2rem 1.5rem;
+        width: 100%;
+        background-color: #f8f9fa; /* Nền tổng thể xám rất nhạt */
+    }
 
+    .admin-content {
+        max-width: 80rem;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    /* Header Section */
+    .header-section { display: flex; flex-direction: column; gap: 0.5rem; }
+    .header-label { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; color: #6c757d; font-weight: 600; margin: 0; }
+    .header-title { font-size: 2.2rem; font-weight: 800; color: #2c3e50; margin: 0; }
+    .header-description { font-size: 1rem; color: #6c757d; }
+
+    /* Info Cards Grid */
+    .info-grid {
+        display: grid;
+        gap: 1.5rem;
+        grid-template-columns: 1fr;
+    }
+
+    @@media (min-width: 768px) { .info-grid { grid-template-columns: repeat(2, 1fr); } }
+    @@media (min-width: 1024px) { .info-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    .info-card {
+        border-radius: 12px;
+        border: 1px solid #e9ecef;
+        padding: 1.5rem;
+        background-color: #ffffff;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        transition: all 0.3s ease;
+    }
+
+    /* Hiệu ứng hover nhẹ cho các card thông tin */
+    .info-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+        border-color: #dee2e6;
+    }
+
+    .card-title {
+        font-size: 1.1rem; font-weight: 700; color: #343a40;
+        margin-bottom: 1rem; padding-bottom: 0.5rem;
+        border-bottom: 2px solid #f1f3f5;
+        display: flex; align-items: center;
+    }
+    .card-title i { color: #0d6efd; margin-right: 10px; }
+
+    .card-content { display: flex; flex-direction: column; gap: 0.8rem; }
+    .info-item { font-size: 0.9rem; color: #6c757d; margin: 0; }
+    .info-value { font-weight: 600; color: #212529; }
+
+    /* Quick Actions Styles (Nút bấm) */
+    .action-button {
+        width: 100%;
+        padding: 0.7rem 1rem;
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+        background-color: #fff;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #495057;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    /* Hover nút thường: Xám đậm hơn chút */
+    .action-button:hover {
+        background-color: #f8f9fa;
+        border-color: #adb5bd;
+        color: #212529;
+    }
+
+    /* Hover nút chính: Màu xanh chủ đạo */
+    .action-button.primary-btn {
+        background-color: #e7f1ff;
+        border-color: #b6d4fe;
+        color: #0d6efd;
+    }
+    .action-button.primary-btn:hover {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+        color: #ffffff;
+    }
+
+    /* Status Styles */
+    .status-row { display: flex; align-items: center; justify-content: space-between; }
+    .status-label { font-size: 0.9rem; color: #6c757d; }
+    .status-badge {
+        padding: 0.3rem 0.8rem; border-radius: 20px;
+        font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+    }
+    .status-operational { background-color: #d1e7dd; color: #0f5132; }
+
+    /* Management Modules Section */
+    .modules-section {
+        background-color: #fff;
+        border-radius: 12px;
+        border: 1px solid #e9ecef;
+        padding: 2rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    .modules-title { font-size: 1.5rem; font-weight: 700; color: #343a40; margin-bottom: 0.5rem; }
+    .modules-description { color: #6c757d; margin-bottom: 1.5rem; }
+
+    .modules-grid {
+        display: grid; gap: 1.5rem; grid-template-columns: 1fr;
+    }
+    @@media (min-width: 768px) { .modules-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    /* --- CARD MODULE (PHẦN BẠN CẦN CHỈNH SỬA) --- */
+    .module-card {
+        padding: 1.5rem;
+        border-radius: 12px;
+        border: 1px solid #e9ecef; /* Viền mặc định mờ */
+        background-color: #f8f9fa; /* Nền mặc định xám rất nhạt */
+        text-align: left;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        text-decoration: none;
+        display: block;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Hiệu ứng Hover: Xanh nhè nhẹ + Viền hiện rõ hơn */
+    .module-card:hover {
+        border-color: #0d6efd;       /* Viền xanh dương */
+        background-color: #f8fbff;   /* Nền xanh cực nhạt */
+        transform: translateY(-4px); /* Nổi lên chút */
+        box-shadow: 0 8px 20px rgba(13, 110, 253, 0.1); /* Bóng xanh mờ ảo */
+    }
+
+    /* Tiêu đề Module */
+    .module-title {
+        font-size: 1.1rem; font-weight: 700; color: #343a40;
+        margin-bottom: 0.5rem; display: flex; align-items: center;
+        transition: color 0.2s;
+    }
+
+    /* Khi hover card thì tiêu đề chuyển xanh */
+    .module-card:hover .module-title {
+        color: #0d6efd;
+    }
+
+    .module-description { font-size: 0.9rem; font-weight: 400; color: #6c757d; }
+
+    /* Thêm icon mũi tên nhỏ mờ mờ để gợi ý click */
+    .module-card::after {
+        content: '→';
+        position: absolute; right: 20px; top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.2rem; color: #ced4da; opacity: 0;
+        transition: all 0.2s;
+    }
+    .module-card:hover::after {
+        opacity: 1; right: 15px; color: #0d6efd;
+    }
+
+</style>
+
+<section class="admin-container">
+    <div class="admin-content">
+
+        <div class="header-section">
+            <p class="header-label">Admin Panel</p>
+            <h1 class="header-title">Tổng Quan Hệ Thống</h1>
+            <p class="header-description">
+                Chào mừng trở lại. Quản lý toàn bộ hệ thống E-Learning của bạn tại đây.
+            </p>
+        </div>
+
+        <div class="info-grid">
+            <article class="info-card">
+                <h2 class="card-title"><i class="bi bi-person-badge"></i>Thông tin Admin</h2>
+                <div class="card-content">
+                    <p class="info-item">
+                        Tên: <span class="info-value">@adminName</span>
+                    </p>
+                    <p class="info-item">
+                        Email: <span class="info-value">@adminEmail</span>
+                    </p>
+                    <p class="info-item">
+                        Vai trò: <span class="info-value text-primary">Super Admin</span>
+                    </p>
+                </div>
+            </article>
+
+            <article class="info-card">
+                <h2 class="card-title"><i class="bi bi-lightning-charge"></i>Thao tác nhanh</h2>
+                <div class="card-content">
+                    <a href="@Url.Action("StudentHomePage", "Course")" target="_blank" class="action-button primary-btn">
+                        <i class="bi bi-shop me-1"></i> Xem Trang Chủ (Client)
+                    </a>
+                    <a href="javascript:void(0)" onclick="handleLogout()" class="action-button">
+                        <i class="bi bi-box-arrow-right me-1"></i> Đăng Xuất
+                    </a>
+                </div>
+            </article>
+
+            <article class="info-card">
+                <h2 class="card-title"><i class="bi bi-hdd-network"></i>Trạng thái hệ thống</h2>
+                <div class="card-content">
+                    <div class="status-row">
+                        <span class="status-label">Database (Oracle)</span>
+                        <span class="status-badge status-operational">Kết nối tốt</span>
+                    </div>
+                    <div class="status-row mt-2">
+                        <span class="status-label">Web Server</span>
+                        <span class="status-badge status-operational">Online</span>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <div class="modules-section">
+            <h2 class="modules-title">Chức Năng Quản Lý</h2>
+            <p class="modules-description">
+                Truy cập các phân hệ quản lý:
+            </p>
+
+            <div class="modules-grid">
+                <a href="@Url.Action("ManageCourses", "Admin")" class="module-card">
+                    <div class="module-title"><i class="bi bi-journal-text me-2"></i> Quản lý Khóa học</div>
+                    <div class="module-description">
+                        Xem danh sách, duyệt khóa học mới, quản lý nội dung vi phạm.
+                    </div>
+                </a>
+
+                <a href="@Url.Action("ManageUsers", "Admin")" class="module-card">
+                    <div class="module-title"><i class="bi bi-people me-2"></i> Quản lý Người dùng</div>
+                    <div class="module-description">
+                        Quản lý tài khoản Giảng viên, Học viên, phân quyền truy cập.
+                    </div>
+                </a>
+
+                <a href="@Url.Action("ManageOrders", "Admin")" class="module-card">
+                    <div class="module-title"><i class="bi bi-cart-check me-2"></i> Quản lý Đơn hàng</div>
+                    <div class="module-description">
+                        Theo dõi doanh thu, trạng thái thanh toán và đối soát.
+                    </div>
+                </a>
+
+                <a href="@Url.Action("SecurityDashboard", "Admin")" class="module-card">
+                    <div class="module-title"><i class="bi bi-shield-lock me-2"></i> Bảo mật & Thống kê</div>
+                    <div class="module-description">
+                        Xem log hệ thống, cảnh báo bảo mật Oracle và biểu đồ tăng trưởng.
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        function handleLogout() {
+            if (confirm('Bạn có chắc chắn muốn đăng xuất khỏi trang quản trị?')) {
+                window.location.href = '@Url.Action("Logout", "Account")';
+            }
+        }
+    </script>
+}

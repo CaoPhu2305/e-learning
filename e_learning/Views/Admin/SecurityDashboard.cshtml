@@ -1,0 +1,248 @@
+﻿@{
+    ViewBag.Title = "Security Dashboard";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+
+@section Styles {
+    <style>
+        .sec-wrapper {
+            padding: 1.5rem;
+            font-family: 'Segoe UI', sans-serif;
+            color: #343a40;
+        }
+
+        .sec-header {
+            margin-bottom: 2rem;
+        }
+
+        .sec-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #2c3e50;
+        }
+
+        .sec-subtitle {
+            color: #6c757d;
+        }
+
+        /* Crypto Status Cards */
+        .crypto-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .crypto-card {
+            background: #fff;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+            .crypto-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+                border-color: #adb5bd;
+            }
+
+        .crypto-icon {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-size: 5rem;
+            opacity: 0.05;
+            color: #000;
+        }
+
+        .crypto-status {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .status-on {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .status-off {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        .crypto-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .crypto-desc {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 15px;
+            min-height: 40px;
+        }
+
+        .crypto-meta {
+            font-size: 0.85rem;
+            border-top: 1px solid #f1f3f5;
+            padding-top: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .meta-key {
+            font-family: monospace;
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #d63384;
+        }
+
+        /* Audit Log Table */
+        .log-card {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            overflow: hidden;
+        }
+
+        .log-header {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            font-weight: 700;
+        }
+    </style>
+}
+
+<div class="sec-wrapper">
+    <div class="sec-header">
+        <h1 class="sec-title"><i class="fas fa-shield-alt text-primary me-2"></i>Security & Encryption Center</h1>
+        <p class="sec-subtitle">Quản lý các giải pháp mã hóa dữ liệu và giám sát an toàn thông tin.</p>
+    </div>
+
+    <h5 class="mb-3 fw-bold text-secondary text-uppercase small ls-1">Trạng thái Mã hóa (Oracle DBMS_CRYPTO)</h5>
+    <div class="crypto-grid">
+
+        <div class="crypto-card">
+            <i class="fas fa-key crypto-icon"></i>
+            <span class="crypto-status status-on"><i class="fas fa-check me-1"></i> Active</span>
+            <div class="crypto-title">Mã hóa Đối xứng (AES-256)</div>
+            <p class="crypto-desc">Đang bảo vệ các cột: <b>Email, Phone, IdentityCard</b> trong bảng Users.</p>
+            <div class="crypto-meta">
+                <span>Key Store:</span>
+                <span class="meta-key">Oracle Wallet</span>
+            </div>
+        </div>
+
+        <div class="crypto-card">
+            <i class="fas fa-user-lock crypto-icon"></i>
+            <span class="crypto-status status-on"><i class="fas fa-check me-1"></i> Active</span>
+            <div class="crypto-title">Mã hóa Bất đối xứng (RSA)</div>
+            <p class="crypto-desc">Dùng cho chữ ký điện tử (Digital Signature) khi xác nhận bảng điểm.</p>
+            <div class="crypto-meta">
+                <span>Key Size:</span>
+                <span class="meta-key">2048-bit</span>
+            </div>
+        </div>
+
+        <div class="crypto-card">
+            <i class="fas fa-file-export crypto-icon"></i>
+            <span class="crypto-status status-on"><i class="fas fa-check me-1"></i> Active</span>
+            <div class="crypto-title">Mã hóa Lai (Hybrid)</div>
+            <p class="crypto-desc">Bảo vệ file Export dữ liệu. Kết hợp tốc độ AES và bảo mật RSA.</p>
+            <div class="crypto-meta">
+                <span>Last Export:</span>
+                <span class="fw-bold text-primary">Hôm nay, 10:30</span>
+            </div>
+        </div>
+
+    </div>
+
+    <h5 class="mb-3 fw-bold text-secondary text-uppercase small ls-1 mt-5">Kiểm soát truy cập & Giám sát</h5>
+    <div class="row g-4 mb-4">
+        <div class="col-md-6">
+            <div class="crypto-card d-flex flex-row align-items-center p-4">
+                <div class="me-4 text-center">
+                    <h2 class="mb-0 fw-bold text-danger" id="val-fga">0</h2>
+                    <small class="text-muted fw-bold">FGA ALERTS</small>
+                </div>
+                <div>
+                    <h5 class="fw-bold">Fine-Grained Auditing</h5>
+                    <p class="mb-0 text-muted small">Số lần truy cập trái phép vào cột Lương/Doanh thu trong 24h qua.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="crypto-card d-flex flex-row align-items-center p-4">
+                <div class="me-4 text-center">
+                    <h2 class="mb-0 fw-bold text-primary">3</h2>
+                    <small class="text-muted fw-bold">POLICIES</small>
+                </div>
+                <div>
+                    <h5 class="fw-bold">VPD & OLS Policies</h5>
+                    <p class="mb-0 text-muted small">Chính sách bảo mật dòng (Row-Level) và nhãn (Label) đang hoạt động.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="log-card">
+        <div class="log-header d-flex justify-content-between align-items-center">
+            <span><i class="fas fa-history me-2"></i> Nhật ký Hệ thống (Standard Audit)</span>
+            <button class="btn btn-sm btn-outline-secondary">Xem tất cả</button>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="bg-light small text-muted">
+                    <tr>
+                        <th class="ps-4">Thời gian</th>
+                        <th>User DB</th>
+                        <th>Hành động</th>
+                        <th>Đối tượng</th>
+                        <th>Chi tiết</th>
+                    </tr>
+                </thead>
+                <tbody class="small">
+                    <tr>
+                        <td class="ps-4">2025-12-05 14:30:22</td>
+                        <td><span class="badge bg-light text-dark border">ADMIN_USER</span></td>
+                        <td><span class="text-primary fw-bold">UPDATE</span></td>
+                        <td>TABLE: USERS</td>
+                        <td class="text-muted">Changed Role for User ID 23</td>
+                    </tr>
+                    <tr>
+                        <td class="ps-4">2025-12-05 14:28:10</td>
+                        <td><span class="badge bg-light text-dark border">LECTURER_A</span></td>
+                        <td><span class="text-success fw-bold">INSERT</span></td>
+                        <td>TABLE: COURSE</td>
+                        <td class="text-muted">Created new course ID 105</td>
+                    </tr>
+                    <tr>
+                        <td class="ps-4">2025-12-05 14:15:00</td>
+                        <td><span class="badge bg-light text-dark border">STUDENT_B</span></td>
+                        <td><span class="text-danger fw-bold">SELECT (FGA)</span></td>
+                        <td>COLUMN: SALARY</td>
+                        <td class="text-danger"><i class="fas fa-exclamation-triangle"></i> Unauthorized Access Attempt</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        // Bạn có thể thêm Ajax để load số liệu thật từ Controller vào các ID #val-fga...
+    </script>
+}
