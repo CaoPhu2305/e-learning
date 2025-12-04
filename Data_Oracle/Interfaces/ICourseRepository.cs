@@ -56,5 +56,7 @@ namespace Data_Oracle.Interfaces
         int CountTotalStudentsByLecturer(int lecturerId);
 
         decimal GetNextChapterId();
+
+        
     }
 }

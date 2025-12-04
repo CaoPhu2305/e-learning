@@ -12,5 +12,7 @@ namespace Data_Oracle.Interfaces
 
         List<Chapter> GetALLChapterByCourseId(int courseId);
 
+        List<Chapter> GetChapterByCouresID(int courseVideoId);
+
     }
 }

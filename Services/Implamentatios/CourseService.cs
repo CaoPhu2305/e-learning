@@ -41,7 +41,7 @@ namespace Services.Implamentatios
 
         public List<Chapter> GetChapterByCouresID(int CourseId)
         {
-            return _chapterRepository.GetALLChapterByCourseId(CourseId);
+            return _chapterRepository.GetChapterByCouresID(CourseId);
         }
 
         public Course GetCourseByID(int id)
@@ -78,7 +78,7 @@ namespace Services.Implamentatios
 
         public Quizzes getQuizzByChapterID(int ChapterID)
         {
-            var x = _quizzRepository.GetQuizzesByChapterID(ChapterID);
+            var x = _quizzRepository.GetQuizzesByChapterID1(ChapterID);
 
             return x;
 

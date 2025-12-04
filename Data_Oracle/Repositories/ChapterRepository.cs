@@ -28,5 +28,20 @@ namespace Data_Oracle.Repositories
             return  chapterList = _dbContext.Chapters.Where(x => x.CourcesVideoID == courseId).ToList();
 
         }
+
+        public List<Chapter> GetChapterByCouresID(int courseVideoId) // Hoặc decimal tùy khai báo của bạn
+        {
+            return _dbContext.Chapters
+                // Lọc theo Video ID
+                .Where(x => x.CourcesVideoID == (decimal)courseVideoId)
+
+                // QUAN TRỌNG: Sửa thành OrderBy (Tăng dần) thay vì OrderByDescending
+                .OrderBy(x => x.ChapterIndex)
+
+                // (Tùy chọn) Nếu ChapterIndex trùng nhau thì sắp xếp theo ID
+                .ThenBy(x => x.ChapterID)
+
+                .ToList();
+        }
     }
 }

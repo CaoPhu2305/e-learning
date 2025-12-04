@@ -26,6 +26,16 @@ namespace Data_Oracle.Repositories
             return _dbContext.Questions.Where(x => x.QuizzesID == QuizzesID).ToList();
         }
 
+        public Quizzes GetQuizzes(int chapterId)
+        {
+            // ĐÚNG: So sánh cột ChapterID
+            return _dbContext.Quizzes.FirstOrDefault(q => q.ChapterID == (decimal)chapterId);
+
+            // SAI (Lỗi thường gặp): So sánh q.QuizzesID == chapterId
+        }
+
+
+
         public Quizzes GetQuizzesByChapterID(int ChapterID)
         {
             try
@@ -41,6 +51,25 @@ namespace Data_Oracle.Repositories
 
             return null;
 
+        }
+
+        public Quizzes GetQuizzesByChapterID1(int ChapterID)
+        {
+            try
+            {
+                // SỬA LẠI: So sánh x.ChapterID (Cột khóa ngoại) chứ không phải x.QuizzesID (Khóa chính)
+                // Ép kiểu (decimal) cho chắc ăn với Oracle
+                var tmp = _dbContext.Quizzes
+                                    .FirstOrDefault(x => x.ChapterID == (decimal)ChapterID);
+                return tmp;
+            }
+            catch (Exception ex)
+            {
+                // Ghi log lỗi nếu cần
+                var x = ex.Message;
+            }
+
+            return null;
         }
 
         public decimal GetNextQuizId()
@@ -121,6 +150,11 @@ namespace Data_Oracle.Repositories
 
             // Lưu thay đổi
             _dbContext.SaveChanges();
+        }
+
+        public int CountQuestionsByQuizId(decimal quizId)
+        {
+            return _dbContext.Questions.Count(q => q.QuizzesID == quizId);
         }
     }
 }

@@ -15,39 +15,77 @@ namespace e_learning.Controllers
         // GET: Quizz
 
         private readonly QuizzService _quizzService;
+        private readonly CourseService _courseService;
        
 
-        public QuizzController(QuizzService quizzService)
+        public QuizzController(QuizzService quizzService,
+            CourseService courseService)
         {
             _quizzService = quizzService;
+            _courseService = courseService;
         }
 
         public ActionResult Index(int ChapterID)
         {
+            // 1. Lấy thông tin bài Quiz dựa trên ChapterID
+            // Đảm bảo hàm GetQuizzes trong Service tìm theo cột CHAPTER_ID
+            //Quizzes quizzes = _quizzService.GetQuizzes(ChapterID);
 
-            Quizzes quizzes = _quizzService.GetQuizzes(ChapterID);
+            Quizzes quizzes = _courseService.getQuizzByChapterID(ChapterID);
 
-            List<Questions> questions = _quizzService.GetQuestions((int)quizzes.QuizzesID);
-
-            QuizViewModel viewModel = new QuizViewModel();
-
-            viewModel.InitValue(quizzes.QuizzesName, quizzes.Quizzes_Type, quizzes.Pass_Score_Percent,(int) quizzes.ChapterID, quizzes.DueDate,(int)quizzes.TimeLimit ,(int)quizzes.NUMBER_QUESTIONS);
-            viewModel.QuizzesID = quizzes.QuizzesID;
-            foreach (var x in questions) {
-
-                List<AnswerOptions> answerOptions = _quizzService.GetAnswerOptions((int)x.QuestionsID);
-
-                QuestionViewModel questionViewModel = new QuestionViewModel(answerOptions);
-
-                questionViewModel.InitValue((int)x.QuestionsID, x.QuestionsContent);
-
-                var w = questionViewModel;
-
-                viewModel.Questions1.Add(questionViewModel);
-
+            // [KIỂM TRA AN TOÀN 1] Nếu chưa có bài Quiz nào cho chương này
+            if (quizzes == null)
+            {
+                ViewBag.Message = "Chương này chưa có bài tập trắc nghiệm.";
+                // Trả về View với Model rỗng để không bị lỗi Null Reference ở View
+                return View(new QuizViewModel { Questions1 = new List<QuestionViewModel>() });
             }
 
-            var tmp = viewModel;
+            // 2. Lấy danh sách câu hỏi thuộc bài Quiz đó
+            List<Questions> questions = _quizzService.GetQuestions((int)quizzes.QuizzesID);
+
+            // 3. Khởi tạo ViewModel
+            QuizViewModel viewModel = new QuizViewModel();
+
+            // [QUAN TRỌNG] Khởi tạo List ngay lập tức để tránh lỗi khi Add
+            viewModel.Questions1 = new List<QuestionViewModel>();
+
+            // Map dữ liệu Header (Thông tin chung)
+            viewModel.InitValue(
+                quizzes.QuizzesName,
+                quizzes.Quizzes_Type,
+                quizzes.Pass_Score_Percent,
+                (int)quizzes.ChapterID,
+                quizzes.DueDate,
+                (int)quizzes.TimeLimit,
+                (int)quizzes.NUMBER_QUESTIONS
+            );
+
+            // [QUAN TRỌNG] Gán ID để Form Submit biết bài nào mà chấm
+            viewModel.QuizzesID = quizzes.QuizzesID;
+
+            // 4. Map dữ liệu Chi tiết (Câu hỏi & Đáp án)
+            // [KIỂM TRA AN TOÀN 2] Chỉ chạy vòng lặp nếu có câu hỏi
+            if (questions != null && questions.Count > 0)
+            {
+                foreach (var x in questions)
+                {
+                    // Lấy danh sách đáp án cho câu hỏi hiện tại
+                    List<AnswerOptions> answerOptions = _quizzService.GetAnswerOptions((int)x.QuestionsID);
+
+                    // Tạo ViewModel cho câu hỏi
+                    QuestionViewModel questionViewModel = new QuestionViewModel(answerOptions);
+                    questionViewModel.InitValue((int)x.QuestionsID, x.QuestionsContent);
+
+                    // Thêm vào danh sách câu hỏi của bài thi
+                    viewModel.Questions1.Add(questionViewModel);
+                }
+            }
+            else
+            {
+                // Trường hợp có Quiz Header nhưng chưa có câu hỏi (Dữ liệu rỗng)
+                ViewBag.Message = "Bài kiểm tra này đang được biên tập và chưa có câu hỏi.";
+            }
 
             return View(viewModel);
         }
@@ -84,29 +122,33 @@ namespace e_learning.Controllers
 
             // --- PHẦN 2: CHẤM ĐIỂM ---
             var quiz = _quizzService.GetQuizzes(QuizID);
-
-            // Lấy đáp án đúng (Đã sửa logic bool ở trên)
             var correctAnswers = _quizzService.GetCorrectAnswersDictionary(QuizID);
-
-            var tmp = correctAnswers;
 
             int correctCount = 0;
             foreach (var item in UserAnswers)
             {
-                // item.Key = QuestionID, item.Value = AnswerID user chọn
-                if (correctAnswers.ContainsKey(item.Key))
-                {
-                    if (correctAnswers[item.Key] == item.Value)
-                    {
-                        correctCount++;
-                    }
-                }
+                if (correctAnswers.ContainsKey(item.Key) && correctAnswers[item.Key] == item.Value)
+                    correctCount++;
             }
 
-            int totalQ = 0;
-            if (quiz.NUMBER_QUESTIONS != null) int.TryParse(quiz.NUMBER_QUESTIONS.ToString(), out totalQ);
+            // [SỬA LẠI ĐOẠN NÀY]: Đếm trực tiếp số câu hỏi thực tế trong DB
+            // Bạn cần thêm hàm CountQuestionsByQuizId vào Service
+            int totalQ = _quizzService.CountQuestionsByQuizId(QuizID);
 
-            float score = (totalQ > 0) ? ((float)correctCount / totalQ) * 100 : 0;
+            // Fallback: Nếu đếm ra 0 (lỗi) thì mới lấy trong bảng Quiz
+            if (totalQ == 0 && quiz.NUMBER_QUESTIONS != null)
+            {
+                totalQ = Convert.ToInt32(quiz.NUMBER_QUESTIONS);
+            }
+
+            // Tính điểm (Tránh chia cho 0)
+            float score = 0;
+            if (totalQ > 0)
+            {
+                score = ((float)correctCount / totalQ) * 100;
+            }
+
+          
             bool isPass = score >= quiz.Pass_Score_Percent;
 
   

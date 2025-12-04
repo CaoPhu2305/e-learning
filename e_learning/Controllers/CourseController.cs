@@ -150,13 +150,36 @@ namespace e_learning.Controllers
         [HttpGet]
         public ActionResult LoadQuizPartial(int ChapterID)
         {
-
+            // 1. Lấy Quiz từ DB
             Quizzes quizze = _courseService.getQuizzByChapterID(ChapterID);
 
+            // [QUAN TRỌNG] Kiểm tra nếu chưa có Quiz thì báo lỗi nhẹ nhàng hoặc return view trống
+            if (quizze == null)
+            {
+                // Trả về thông báo HTML đơn giản để hiện vào khung
+                return Content(@"
+            <div class='alert alert-warning text-center m-4'>
+                <i class='bi bi-exclamation-triangle'></i> 
+                Chương này chưa có bài tập trắc nghiệm.
+            </div>");
+            }
+
             ViewBag.Quizzes = quizze;
-            int currentUserId = Convert.ToInt32(Session["UserID"]); // Thay bằng Session UserID thực tế
-            var latestAttempt = _quizzService.GetLatestAttempt(currentUserId, (int)quizze.QuizzesID);
-            ViewBag.LatestAttempt = latestAttempt;
+
+            // 2. Lấy UserID an toàn (Tránh lỗi nếu Session hết hạn)
+            if (Session["UserID"] != null)
+            {
+                int currentUserId = Convert.ToInt32(Session["UserID"]);
+
+                // Chỉ lấy attempt nếu đã có quizze (đã check null ở trên nên an toàn)
+                var latestAttempt = _quizzService.GetLatestAttempt(currentUserId, (int)quizze.QuizzesID);
+                ViewBag.LatestAttempt = latestAttempt;
+            }
+            else
+            {
+                ViewBag.LatestAttempt = null;
+            }
+
             return PartialView("_QuizPartial");
         }
 

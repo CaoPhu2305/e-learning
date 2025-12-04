@@ -30,5 +30,11 @@ namespace Data_Oracle.Interfaces
         Quizzes GetQuizById(int quizId);
         void UpdateQuiz(Quizzes quiz);
         void DeleteQuestionsByQuizId(decimal quizId);
+
+        Quizzes GetQuizzesByChapterID1(int ChapterID);
+
+        Quizzes GetQuizzes(int chapterId);
+
+        int CountQuestionsByQuizId(decimal quizId);
     }
 }

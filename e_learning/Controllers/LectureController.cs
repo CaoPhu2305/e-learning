@@ -302,53 +302,67 @@ namespace e_learning.Controllers
         [HttpPost]
         public ActionResult SaveQuiz(CreateQuizViewModel model, int? quizId)
         {
-            // 1. Validate
-            if (model.Questions == null || model.Questions.Count == 0)
+            // DEBUG 1: Kiểm tra đầu vào
+            System.Diagnostics.Debug.WriteLine("--- START SAVE QUIZ ---");
+            System.Diagnostics.Debug.WriteLine($"QuizId: {quizId}, ChapterId: {model.ChapterId}");
+
+            if (model.Questions == null)
             {
+                System.Diagnostics.Debug.WriteLine("LỖI: Model.Questions bị NULL -> Model Binding thất bại.");
+                return Json(new { success = false, message = "Lỗi: Dữ liệu câu hỏi bị rỗng (Model Binding Failed)." });
+            }
+
+            if (model.Questions.Count == 0)
+            {
+                System.Diagnostics.Debug.WriteLine("LỖI: Model.Questions.Count = 0");
                 return Json(new { success = false, message = "Đề thi phải có ít nhất 1 câu hỏi!" });
             }
 
             try
             {
-                // 2. MAPPING: Chuyển từ ViewModel (Web) -> DTO (Data)
-                // Đoạn này fix lỗi "Không có DTO" của bạn
+                // DEBUG 2: Bắt đầu Mapping
+                System.Diagnostics.Debug.WriteLine("Bắt đầu Mapping DTO...");
+
                 var quizDto = new QuizDto
                 {
                     ChapterId = model.ChapterId,
                     QuizName = model.QuizName,
                     TimeLimit = model.TimeLimit,
                     PassScore = model.PassScore,
-
-                    // Map danh sách câu hỏi lồng nhau
                     Questions = model.Questions.Select(q => new QuestionDto
                     {
                         Content = q.Content,
-                        Answers = q.Answers.Select(a => new AnswerDto
+                        // Thêm kiểm tra null ở đây để tránh Crash khi Mapping
+                        Answers = (q.Answers != null) ? q.Answers.Select(a => new AnswerDto
                         {
                             Content = a.Content,
                             IsCorrect = a.IsCorrect
-                        }).ToList()
+                        }).ToList() : new List<AnswerDto>()
                     }).ToList()
                 };
 
-                // 3. GỌI SERVICE
+                // DEBUG 3: Đến được đây là Mapping thành công
+                System.Diagnostics.Debug.WriteLine("Mapping OK. Chuẩn bị gọi Service...");
+
                 bool result;
                 if (quizId.HasValue && quizId.Value > 0)
                 {
-                    // Update
+                    System.Diagnostics.Debug.WriteLine("Gọi UPDATE...");
                     result = _quizzService.UpdateFullQuiz(quizId.Value, quizDto);
                 }
                 else
                 {
-                    // Create mới
+                    System.Diagnostics.Debug.WriteLine("Gọi CREATE...");
                     result = _quizzService.CreateFullQuiz(quizDto);
                 }
 
                 if (result) return Json(new { success = true });
-                else return Json(new { success = false, message = "Lỗi khi lưu dữ liệu." });
+                else return Json(new { success = false, message = "Lỗi khi lưu dữ liệu (Service trả về false)." });
             }
             catch (Exception ex)
             {
+                // DEBUG 4: Bắt lỗi Exception
+                System.Diagnostics.Debug.WriteLine("EXCEPTION: " + ex.ToString());
                 return Json(new { success = false, message = "Lỗi server: " + ex.Message });
             }
         }

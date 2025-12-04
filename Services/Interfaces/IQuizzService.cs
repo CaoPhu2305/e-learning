@@ -33,5 +33,8 @@ namespace Services.Interfaces
 
         bool UpdateFullQuiz(int quizId, QuizDto dto);
 
+        int CountQuestionsByQuizId(decimal quizId);
+
+
     }
 }

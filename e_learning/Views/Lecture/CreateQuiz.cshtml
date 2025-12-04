@@ -356,7 +356,7 @@
             btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i> Đang lưu...');
 
             // URL Action
-            var url = '@Url.Action("SaveQuiz", "Lecturer")' + '?quizId=' + @quizId;
+            var url = '@Url.Action("SaveQuiz", "Lecture")' + '?quizId=' + @quizId;
 
             $.ajax({
                 url: url,

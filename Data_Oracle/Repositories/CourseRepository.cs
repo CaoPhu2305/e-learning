@@ -118,12 +118,19 @@ namespace Data_Oracle.Repositories
         // 2. Thêm Chapter
         public void AddChapter(Chapter chapter)
         {
-            // Tự tính Index (Thứ tự chương)
-            int count = _dbContext.Chapters.Count(c => c.CourcesVideoID == chapter.CourcesVideoID);
+            // 1. Đếm số chương hiện tại của khóa học này
+            int count = _dbContext.Chapters
+                .Count(c => c.CourcesVideoID == chapter.CourcesVideoID);
+
+            // 2. Gán Index = Số lượng cũ + 1
+            // Ví dụ: Đang có 3 chương -> Chương mới là 4
             chapter.ChapterIndex = count + 1;
 
-            // ID tự tăng theo Trigger DB, nên gán = 0 (hoặc None nếu đã config)
+            // 3. Gán ID (Thủ công như bạn đã làm)
+            chapter.ChapterID = GetNextChapterId();
+
             _dbContext.Chapters.Add(chapter);
+            // Lưu ý: Không SaveChanges ở đây nếu Service gọi SaveChanges sau
         }
 
         // 3. Thêm Lesson
@@ -144,37 +151,73 @@ namespace Data_Oracle.Repositories
         public void DeleteCourse(int courseId)
         {
             var course = _dbContext.Courses.Find(courseId);
-            if (course != null)
+            if (course == null) return;
+
+            // 1. Xóa các liên kết Giảng viên - Khóa học (Bảng LECTURE_COURSE)
+            var lecturerCourses = _dbContext.lecturerCourses.Where(lc => lc.CourseID == courseId).ToList();
+            _dbContext.lecturerCourses.RemoveRange(lecturerCourses);
+
+            // 2. Xóa Enrollments (Nếu có học viên đã mua - Cẩn thận: Thường thực tế sẽ không cho xóa nếu đã có người mua)
+            var enrollments = _dbContext.Enrollments.Where(e => e.CourseID == courseId).ToList();
+            _dbContext.Enrollments.RemoveRange(enrollments);
+
+            // 3. Xóa Đơn hàng chi tiết (OrderDetails) - Để tránh lỗi FK
+            var orderDetails = _dbContext.OrderDetails.Where(od => od.CourseID == courseId).ToList();
+            _dbContext.OrderDetails.RemoveRange(orderDetails);
+
+            // 4. XỬ LÝ NỘI DUNG KHÓA HỌC (Video -> Chapter -> Lesson/Quiz)
+            var video = _dbContext.CoursesVideos.FirstOrDefault(v => v.CourseVideoID == courseId);
+            if (video != null)
             {
-                // 1. Xóa LecturerCourse (Bảng trung gian)
-                var lecturerCourses = _dbContext.lecturerCourses.Where(lc => lc.CourseID == courseId).ToList();
-                _dbContext.lecturerCourses.RemoveRange(lecturerCourses);
+                // Lấy tất cả Chapter của khóa này
+                var chapters = _dbContext.Chapters.Where(c => c.CourcesVideoID == video.CourseVideoID).ToList();
 
-                // 2. Xóa Video và các Chapter/Lesson liên quan
-                // Nếu DB chưa set Cascade Delete, bạn phải xóa bằng tay từng cấp:
-                // Lesson -> Chapter -> CourseVideo
-
-                // Giả sử bạn xóa CourseVideo, EF sẽ tự xóa con nếu config đúng.
-                // Nếu không, phải query từng cái ra xóa.
-                var video = _dbContext.CoursesVideos.FirstOrDefault(v => v.CourseVideoID == courseId);
-                if (video != null)
+                foreach (var chap in chapters)
                 {
-                    // Xóa Chapter -> Lesson
-                    var chapters = _dbContext.Chapters.Where(c => c.CourcesVideoID == video.CourseVideoID).ToList();
-                    foreach (var chap in chapters)
+                    // 4.1. Xóa Bài học (Lessons)
+                    var lessons = _dbContext.Lessions.Where(l => l.ChapterID == chap.ChapterID).ToList();
+                    _dbContext.Lessions.RemoveRange(lessons);
+
+                    // 4.2. XÓA QUIZ (Đây là phần bạn đang thiếu)
+                    var quizzes = _dbContext.Quizzes.Where(q => q.ChapterID == chap.ChapterID).ToList();
+                    foreach (var q in quizzes)
                     {
-                        var lessons = _dbContext.Lessions.Where(l => l.ChapterID == chap.ChapterID).ToList();
-                        _dbContext.Lessions.RemoveRange(lessons);
+                        // 4.2.1 Xóa Quiz Attempt (Lịch sử thi của SV)
+                        var attempts = _dbContext.QuizAttempts.Where(qa => qa.QuizzesID == q.QuizzesID).ToList();
+                        foreach (var att in attempts)
+                        {
+                            // Xóa chi tiết câu trả lời của SV
+                            var userAnswers = _dbContext.UserAnswers.Where(ua => ua.QuizAttemptID == att.QuizAttemptID).ToList();
+                            _dbContext.UserAnswers.RemoveRange(userAnswers);
+                        }
+                        _dbContext.QuizAttempts.RemoveRange(attempts);
+
+                        // 4.2.2 Xóa Câu hỏi & Đáp án
+                        var questions = _dbContext.Questions.Where(ques => ques.QuizzesID == q.QuizzesID).ToList();
+                        foreach (var ques in questions)
+                        {
+                            var answers = _dbContext.AnswerOptions.Where(a => a.QuestionsID == ques.QuestionsID).ToList();
+                            _dbContext.AnswerOptions.RemoveRange(answers);
+                        }
+                        _dbContext.Questions.RemoveRange(questions);
+
+                        // Xóa Quiz
+                        _dbContext.Quizzes.Remove(q);
                     }
-                    _dbContext.Chapters.RemoveRange(chapters);
-                    _dbContext.CoursesVideos.Remove(video);
                 }
 
-                // 3. Xóa Course
-                _dbContext.Courses.Remove(course);
+                // Xóa danh sách Chapter
+                _dbContext.Chapters.RemoveRange(chapters);
 
-                _dbContext.SaveChanges();
+                // Xóa Course Video
+                _dbContext.CoursesVideos.Remove(video);
             }
+
+            // 5. Cuối cùng: Xóa Course
+            _dbContext.Courses.Remove(course);
+
+            // LƯU TẤT CẢ THAY ĐỔI
+            _dbContext.SaveChanges();
         }
 
         public bool CheckCourseOwner(decimal userId, decimal courseId)
@@ -206,6 +249,10 @@ namespace Data_Oracle.Repositories
         {
             return _dbContext.Database.SqlQuery<decimal>("SELECT SEQ_CHAPTER.NEXTVAL FROM DUAL").FirstOrDefault();
         }
+
+        
+
+        
 
     }
 }

@@ -91,7 +91,7 @@ namespace Services.Implamentatios
                     QuizzesName = dto.QuizName,
                     TimeLimit = dto.TimeLimit,
                     Pass_Score_Percent = (float)dto.PassScore,
-                    NUMBER_QUESTIONS = dto.Questions.Count,
+                    NUMBER_QUESTIONS = 0,
                     Quizzes_Type = "Quiz",
                     DueDate = DateTime.Now.AddMonths(6)
                 };
@@ -142,6 +142,7 @@ namespace Services.Implamentatios
             catch (Exception ex)
             {
                 // Ghi log lỗi: System.Diagnostics.Debug.WriteLine(ex.ToString());
+                var tmp = ex.Message;
                 return false;
             }
         }
@@ -161,7 +162,7 @@ namespace Services.Implamentatios
                 quiz.QuizzesName = dto.QuizName;
                 quiz.TimeLimit = dto.TimeLimit;
                 quiz.Pass_Score_Percent = (float)dto.PassScore;
-                quiz.NUMBER_QUESTIONS = dto.Questions.Count; // Cập nhật lại số câu hỏi
+            
 
                 // Gọi Repo lưu thay đổi Header
                 _quizzRepository.UpdateQuiz(quiz);
@@ -207,9 +208,17 @@ namespace Services.Implamentatios
             }
             catch (Exception ex)
             {
+
+                var tmp = ex.Message;
+
                 // Ghi log lỗi
                 return false;
             }
+        }
+
+        public int CountQuestionsByQuizId(decimal quizId)
+        {
+            return _quizzRepository.CountQuestionsByQuizId(quizId);
         }
 
     }
